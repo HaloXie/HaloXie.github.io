@@ -2,7 +2,10 @@
 
 **文章包含转载非原创内容, 侵权请联系删除** [隐私条款](pages/privacy-policy.md) 和 [使用条款](pages/terms-of-service.md)
 
-## BlockcChian
+## AI
+1. [Skill 让 AI 会做事，Ability 让 AI 会判断](Pages/AI/from-skills-to-abilities/from-skills-to-abilities.md)
+
+## BlockcChain
 1. [Which programming language is the best for blockchain](Pages/BlockChain/language-choose/language-choose.md)
 
 ## OpenClaw
