@@ -4,6 +4,7 @@
 
 ## AI
 1. [Skill 让 AI 会做事，Ability 让 AI 会判断](Pages/AI/from-skills-to-abilities/from-skills-to-abilities.md)
+2. [Harness Engineering：AI Agent 时代的新工程范式](Pages/AI/harness-engineering/harness-engineering.md)
 
 ## BlockcChain
 1. [Which programming language is the best for blockchain](Pages/BlockChain/language-choose/language-choose.md)
