@@ -1,8 +1,17 @@
-# Skill 让 AI 会做事，Ability 让 AI 会判断
+---
+title: "Skill 让 AI 会做事，Ability 让 AI 会判断"
+description: "从 Skill 到 Ability 的工程演进：如何让 AI 稳定继承一类判断，而不只是按步骤执行"
+date: 2026-07-03 18:53:55 +0800
+categories: [AI]
+tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
+image:
+  path: /assets/img/from-skills-to-abilities/ability-hero.png
+toc: true
+---
 
 > 项目仓库：`https://github.com/cognirail/from-skills-to-abilities`
 >
-> 这篇文章不是在宣布一个行业标准。  
+> 这篇文章不是在宣布一个行业标准。
 > 它只是记录我最近在做个人 AI 工具体系时，一个越来越强烈的工程判断：**只给 AI 写更大的 skill，不会自然得到更稳定的判断。**
 
 ## 先说结论
@@ -33,14 +42,14 @@ Tool → Skill → Ability → Cognitive Architecture
 
 刚开始用 AI 写代码、写文档、跑流程的时候，我也会自然地把所有东西都写成 skill：遇到 code review，按这些步骤；遇到调研，按这些步骤；遇到项目交付，按这些步骤。
 
-这当然有用。  
+这当然有用。
 但用久之后，会出现一个很明显的问题：
 
 **AI 会按步骤做事，但不一定知道什么是好，什么是坏，为什么。**
 
 于是 skill 越写越大，里面开始塞规则、塞风格、塞范例、塞 checklist、塞历史教训。最后它不再只是一个流程，而变成一个混合体：一半是 procedure，一半是 judgment，一半是 knowledge。
 
-是的，这里有三个“一半”。这就是问题。
+是的，这里有三个"一半"。这就是问题。
 
 ## 这篇适合谁看
 
@@ -54,7 +63,7 @@ Tool → Skill → Ability → Cognitive Architecture
 - 你开始把 prompt、rules、knowledge、examples 分文件维护，但每次调用都靠临时拼上下文。
 - 你觉得多 agent / 多 persona / 多 routing 很热闹，但长期任务里并没有显著变稳。
 
-我不是想解决所有 agent 问题。  
+我不是想解决所有 agent 问题。
 我只想先解决一个更小、更具体的问题：
 
 **如何让 AI 稳定继承一类判断。**
@@ -84,7 +93,7 @@ Skill = procedure
 
 但有些东西不是步骤。
 
-比如“写出像我一样的代码”。  
+比如"写出像我一样的代码"。
 这不是一个流程问题。你不能只告诉 AI：
 
 ```text
@@ -95,7 +104,7 @@ Skill = procedure
 
 这样它当然会写，但写出来不一定像你的代码。
 
-真正决定“像不像”的，是一组更隐性的判断：
+真正决定"像不像"的，是一组更隐性的判断：
 
 - 什么情况下应该最小改动，什么情况下应该重构。
 - Controller 只做协议层，Service 才放业务逻辑。
@@ -104,8 +113,8 @@ Skill = procedure
 - 错误要保留 Error 对象和控制流语义，不能空 catch。
 - 方法应该封装一个完整问题，不要返回裸 ID 让调用方二次查询。
 
-这些不是“步骤”。  
-这些是“判断”。
+这些不是"步骤"。
+这些是"判断"。
 
 于是我开始意识到：有一类能力不应该继续塞进 skill 里。
 
@@ -136,9 +145,9 @@ Ability = 认知入口 + 判断框架 + source routing + 上下文化 + 验收�
 | 上下文化 | 同一条规则在这个能力场景下意味着什么 |
 | 验收契约 | 怎么证明这次判断真的被遵守 |
 
-这和“更大的 skill”不一样。
+这和"更大的 skill"不一样。
 
-更大的 skill 往往是把更多步骤塞进去。  
+更大的 skill 往往是把更多步骤塞进去。
 Ability 则是把一类判断内聚起来。
 
 ## 一个具体例子：code-style-core
@@ -147,8 +156,8 @@ Ability 则是把一类判断内聚起来。
 
 它的目标很简单：让 AI 写出更接近我 reviewer 风格的 Node/TypeScript 后端代码。
 
-它不是教学文档，也不是 Node.js 入门教程。  
-它更像一份“风格合同”：
+它不是教学文档，也不是 Node.js 入门教程。
+它更像一份"风格合同"：
 
 ```text
 Good:
@@ -183,11 +192,11 @@ Bad:
 
 写代码只是结果，判断顺序才是能力。
 
-## 它和“员工蒸馏”/ Expert Judgment Distillation 有什么关系
+## 它和"员工蒸馏"/ Expert Judgment Distillation 有什么关系
 
-写到这里，其实很容易想到前一阵很火的“员工蒸馏”。
+写到这里，其实很容易想到前一阵很火的"员工蒸馏"。
 
-这个直觉是对的。  
+这个直觉是对的。
 `code-style-core` 本质上就是一次很小范围的员工蒸馏：把我作为 reviewer 的隐性判断提取出来，让 AI 在写 Node/TypeScript 后端代码时可以继承一部分。
 
 但我不想把 Ability 直接等同于员工蒸馏。
@@ -212,7 +221,7 @@ Ability = 把这类判断封装成 AI 可加载、可验证、可演进的认知
 
 也就是说，员工蒸馏更像输入方法，Ability 更像工程封装。
 
-如果只把我的经验写成一段 prompt，它可能会变成“像明昊一样写代码”的人设模拟。  
+如果只把我的经验写成一段 prompt，它可能会变成"像明昊一样写代码"的人设模拟。
 但如果把它做成 Ability，它就必须继续回答：
 
 ```text
@@ -225,14 +234,14 @@ Ability = 把这类判断封装成 AI 可加载、可验证、可演进的认知
 
 这也是我觉得它有意义的地方。
 
-它不是把一个人神秘化，也不是把经验包装成口号。  
+它不是把一个人神秘化，也不是把经验包装成口号。
 它是把一类原本只存在于 review 习惯里的判断，压缩成 agent runtime 可以使用的 contract。
 
 ## 为什么不是多 agent
 
 这里很容易和另一个流行方向混在一起：多 agent。
 
-多 agent 当然有价值。我也在用。  
+多 agent 当然有价值。我也在用。
 但多 agent 解决的是另一个问题：
 
 ```text
@@ -249,10 +258,10 @@ Ability = 把这类判断封装成 AI 可加载、可验证、可演进的认知
 你现在是测试工程师
 ```
 
-这在短任务里有效。  
+这在短任务里有效。
 但长上下文里，模型会遇到指令衰减。它不是只忘掉不重要的指令，而是整体遵循度一起下降。
 
-所以我现在更关心的不是“有多少个 agent”，而是：
+所以我现在更关心的不是"有多少个 agent"，而是：
 
 ```text
 关键判断有没有被压缩成一个可加载、可验证、可降级的认知闭包？
@@ -292,7 +301,7 @@ abilities/<ability-name>/
 
 这个 repo 目前保留完整最小闭环；完整内部包可以继续增加 framework conventions、project rules、validated lessons、review checklists 和更多 cross-platform adapters。
 
-`ABILITY.md` 不负责塞满所有知识。  
+`ABILITY.md` 不负责塞满所有知识。
 它负责声明：
 
 - 这个 ability 的 concern 是什么。
@@ -304,8 +313,8 @@ abilities/<ability-name>/
 
 这点很重要。
 
-如果一个文件把所有规则都复制一遍，它很快会变成新的垃圾场。  
-Ability 应该引用外部 source of truth，然后补“在这个能力里，这条规则意味着什么”。
+如果一个文件把所有规则都复制一遍，它很快会变成新的垃圾场。
+Ability 应该引用外部 source of truth，然后补"在这个能力里，这条规则意味着什么"。
 
 ## 为什么不是直接堆知识库和 checklist
 
@@ -323,7 +332,7 @@ Skill 回答：遇到任务我该怎么做。
 Ability 回答：面对这类问题我该怎么判断。
 ```
 
-知识库和 checklist 都很重要。  
+知识库和 checklist 都很重要。
 但它们自己不会自动形成判断。
 
 比如我可以在知识库里记录：
@@ -350,7 +359,7 @@ Ability 回答：面对这类问题我该怎么判断。
 
 这就是 ability 的位置。
 
-它不是替代知识库，也不是替代 checklist。  
+它不是替代知识库，也不是替代 checklist。
 它更像知识库到行动之间的一层认知视图：
 
 ```text
@@ -360,12 +369,12 @@ Ability 回答：面对这类问题我该怎么判断。
   → validation 回验
 ```
 
-所以我现在不想把所有东西都塞进一个“超级知识库”。  
+所以我现在不想把所有东西都塞进一个"超级知识库"。
 知识库负责沉淀事实和经验，checklist 负责验收插件，ability 负责把它们组织成某个 concern 下的判断闭包。
 
-这也是我理解的“信息内聚”：
+这也是我理解的"信息内聚"：
 
-不是把所有信息放到一个文件里，  
+不是把所有信息放到一个文件里，
 而是让同一类判断有一个清晰的归属地。
 
 ## ACP：一个还很早的方向
@@ -388,7 +397,7 @@ MCP 解决的是工具互操作：
 
 这里的 ACP，我暂时叫 Agentic Cognitive Protocol。
 
-但必须说清楚：这不是一个已经完成的标准。  
+但必须说清楚：这不是一个已经完成的标准。
 它现在只是一个工程方向。
 
 一个最小的 ACP ability package，至少要声明：
@@ -424,7 +433,7 @@ NomiFun 更像产品形态灵感：local-first AI workstation，把 MCP、REST�
 
 ruflo 则更像 harness/governance 对标物：有 MCP、hooks、memory、plugin、MetaHarness、安全 CI、降级模式。
 
-但这些项目给我的最大启发不是“应该复制哪个架构”。
+但这些项目给我的最大启发不是"应该复制哪个架构"。
 
 恰恰相反。
 
@@ -447,7 +456,7 @@ Justin  = cognitive architecture / ability contract
 
 但我不想把 Justin 做成另一个 agent harness。
 
-Harness 给模型手脚。  
+Harness 给模型手脚。
 Ability 给模型判断框架。
 
 这是两件事。
@@ -466,7 +475,7 @@ Ability 给模型判断框架。
 
 但我觉得这个方向已经足够值得写下来。
 
-因为它把问题从“我怎么让 AI 多会一个技能”推进到了：
+因为它把问题从"我怎么让 AI 多会一个技能"推进到了：
 
 ```text
 我怎么让 AI 稳定继承一类判断？
@@ -476,7 +485,7 @@ Ability 给模型判断框架。
 
 我现在带团队、review 代码、做个人 AI 工具体系，很多时候真正稀缺的不是步骤，而是判断。
 
-步骤可以复制。  
+步骤可以复制。
 判断需要内聚。
 
 ## 最后
@@ -493,7 +502,7 @@ Ability 给模型判断框架。
 
 一个很小的开始方式是：打开你现在最常用的一份 skill / prompt / rule 文件，标出里面所有不是步骤的句子。
 
-如果这些句子在描述“什么算好、什么算坏、什么时候该阻断、该回源读哪里、怎么证明”，它们就是 ability 候选。
+如果这些句子在描述"什么算好、什么算坏、什么时候该阻断、该回源读哪里、怎么证明"，它们就是 ability 候选。
 
 不是为了发明新名词，而是为了让 AI 在长周期任务里，不只是会执行步骤，也能稳定知道：
 
@@ -516,7 +525,7 @@ Ability 让 AI 能带着判断行动。
 Cognitive Architecture 让这些判断在长期系统里协同和进化。
 ```
 
-Skill 让 AI 会做事。  
+Skill 让 AI 会做事。
 Ability 让 AI 会判断。
 
 项目仓库：`https://github.com/cognirail/from-skills-to-abilities`

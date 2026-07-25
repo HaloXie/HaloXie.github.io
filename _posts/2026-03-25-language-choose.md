@@ -1,6 +1,17 @@
+---
+title: "Which Programming Language Is the Best for Blockchain"
+description: "对比 Javascript、C#、C++、Python、Golang、Solidity、Java、Rust 在区块链行业的优劣势和使用场景"
+date: 2026-03-25 19:30:04 +0800
+categories: [BlockChain]
+tags: [blockchain, programming-language, javascript, solidity, golang, rust]
+image:
+  path: /assets/img/language-choose/Programming-languages-in-blockchain-industry.png
+toc: true
+---
+
 > 原文地址 https://www.blog.duomly.com/which-programming-language-is-the-best-for-blockchain/
 
-![](./img/Programming-languages-in-blockchain-industry.png)
+![](/assets/img/language-choose/Programming-languages-in-blockchain-industry.png)
 
 Blockchain because is secure, fast and decentralized (not always, but in most cases yes) is technology which is coming to our world, business, life and enterprise really quick.
 
@@ -14,10 +25,9 @@ In blockchain development zone we have few most popular languages, they are Java
 
 Now I will try to explain you the short description of every language, pros and disadvantages, the difficulty level of go into the language from scratch, and which blockchain project is using that language.
 
-**1.Javascript**
-----------------
+## 1. Javascript
 
-![](./img/1*K5zaMYb0AdjThQxhjmOMqQ.png)
+![](/assets/img/language-choose/1_K5zaMYb0AdjThQxhjmOMqQ.png)
 
 Javascript is interpreted programming language defined as high-level.
 
@@ -25,7 +35,7 @@ What is most important for us javascript is prototype-based, dynamic and weakly 
 
 Javascript from a few years is very popular, and many companies are creating new frameworks for javascript like angular/react/vue/node.js which can help us developing code.
 
-#### **Pros**
+### Pros
 
 – Object-oriented
 
@@ -35,21 +45,21 @@ Javascript from a few years is very popular, and many companies are creating new
 
 – Very popular and almost every IT company need javascript with his frameworks
 
-#### **Disadvantages**
+### Disadvantages
 
 – Dynamic
 
 – Weakly typed (but we can use typescript to solve this problem)
 
-#### **Difficulty level**
+### Difficulty level
 
-Javascript has kind of low entrance difficulty level, and we don’t have to learn javascript really deep to work with it.
+Javascript has kind of low entrance difficulty level, and we don't have to learn javascript really deep to work with it.
 
 To start working with javascript, we need to learn basics and go more deeply later when we need that.
 
 Helpful with javascript learning is the fact, on the internet are many materials with courses and tutorials, not only for pure javascript but for popular frameworks as well.
 
-#### **Where is used in the blockchain**
+### Where is used in the blockchain
 
 The most popular place where is used is web3.js and ethereum.js which are helping us connect our frontend of application to connect with ethereum network and smart contracts.
 
@@ -59,18 +69,17 @@ One more popular blockchain where you could use javascript to work with contract
 
 Less famous but still very often javascript using case are lighting apps, which is super fast network built on top of bitcoin blockchain and the second one which I would like to mention is the Raiden network which is high-speed infrastructure based on top of ethereum blockchain.
 
-**2.C#**
---------
+## 2. C\#
 
-![](./img/1*lC2fbQkrpijlyta1KnH7nw.png)
+![](/assets/img/language-choose/1_lC2fbQkrpijlyta1KnH7nw.png)
 
-C# is high-level, compiled, objected oriented programming language created in the late 90’s — early 00’s for Microsoft.
+C# is high-level, compiled, objected oriented programming language created in the late 90's — early 00's for Microsoft.
 
-It’s very similar language to Java or C++, similar to Java C++ code is a collection of classes and using inheritance.
+It's very similar language to Java or C++, similar to Java C++ code is a collection of classes and using inheritance.
 
-#### **Pros**
+### Pros
 
-– Support for .NET
+– Support for .NET
 
 – Kind of easy to learn
 
@@ -82,19 +91,19 @@ It’s very similar language to Java or C++, similar to Java C++ code is a colle
 
 – Dynamic code support
 
-#### **Disadvantages**
+### Disadvantages
 
 – Not so much support for Linux
 
 – Windows oriented way
 
-#### **Difficulty level**
+### Difficulty level
 
 For me, it was more difficult language to learn than javascript because syntax and the types, but is not that difficult and complicated language like for example Go.
 
 Additionally, tons of good and free learning sources are making this language one of the easiest to learn.
 
-#### **Where is used**
+### Where is used
 
 C# is used in a few popular blockchain projects, one of the most popular is NEO which is named Chinese version of Ethereum.
 
@@ -102,18 +111,17 @@ Neo is a high-speed Blockchain platform, which can handle even few thousands of 
 
 Next popular project where we use C# is IOTA, which is highly scalable and zero-fee transactions tangle type project which is oriented on the Internet of Things.
 
-**3.C++**
----------
+## 3. C++
 
-![](./img/1*vOZL0UKIE3TZxyrPaVX9IA.png)
+![](/assets/img/language-choose/1_vOZL0UKIE3TZxyrPaVX9IA.png)
 
 C++ is strongly static typed, high-speed, object-oriented, compiled language.
 
 Essential is fact C++ has high-level efficiency and access to hardware.
 
-What is interesting C++ was created in 70–80’s an extension to C.
+What is interesting C++ was created in 70–80's an extension to C.
 
-#### **Pros**
+### Pros
 
 – Independent and multiplatform
 
@@ -123,7 +131,7 @@ What is interesting C++ was created in 70–80’s an extension to C.
 
 – Strongly static types
 
-#### **Disadvantages**
+### Disadvantages
 
 -Code redundancy
 
@@ -131,15 +139,15 @@ What is interesting C++ was created in 70–80’s an extension to C.
 
 -Complex and sometimes difficult to debug
 
--Doesn’t support garbage collection
+-Doesn't support garbage collection
 
-#### **Difficulty level**
+### Difficulty level
 
 C++ because its more complicated is more challenging to learn than C, when C is at least medium / hard to learn.
 
-It’s definitely not an easy language for beginners.
+It's definitely not an easy language for beginners.
 
-#### **Where is used**
+### Where is used
 
 C++ is used in a lot of popular blockchain cryptocurrencies and important blockchain projects like:
 
@@ -161,10 +169,9 @@ C++ is used in a lot of popular blockchain cryptocurrencies and important blockc
 
 – Cpp-ethereum (C++ implementation of ethereum)
 
-**4.Python**
-------------
+## 4. Python
 
-![](./img/1*iull2CFhbPktG_aFiya9lA.png)
+![](/assets/img/language-choose/1_iull2CFhbPktG_aFiya9lA.png)
 
 Trendy high-level, dynamically typed programming language.
 
@@ -176,7 +183,7 @@ IT giants support Python by creating smart tools and frameworks like dialogflow 
 
 Python is one of the most often selecting languages for creating chatbots.
 
-#### **Pros**
+### Pros
 
 – Very easy to learn
 
@@ -184,36 +191,35 @@ Python is one of the most often selecting languages for creating chatbots.
 
 – Fast
 
-#### **Disadvantages**
+### Disadvantages
 
 – Mostly used as a server language
 
 – Not so smart context
 
-– Libraries aren’t always documented in enough way
+– Libraries aren't always documented in enough way
 
-#### **Difficulty level**
+### Difficulty level
 
 Python is very popular and very often selected as a first programming language.
 
 The Internet contains the massive amount of tutorials and courses, what is making Python one of the easiest programming languages to learn.
 
-#### **Where is used**
+### Where is used
 
 In blockchain industry Python is used in many good projects, for example, has own implementation of Ethereum(pyethereum), we can use it to create contracts for NEO and smartcontracts for Hyperledger as well.
 
-One more thing what about I would like to mention is steempython. It’s pythons implementation for steemit, trendy kind of social media — content providing ecosystem.
+One more thing what about I would like to mention is steempython. It's pythons implementation for steemit, trendy kind of social media — content providing ecosystem.
 
-**5.Golang**
-------------
+## 5. Golang
 
-![](./img/1*QtV2WfXGaxAWv_Vy-GMxiA.png)
+![](/assets/img/language-choose/1_QtV2WfXGaxAWv_Vy-GMxiA.png)
 
 Go is statically typed, compiled programming language created by Google employees.
 
 The first idea was, Go should contain a mix of easy developing code like Python and the efficiency of compiled languages like C++.
 
-#### **Pros**
+### Pros
 
 – Memory safety
 
@@ -227,7 +233,7 @@ The first idea was, Go should contain a mix of easy developing code like Python 
 
 – Scalable
 
-#### **Disadvantages**
+### Disadvantages
 
 – Not very easy to learn
 
@@ -237,15 +243,15 @@ The first idea was, Go should contain a mix of easy developing code like Python 
 
 – For some devs, the syntax is not clear and ugly
 
-#### **Difficulty level**
+### Difficulty level
 
-Go doesn’t have that many good tutorials on the internet like javascript which can attack you from every place and people have to look more deeply to find something, and is complicated language, so Go has the opinion of very difficult to learn.
+Go doesn't have that many good tutorials on the internet like javascript which can attack you from every place and people have to look more deeply to find something, and is complicated language, so Go has the opinion of very difficult to learn.
 
 However, this opinion is sent very often from people who are python/javascript developers, because go is different from these languages very much.
 
-Anyway if you’re coming from C++ or Java, learning Go should be very easy for you.
+Anyway if you're coming from C++ or Java, learning Go should be very easy for you.
 
-#### **Where is used**
+### Where is used
 
 We could talk about Golang related projects without end, but I will try to describe the most popular ones.
 
@@ -257,16 +263,15 @@ Exciting project targeting decentralized online games Loom Network has written c
 
 Moreover, the last one written in Golang project which I would like to mention is fast, targeting privacy of smart contracts blockchain named Dero.
 
-**6.Solidity**
---------------
+## 6. Solidity
 
-![](./img/1*Zmsk5VDsQV5KfZ4wK8T_bw.png)
+![](/assets/img/language-choose/1_Zmsk5VDsQV5KfZ4wK8T_bw.png)
 
 Contract-oriented statically typed language created by Ethereum developers.
 
-Created for EVM, as smart-contract development main language and is the primary language for Ethereum’s smart contracts.
+Created for EVM, as smart-contract development main language and is the primary language for Ethereum's smart contracts.
 
-#### **Pros**
+### Pros
 
 – Statically typed
 
@@ -274,7 +279,7 @@ Created for EVM, as smart-contract development main language and is the primary 
 
 – Popularity is growing very fast
 
-#### **Disadvantages**
+### Disadvantages
 
 – Very young
 
@@ -286,28 +291,27 @@ Created for EVM, as smart-contract development main language and is the primary 
 
 – Make critical mistake is very easy, so always we have to test our code in a very detailed way
 
-#### **Difficulty level**
+### Difficulty level
 
-Solidity is not a complicated language and is a bit like much smaller javascript copy with a few changes like types(we use types in typescript which is used very often in javascript’s projects).
+Solidity is not a complicated language and is a bit like much smaller javascript copy with a few changes like types(we use types in typescript which is used very often in javascript's projects).
 
 So middle experienced javascript developer can learn solidity in a few days, especially when we have a lot of interactive tutorials like duomly.com.
 
-#### **Where is used**
+### Where is used
 
 We will use the solidity language to develop Ethereum smartcontracts.
 
-I didn’t see other projects which uses solidity, but Ethereum development ecosystem is enormous and is one of the most significant parts of blockchain development now, so solidity is one of the most popular languages used in blockchain industry.
+I didn't see other projects which uses solidity, but Ethereum development ecosystem is enormous and is one of the most significant parts of blockchain development now, so solidity is one of the most popular languages used in blockchain industry.
 
-**7.Java**
-----------
+## 7. Java
 
-![](./img/1_dAheT-s0FRXM4CcVEF2_nA.png)
+![](/assets/img/language-choose/1_dAheT-s0FRXM4CcVEF2_nA.png)
 
 Java is compiled, strongly typed object and class-based programming language created by Sun Microsystems.
 
 Java is very much oriented for object programming and is very popular in big companies.
 
-#### **Pros**
+### Pros
 
 – Independent from the operational system
 
@@ -323,44 +327,43 @@ Java is very much oriented for object programming and is very popular in big com
 
 – Easy memory cleaning
 
-#### **Disadvantages**
+### Disadvantages
 
 – Need Java Virtual Machine to run
 
 – Slower than C++ or Go
 
-#### **Difficulty level**
+### Difficulty level
 
 We can compare the difficulty level to C#, which could be more difficult than javascript or python, is more complicated, but is a very popular language and are tons of learning resources.
 
 Still can plainly tell, Java is easier than Golang or C++.
 
-#### **Where is used**
+### Where is used
 
 Java is very popular in blockchain industry, from more popular is used in IOTA (I described what is IOTA in C# step). Popular P2P cryptocurrency and platform named NEM are using Java as well (NEM is written in Java).
 
 Rest of popular projects where we can use Java are:
 
-– Neo’s contracts
+– Neo's contracts
 
-– Hyperledger’s contracts
+– Hyperledger's contracts
 
 – IBM blockchain
 
-– BitcoinJ (bitcoin’s implementation in Java)
+– BitcoinJ (bitcoin's implementation in Java)
 
 – Ethereum
 
-**8.Rust**
-----------
+## 8. Rust
 
-![](./img/1_tWq2MX20eWInNDu61WAUdw.png)
+![](/assets/img/language-choose/1_tWq2MX20eWInNDu61WAUdw.png)
 
 System, compiled, strongly typed programming language, from 2009 Mozilla is taking care about development and sponsoring Rust.
 
-Rust’s syntax is similar to C++.
+Rust's syntax is similar to C++.
 
-#### **Pros**
+### Pros
 
 – Strongly typed
 
@@ -374,32 +377,31 @@ Rust’s syntax is similar to C++.
 
 – Small running environment
 
-#### **Disadvantages**
+### Disadvantages
 
 – Very difficult to learn
 
 – Not so famous, so the community is not that big, like for example javascript, access to libraries is smaller, and developers have to rewrite many problems from scratch
 
-– Doesn’t have such clear standard ways of accessing databases
+– Doesn't have such clear standard ways of accessing databases
 
-#### **Difficulty level**
+### Difficulty level
 
-Rust’s syntax is similar to C++, so this programming language is definitely not easy to learn.
+Rust's syntax is similar to C++, so this programming language is definitely not easy to learn.
 
 Additionally, the community is much smaller so I would tell the entrance level is high, and I can qualify difficulty as hard.
 
-#### **Where is used**
+### Where is used
 
 Few really popular blockchain projects are using Rust.
 
 One of them is Parity, a very fast and secure ethereum client which is written in Rust.
 
-Next one and probably the most popular is Ethereum Classic, and it’s cryptocurrency which born after big hack on Ethereum.
+Next one and probably the most popular is Ethereum Classic, and it's cryptocurrency which born after big hack on Ethereum.
 
 The last one is written in Rust Exonum, Exonum is blockchain security-oriented framework which can handle even few thousands of transactions per second.
 
-**Summary (Winners)**
----------------------
+## Summary (Winners)
 
 **The biggest amount of job offers in blockchain industry**
 
@@ -421,7 +423,7 @@ The last one is written in Rust Exonum, Exonum is blockchain security-oriented f
 
 **Winner: Javascript**
 
-#### **The best-paid job offers**
+### The best-paid job offers
 
 To get best-paid job offers we took range higher than $150k per year, and we will order by the number of job offers with that technology.
 
@@ -445,7 +447,7 @@ Results are below.
 
 **Winner: Javascript**
 
-#### **Easy to learn**
+### Easy to learn
 
 Of course, learning is an individual thing, but programming languages are more or less complicated, have more or less learning sources on the internet, so I decided to base on my personal experience and internet statistics.
 
@@ -467,13 +469,13 @@ After research in statistics of the difficulty of programming languages and base
 
 **Winner: Solidity**
 
-#### **General**
+### General
 
 After checking all the points, we can type general winner.
 
 Because Javascript is used every time in the frontend of apps, not rarely on backend and middleware has the most significant amount of job offers generally and have the most significant amount of well-paid job offers as well.
 
-Is not so tricky for learning and in combination with solidity is a great combo. For sure, until dApps won’t lose popularity.
+Is not so tricky for learning and in combination with solidity is a great combo. For sure, until dApps won't lose popularity.
 
 **Winner: Javascript and solidity.**
 

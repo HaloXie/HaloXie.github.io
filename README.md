@@ -1,13 +1,16 @@
-# HaloXie.github.io
+# halo.xin
 
-**文章包含转载非原创内容, 侵权请联系删除** [隐私条款](pages/privacy-policy.md) 和 [使用条款](pages/terms-of-service.md)
+个人技术博客，基于 [Jekyll](https://jekyllrb.com/) + [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 主题，通过 GitHub Actions 自动构建部署。
 
-## AI
-1. [Skill 让 AI 会做事，Ability 让 AI 会判断](Pages/AI/from-skills-to-abilities/from-skills-to-abilities.md)
-2. [Harness Engineering：AI Agent 时代的新工程范式](Pages/AI/harness-engineering/harness-engineering.md)
+## 本地开发
 
-## BlockcChain
-1. [Which programming language is the best for blockchain](Pages/BlockChain/language-choose/language-choose.md)
+本项目不要求本地安装 Ruby，构建全部走 GitHub Actions。如需本地预览：
 
-## OpenClaw
-1. [🦞 OpenClaw 完全入门指南：从零开始认识这只「小龙虾」](Pages/openclaw/openclaw-guide-final.md)
+```bash
+bundle install
+bundle exec jekyll serve
+```
+
+## 许可
+
+文章内容版权归作者所有。博客框架遵循 MIT 许可。
