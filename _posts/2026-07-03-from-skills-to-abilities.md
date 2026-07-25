@@ -31,12 +31,12 @@ Ability 解决的是：面对一类问题，AI 应该怎么判断。
 Tool → Skill → Ability → Cognitive Architecture
 ```
 
-| 层级 | 解决的问题 |
-|---|---|
-| Tool | 让 AI 能调用外部能力 |
-| Skill | 让 AI 能按步骤完成任务 |
-| Ability | 让 AI 能继承稳定判断 |
-| Cognitive Architecture | 让 abilities、memory、rules、tools 在一个系统里协同 |
+| 层级 | 解决的问题 | 典型失效 | 落地形态 |
+|---|---|---|---|
+| Tool | 让 AI 能调用外部能力 | 会调用，但不知道何时该调用 | 函数 / MCP |
+| Skill | 让 AI 能按步骤完成任务 | 步骤走完了，结果却不对 | `SKILL.md` |
+| Ability | 让 AI 能继承稳定判断 | 判断对了，但能力之间互相覆盖 | `ABILITY.md` + references |
+| Cognitive Architecture | 让 abilities、memory、rules、tools 在一个系统里协同 | 能力越多，上下文预算越紧，指令互相衰减 | runtime + 调度层 |
 
 这篇文章主要讲中间这一跳：为什么从 Skill 走到 Ability。
 
