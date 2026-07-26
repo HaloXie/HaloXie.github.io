@@ -13,8 +13,6 @@ toc: true
 
 **受众：**AI 产品经理与工程团队
 
-![cover](/assets/img/harness-engineering/cover.webp)
-
 # 一、概念定义：从"裸调 LLM"到"Harness Engineering"
 
 ## 1.1 什么是 Harness Engineering

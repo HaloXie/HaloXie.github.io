@@ -11,8 +11,6 @@ toc: true
 
 > 原文地址 https://www.blog.duomly.com/which-programming-language-is-the-best-for-blockchain/
 
-![](/assets/img/language-choose/Programming-languages-in-blockchain-industry.webp)
-
 Blockchain because is secure, fast and decentralized (not always, but in most cases yes) is technology which is coming to our world, business, life and enterprise really quick.
 
 Thousands of blockchain projects are in development or are developed and deployed to the internet. Companies are looking for new blockchain ideas or trying to improve what other companies created now like crazy, and this is just the beginning of how blockchain technology is running the world.
