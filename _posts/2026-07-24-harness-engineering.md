@@ -5,7 +5,7 @@ date: 2026-07-24 15:14:59 +0800
 categories: [AI]
 tags: [harness-engineering, ai-agent, openai, codex, context-engineering]
 image:
-  path: /assets/img/harness-engineering/cover.png
+  path: /assets/img/harness-engineering/cover.webp
 toc: true
 ---
 
@@ -13,7 +13,7 @@ toc: true
 
 **受众：**AI 产品经理与工程团队
 
-![cover](/assets/img/harness-engineering/cover.png)
+![cover](/assets/img/harness-engineering/cover.webp)
 
 # 一、概念定义：从"裸调 LLM"到"Harness Engineering"
 
@@ -44,7 +44,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 ## 1.3 裸调 LLM vs Harness Engineering
 
-![compare](/assets/img/harness-engineering/compare.png)
+![compare](/assets/img/harness-engineering/compare.webp)
 
 **裸调 LLM**意味着直接把大模型 API 接进业务，所有"非推理"的事务（工具调用、记忆管理、上下文控制、错误恢复、安全审计）都需要业务方在调用层临时拼凑。结果往往是：演示很惊艳，落地一塌糊涂。
 
@@ -65,7 +65,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 从能力维度看，一个生产可用的 Harness 至少需要六大核心组件协同工作。它们不是堆叠的功能，而是围绕 Agent 的**运行外壳**——任何一项缺失，Agent 都无法在企业环境稳定运行。
 
-![six-components-v2](/assets/img/harness-engineering/six-components-v2.png)
+![six-components-v2](/assets/img/harness-engineering/six-components-v2.webp)
 
 ## 2.1 工具层（Tools）
 
@@ -155,7 +155,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 # 三、OpenAI 标志性案例：百万行代码的工程实践
 
-![codex-case](/assets/img/harness-engineering/codex-case.png)
+![codex-case](/assets/img/harness-engineering/codex-case.webp)
 
 如果说 Harness Engineering 的理论体系在 2025 年由 Anthropic 奠基，那么让它真正进入行业视野的，是 OpenAI 2026 年 2 月发布的一项极限实验。
 
@@ -165,7 +165,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 该实验的对外披露数据如下：
 
-![chart_codex](/assets/img/harness-engineering/chart_codex.png)
+![chart_codex](/assets/img/harness-engineering/chart_codex.webp)
 
 | 指标 | 数值 |
 |---|---|
@@ -230,7 +230,7 @@ OpenAI 团队的核心洞察是：**"从 Agent 的视角看，如果运行时无
 
 # 四、战略启示：模型是商品，Harness 是护城河
 
-![strategy](/assets/img/harness-engineering/strategy.png)
+![strategy](/assets/img/harness-engineering/strategy.webp)
 
 OpenAI 这场实验最深层的启示，不是"AI 能写 100 万行代码"，而是**护城河正在从模型层迁移到 Harness 层**。
 
@@ -238,7 +238,7 @@ OpenAI 这场实验最深层的启示，不是"AI 能写 100 万行代码"，而
 
 LangChain 在 Terminal Bench 2.0 上的对照实验给出了最直白的证据：
 
-![chart_harness](/assets/img/harness-engineering/chart_harness.png)
+![chart_harness](/assets/img/harness-engineering/chart_harness.webp)
 
 > 保持模型不变，**仅优化 Harness 配置**，编程 Agent 的 Terminal Bench 2.0 任务完成率从 **52.8%** 跃升至 **66.5%**——整整 **13.7 个百分点**的提升完全归因于 Harness 设计。
 

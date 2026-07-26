@@ -5,13 +5,13 @@ date: 2026-03-25 19:30:04 +0800
 categories: [BlockChain]
 tags: [blockchain, programming-language, javascript, solidity, golang, rust]
 image:
-  path: /assets/img/language-choose/Programming-languages-in-blockchain-industry.png
+  path: /assets/img/language-choose/Programming-languages-in-blockchain-industry.webp
 toc: true
 ---
 
 > 原文地址 https://www.blog.duomly.com/which-programming-language-is-the-best-for-blockchain/
 
-![](/assets/img/language-choose/Programming-languages-in-blockchain-industry.png)
+![](/assets/img/language-choose/Programming-languages-in-blockchain-industry.webp)
 
 Blockchain because is secure, fast and decentralized (not always, but in most cases yes) is technology which is coming to our world, business, life and enterprise really quick.
 
@@ -27,7 +27,7 @@ Now I will try to explain you the short description of every language, pros and 
 
 ## 1. Javascript
 
-![](/assets/img/language-choose/1_K5zaMYb0AdjThQxhjmOMqQ.png)
+![](/assets/img/language-choose/1_K5zaMYb0AdjThQxhjmOMqQ.webp)
 
 Javascript is interpreted programming language defined as high-level.
 
@@ -71,7 +71,7 @@ Less famous but still very often javascript using case are lighting apps, which 
 
 ## 2. C\#
 
-![](/assets/img/language-choose/1_lC2fbQkrpijlyta1KnH7nw.png)
+![](/assets/img/language-choose/1_lC2fbQkrpijlyta1KnH7nw.webp)
 
 C# is high-level, compiled, objected oriented programming language created in the late 90's — early 00's for Microsoft.
 
@@ -113,7 +113,7 @@ Next popular project where we use C# is IOTA, which is highly scalable and zero-
 
 ## 3. C++
 
-![](/assets/img/language-choose/1_vOZL0UKIE3TZxyrPaVX9IA.png)
+![](/assets/img/language-choose/1_vOZL0UKIE3TZxyrPaVX9IA.webp)
 
 C++ is strongly static typed, high-speed, object-oriented, compiled language.
 
@@ -171,7 +171,7 @@ C++ is used in a lot of popular blockchain cryptocurrencies and important blockc
 
 ## 4. Python
 
-![](/assets/img/language-choose/1_iull2CFhbPktG_aFiya9lA.png)
+![](/assets/img/language-choose/1_iull2CFhbPktG_aFiya9lA.webp)
 
 Trendy high-level, dynamically typed programming language.
 
@@ -213,7 +213,7 @@ One more thing what about I would like to mention is steempython. It's pythons i
 
 ## 5. Golang
 
-![](/assets/img/language-choose/1_QtV2WfXGaxAWv_Vy-GMxiA.png)
+![](/assets/img/language-choose/1_QtV2WfXGaxAWv_Vy-GMxiA.webp)
 
 Go is statically typed, compiled programming language created by Google employees.
 
@@ -265,7 +265,7 @@ Moreover, the last one written in Golang project which I would like to mention i
 
 ## 6. Solidity
 
-![](/assets/img/language-choose/1_Zmsk5VDsQV5KfZ4wK8T_bw.png)
+![](/assets/img/language-choose/1_Zmsk5VDsQV5KfZ4wK8T_bw.webp)
 
 Contract-oriented statically typed language created by Ethereum developers.
 
@@ -305,7 +305,7 @@ I didn't see other projects which uses solidity, but Ethereum development ecosys
 
 ## 7. Java
 
-![](/assets/img/language-choose/1_dAheT-s0FRXM4CcVEF2_nA.png)
+![](/assets/img/language-choose/1_dAheT-s0FRXM4CcVEF2_nA.webp)
 
 Java is compiled, strongly typed object and class-based programming language created by Sun Microsystems.
 
@@ -357,7 +357,7 @@ Rest of popular projects where we can use Java are:
 
 ## 8. Rust
 
-![](/assets/img/language-choose/1_tWq2MX20eWInNDu61WAUdw.png)
+![](/assets/img/language-choose/1_tWq2MX20eWInNDu61WAUdw.webp)
 
 System, compiled, strongly typed programming language, from 2009 Mozilla is taking care about development and sponsoring Rust.
 

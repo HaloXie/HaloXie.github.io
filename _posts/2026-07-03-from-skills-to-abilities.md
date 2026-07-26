@@ -5,7 +5,7 @@ date: 2026-07-03 18:53:55 +0800
 categories: [AI]
 tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
 image:
-  path: /assets/img/from-skills-to-abilities/ability-hero.png
+  path: /assets/img/from-skills-to-abilities/ability-hero.webp
 toc: true
 ---
 
