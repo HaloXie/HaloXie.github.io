@@ -4,10 +4,14 @@ description: "面向零基础读者的 OpenClaw（AI Agent）完全入门指南�
 date: 2026-03-25 19:30:04 +0800
 categories: [OpenClaw]
 tags: [ai-agent, openclaw, mcp, open-source]
+image:
+  path: /assets/img/openclaw-guide/cover.webp
 toc: true
 ---
 
 > **阅读时长**：约 2 小时 | **字数**：约 25,000 字 | **更新时间**：2026 年 3 月
+
+![OpenClaw 把聊天入口、AI 大脑与本地工具连接起来](/assets/img/openclaw-guide/cover.webp)
 
 ---
 
@@ -189,6 +193,8 @@ Clawdbot 刚火起来没多久，就遇到了一场啼笑皆非的风波。
 | 实习生看懂指令的能力 | OpenClaw 这个软件本身 |
 
 ### 工作流程（四步）
+
+![OpenClaw 从接收聊天消息到调用本地工具的四步工作流](/assets/img/openclaw-guide/how-it-works.webp)
 
 1. **你发消息**：在微信上说「帮我把桌面那个年度总结做成图表」
 2. **OpenClaw 接收**：你电脑上运行的 OpenClaw 收到消息，翻译成 AI 能理解的格式
@@ -373,6 +379,8 @@ OpenClaw 本身免费，但围绕它的服务生态已经在赚真金白银：
 
 ## 五、安全风险：必须认真讲的部分
 
+![安装 OpenClaw Skill 前检查来源、源码、权限和公网暴露](/assets/img/openclaw-guide/skill-security.webp)
+
 ### 5.1 恶意 Skill
 
 前面说了，约五分之一的 Skill 有问题。它们主要干三件事：
@@ -446,6 +454,8 @@ OpenClaw 本身免费，但围绕它的服务生态已经在赚真金白银：
 # 第三章 你的角色，你的第一步
 
 前两章你知道了 OpenClaw 是什么、生态长什么样。这一章只解决一个问题：**你该怎么做？**
+
+![程序员、产品经理和采销从不同入口进入同一个最小实践闭环](/assets/img/openclaw-guide/role-roadmap.webp)
 
 先记住一句话：AI 工具不会自动帮你赚钱，但它能把原来 8 小时的活压缩到 1 小时——前提是你得知道怎么用。
 
