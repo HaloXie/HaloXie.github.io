@@ -3,11 +3,204 @@
 
 @import 'jekyll-theme-chirpy';
 
-.col-xl-11 {
+/* Keep the existing wide-content treatment on non-post pages. */
+body:not(:has(main article[data-toc])) .col-xl-11 {
   flex: 0 0 auto;
   width: 95%;
 }
 
-#core-wrapper {
-  max-width: 1100px;
+/*
+ * Post reading mode
+ *
+ * Chirpy's wide-screen layout combines a 300px sidebar with a centered
+ * three-column container. On large displays that pushes the article away
+ * from the visual centre. Keep the original layout for index and archive
+ * pages, but let a post behave more like an editorial reading surface.
+ */
+
+:root {
+  --post-copy-width: 47.5rem;
+  --post-panel-width: 12rem;
+  --post-layout-gap: 2.5rem;
+}
+
+article[data-toc] > .content {
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+article[data-toc] > .content :is(p, li) {
+  text-wrap: pretty;
+}
+
+@media (min-width: 850px) {
+  /* The full navigation remains one click away, instead of occupying the
+     reading canvas permanently. Chirpy's own toggle controls the drawer. */
+  body:has(main article[data-toc]) #sidebar {
+    width: 17.5rem;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.3s ease,
+      visibility 0s linear 0.3s;
+  }
+
+  body[sidebar-display]:has(main article[data-toc]) #sidebar {
+    transform: translateX(0);
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  body:has(main article[data-toc]) #main-wrapper {
+    margin-left: 0;
+  }
+
+  body:has(main article[data-toc]) #sidebar-trigger {
+    display: block;
+    order: -1;
+    margin-right: 0.75rem;
+  }
+
+  body:has(main article[data-toc]) #main-wrapper > .container {
+    width: 100%;
+    max-width: 95rem;
+    padding-right: clamp(1.5rem, 3vw, 3.5rem) !important;
+    padding-left: clamp(1.5rem, 3vw, 3.5rem) !important;
+  }
+
+  body:has(main article[data-toc]) main:has(> article[data-toc]) {
+    flex: 0 1 var(--post-copy-width) !important;
+    width: 100% !important;
+    max-width: var(--post-copy-width) !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  body:has(main article[data-toc]) article[data-toc] {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  body:has(main article[data-toc]) article[data-toc] > .content {
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  /* Article pages do not need discovery widgets competing with the TOC. */
+  body:has(main article[data-toc]) #panel-wrapper > .access {
+    display: none;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper #toc-wrapper {
+    max-height: calc(100vh - 2rem);
+    font-size: 0.8125rem;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper #toc-wrapper::after {
+    width: var(--post-panel-width);
+    max-width: 100%;
+  }
+
+  body:has(main article[data-toc]) #tail-wrapper {
+    flex: 0 1 70rem;
+    width: 100%;
+    max-width: 70rem;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+}
+
+/* Below 1320px the TOC uses Chirpy's compact popup, leaving the article
+   centred and comfortably wide on laptops and landscape tablets. */
+@media (min-width: 850px) and (max-width: 1319.98px) {
+  body:has(main article[data-toc])
+    #main-wrapper
+    > .container
+    > .row:has(> main > article[data-toc]) {
+    justify-content: center !important;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper {
+    display: none;
+  }
+}
+
+/* A balanced ghost column mirrors the TOC so the prose itself—not the
+   combined content-plus-panel group—stays on the viewport centre line. */
+@media (min-width: 1320px) {
+  body:has(main article[data-toc])
+    #main-wrapper
+    > .container
+    > .row:has(> main > article[data-toc]) {
+    display: grid !important;
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(--post-panel-width)
+      var(--post-layout-gap)
+      minmax(0, var(--post-copy-width))
+      var(--post-layout-gap)
+      var(--post-panel-width)
+      minmax(0, 1fr);
+    align-items: start;
+  }
+
+  body:has(main article[data-toc]) main:has(> article[data-toc]) {
+    grid-column: 4;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper {
+    display: block;
+    grid-column: 6;
+    width: 100%;
+    max-width: var(--post-panel-width);
+    padding-left: 0 !important;
+  }
+}
+
+/* On very wide screens, diagrams, tables, and code gain a 960px editorial
+   breakout while the prose retains its readable 760px measure. */
+@media (min-width: 1650px) {
+  :root {
+    --post-panel-width: 13.75rem;
+    --post-layout-gap: 6.5rem;
+  }
+
+  body:has(main article[data-toc]) article[data-toc] > .content > :is(
+      figure,
+      .table-wrapper,
+      .mermaid,
+      div[class^='language-']
+    ) {
+    width: calc(100% + 12.5rem);
+    max-width: calc(100vw - 4rem);
+    margin-right: -6.25rem;
+    margin-left: -6.25rem;
+  }
+
+  /* Chirpy already centres image links with left: 50% + translateX(-50%).
+     Expanding the width is enough; negative margins would shift them twice. */
+  body:has(main article[data-toc])
+    article[data-toc]
+    > .content
+    > p
+    > a.img-link {
+    width: calc(100% + 12.5rem);
+    max-width: calc(100vw - 4rem);
+    margin-right: 0;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  article[data-toc] > .content {
+    line-height: 1.68;
+  }
+}
+
+@media (min-width: 850px) and (prefers-reduced-motion: reduce) {
+  body:has(main article[data-toc]) #sidebar {
+    transition: none;
+  }
 }
