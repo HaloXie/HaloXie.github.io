@@ -4,12 +4,16 @@ description: "以 chezmoi、GitHub Private Repo、age 和 Gitleaks 搭建跨设�
 date: 2026-07-28 12:00:00 +0800
 categories: [Tools]
 tags: [chezmoi, dotfiles, macos, github, age, gitleaks, security]
+image:
+  path: /assets/img/chezmoi-secure-dotfiles/cover.webp
 toc: true
 ---
 
-换一台 Mac，真正麻烦的通常不是安装软件，而是恢复散落在各处的配置：Cursor、VS Code、Codex、Claude Code、Ghostty、Zsh、Git、SSH、Homebrew、pnpm、NVM、Conda、Nginx、Hammerspoon、Finicky、ClashX……每个工具都有自己的目录、格式和隐含状态。
+如果你用 Mac 做开发，大概经历过这种时刻：新电脑已经到手，常用软件半小时就装完了，接下来却要花一整天回忆“我原来到底改过什么”。Cursor 的快捷键、Ghostty 的字体、几十行 `.zshrc`、SSH host、Hammerspoon 脚本，还有 Codex、Claude Code 各自的 rules，全散落在不同角落。
 
-把整个 `$HOME` 上传到 GitHub 显然不安全；只用 VS Code 或 Cursor 自带的 Settings Sync，又覆盖不了其他工具。本文采用一套更可控的方案：
+我也考虑过最直接的办法：把配置统统塞进一个 Private Repo。但真正动手时，最让人不安的不是“能不能同步”，而是“会不会哪次手滑，把数据库密码或 SSH 私钥以明文交给 Git”。Private 只是权限设置，不是防呆系统。
+
+所以这套方案不是简单的 `$HOME` 备份，而是一条有检查点的流水线：
 
 ```text
 本机真实配置
@@ -21,13 +25,15 @@ GitHub Private Repo
 chezmoi 预览差异并恢复
 ```
 
-这篇教程最关心的不是“怎样把文件上传”，而是另一个更重要的问题：**怎样保证秘密不会以明文进入 Git 历史。**
+我们会用 chezmoi 管配置、age 管密文、Gitleaks 看守 commit。整个过程从一个低风险文件开始，等你确认每一层都在工作，再逐批搬 IDE、Agent、SSH 和数据库配置。
+
+这篇教程最关心的不是“怎样把文件传上去”，而是：**怎样让秘密在第一次 commit 之前就被拦下来。**
 
 > 本文以 macOS 为主，写于 2026-07-28。命令中的 `YOUR_GITHUB_USERNAME` 和仓库名需要替换成自己的值。
 
-## 一、先建立正确的安全模型
+## 一、先把最担心的事说透：Private 不等于安全
 
-### 1. Private Repo 不是 Secret Manager
+### 1. Private Repo 不是保险箱
 
 GitHub Private Repo 解决的是访问控制，不是秘密管理。明文秘密一旦进入 Git，至少会留下这些风险：
 
@@ -44,9 +50,13 @@ GitHub Private Repo 解决的是访问控制，不是秘密管理。明文秘密
 秘密不得以明文进入第一次 commit
 ```
 
-### 2. 五层防线
+### 2. 真正有用的是五层防线
 
-本文使用以下五层门禁，它们缺一不可：
+私有仓库仍然值得用，但它应该站在最后一层。前面需要五道能在本地停下来的检查：
+
+[![明文进入 Git 前的五层防线](/assets/img/chezmoi-secure-dotfiles/security-layers.svg)](/assets/img/chezmoi-secure-dotfiles/security-layers.svg)
+
+> 文中的信息图都可以点击查看清晰原图；图负责给你一眼能扫完的全貌，具体边界仍以正文为准。
 
 | 防线 | 解决的问题 | 局限 |
 |---|---|---|
@@ -58,9 +68,11 @@ GitHub Private Repo 解决的是访问控制，不是秘密管理。明文秘密
 
 `.gitignore`、`.chezmoiignore` 和 Private Repo 都是辅助防线，不能替代这五层门禁。
 
-## 二、什么该同步，什么不该同步
+## 二、先分行李：不是每个配置都该上车
 
-配置同步前先分类。不要从“这个目录看起来有用”出发，而要从“新设备是否能通过声明重新得到正确状态”出发。
+看到一个配置目录时，人很容易产生“整个复制最省事”的冲动。先忍住。判断一个文件是否该同步，不看它叫什么，而看两件事：新设备是否真的需要它，以及它能否安全地被仓库读取者看到。
+
+[![配置同步的三条车道](/assets/img/chezmoi-secure-dotfiles/classification.svg)](/assets/img/chezmoi-secure-dotfiles/classification.svg)
 
 | 类型 | 示例 | 处理方式 |
 |---|---|---|
@@ -80,7 +92,7 @@ GitHub Private Repo 解决的是访问控制，不是秘密管理。明文秘密
 - 同步 Codex/Claude 的规则和显式设置，不要同步 `auth`、sessions、history、logs；
 - 同步 ClashX 无敏感模板，订阅 URL、节点密码和证书必须加密。
 
-## 三、安装工具
+## 三、先把四件工具装好
 
 本文使用四个工具：
 
@@ -102,11 +114,11 @@ gitleaks version
 gh --version
 ```
 
-这些工具都是开源工具。这里引入 Gitleaks 是因为 Git 和 chezmoi 本身不会识别“某段文本是否像 Token”；但 Gitleaks 只是模式检测器，不是不会漏报的安全证明。
+这些工具都是开源工具。Git 本身不会判断“某段文本是否像 Token”；chezmoi 能在 `add` 时检查一次，Gitleaks 则继续覆盖 staged changes 和完整 Git 历史。两种扫描互相补位，但都只是模式检测器，不是不会漏报的安全证明。
 
-## 四、先配置 age，再添加任何敏感文件
+## 四、先藏好钥匙，再碰敏感文件
 
-顺序非常重要：**先创建和备份 age identity，再让 chezmoi 纳管敏感文件。**
+这里不要抢跑。**先创建和备份 age identity，再让 chezmoi 碰任何敏感文件。** 如果顺序反过来，明文可能已经进入 source state，后面再加密只是亡羊补牢。
 
 ### 1. 生成独立的 age identity
 
@@ -149,7 +161,7 @@ encryption = "age"
 
 注意 `encryption = "age"` 必须位于 TOML 顶层。`recipient` 是公钥，`identity` 指向只存在于本机的私钥文件。`add.secrets = "error"` 会把 chezmoi 添加未加密文件时的秘密检测从默认 warning 提升为直接失败；显式使用 `--encrypt` 的文件不会被这个门禁误拦截。
 
-## 五、初始化本地 source state
+## 五、只从一个文件开始
 
 ```bash
 chezmoi init
@@ -162,7 +174,7 @@ chezmoi 默认把期望状态保存在：
 ~/.local/share/chezmoi
 ```
 
-这不是 `$HOME` 的备份目录，而是将来要进入 Git 的 source state。后续每次提交前，都必须把它当成“即将公开给所有仓库读取者的内容”来审查。
+这不是 `$HOME` 的镜像，而是将来要进入 Git 的 source state。一个简单但很有用的心法是：**每次打开它，都假设旁边坐着一个能读完整仓库的人。** 你愿意让他看到的内容，才可以留在这里。
 
 本机的 `~/.config/chezmoi/chezmoi.toml` 不会自动成为仓库的一部分。为了让新设备在 `chezmoi init` 时自动得到相同的非秘密配置，在 source state 根目录创建 `.chezmoi.toml.tmpl`：
 
@@ -189,15 +201,15 @@ chezmoi apply   将期望状态应用到 $HOME
 chezmoi update  拉取远端并应用
 ```
 
-第一次只添加一个不敏感文件：
+第一次只挑一个不敏感文件，例如 `.zshrc`。目的不是赶进度，而是先走通 add、diff、apply 这条最短路径：
 
 ```bash
 chezmoi add "$HOME/.zshrc"
-chezmoi diff --exclude=encrypted
+chezmoi diff "$HOME/.zshrc"
 chezmoi managed
 ```
 
-`chezmoi diff` 会在计算目标状态时解密 `encrypted_` 文件，完整 diff 可能把密码显示到 terminal、pager、录屏或 Agent 日志中。日常审查默认加 `--exclude=encrypted`；不得把包含敏感文件的 diff 重定向、粘贴到聊天或保存为日志。加密文件只检查 source path 是否为 age 密文，并在可信的本地终端单独验证目标文件。
+`chezmoi diff` 会计算模板并解密 `encrypted_` 文件，完整 diff 可能把密码显示到 terminal、pager、录屏或 Agent 日志中。日常只对已经确认不敏感的目标单独 diff；不要对整棵目标树运行 verbose diff，也不得把可能含秘密的输出重定向、粘贴到聊天或保存为日志。加密文件只检查 source path 是否为 age 密文，并在可信的本地终端单独验证目标文件。
 
 不要一上来执行：
 
@@ -208,7 +220,9 @@ chezmoi add "$HOME/.config"
 
 大目录中通常混有 Token、缓存、数据库、下载内容和应用内部状态，逐文件添加才是安全默认。
 
-## 六、在第一次 commit 前安装本地泄漏门禁
+## 六、给第一次 commit 装上安全带
+
+现在所有内容还只在本机，是安装防线的最佳时机。等 push 以后再扫描，发现得再快也已经晚了一步。
 
 ### 1. 创建仓库内共享的 hook
 
@@ -293,7 +307,8 @@ git commit -m "bootstrap secure chezmoi repository"
 
 ```text
 chezmoi add/edit
-  → chezmoi diff --exclude=encrypted
+  → chezmoi status
+  → 对已确认不敏感的目标单独 diff
   → gitleaks dir
   → 精确 git add
   → git diff --cached
@@ -301,9 +316,9 @@ chezmoi add/edit
   → commit
 ```
 
-## 七、正确添加普通配置与敏感配置
+## 七、三种配置，三种处理方式
 
-### 1. 普通配置：明文纳管
+### 1. 普通配置：确认后明文纳管
 
 下面这些通常适合明文管理，但添加前仍要打开检查：
 
@@ -328,7 +343,7 @@ chezmoi add "$HOME/Library/Application Support/Cursor/User/keybindings.json"
 
 如果 IDE 会频繁自动改写文件，不要急着把整个 User 目录做成 symlink。先只纳管稳定文件，观察一段时间，再决定使用 chezmoi template、modify script 或 source symlink。
 
-### 2. 半敏感配置：优先模板化
+### 2. 半敏感配置：把结构和具体值拆开
 
 以 SSH config 为例，结构可以公开，但公司域名、用户名和跳板机地址未必适合明文出现。此时可以把变量写入本机 chezmoi data，由模板生成目标文件。
 
@@ -341,7 +356,7 @@ Host work-bastion
 
 模板适合“结构相同、每台机器值不同”的配置。若变量本身是密码，仍应从密码管理器读取或加密保存，不能只是从一个明文文件搬到另一个明文文件。
 
-### 3. 必须同步的敏感文件：直接加密添加
+### 3. 必须同步的敏感文件：第一次 add 就加密
 
 chezmoi 官方提供 `--encrypt`，敏感文件必须通过这个入口第一次进入 source state：
 
@@ -371,9 +386,11 @@ grep -q '^-----BEGIN AGE ENCRYPTED FILE-----$' "$encrypted_source" \
 
 SSH 私钥尤其建议按设备生成，或交给 SSH Agent / 密码管理器；不要因为 age 可用，就把所有身份凭证集中进一个仓库。
 
-## 八、按类别迁移现有开发环境
+## 八、别一天搬完：分四批迁移
 
-不要在一天内迁完所有配置。每一批都应该能独立验证和回滚。
+到这里，安全带已经装好，才轮到真正搬家。不要试图一天迁完所有配置：批次越大，出错后越难判断是哪一个文件、哪一种同步方式出了问题。
+
+[![分四批迁移开发环境](/assets/img/chezmoi-secure-dotfiles/migration-roadmap.svg)](/assets/img/chezmoi-secure-dotfiles/migration-roadmap.svg)
 
 ### 第一批：低风险基础配置
 
@@ -449,7 +466,9 @@ agents/shared/AGENTS.md
 
 不要把数据库数据目录、Nginx runtime 文件、Clash 缓存或日志当成配置同步。
 
-## 九、创建 GitHub Private Repo 并首次推送
+## 九、本地都过关了，再创建 Private Repo
+
+前面的检查全部在本地完成。现在才轮到 GitHub，这个顺序意味着即使远端没有 Secret Scanning，我们也不是毫无防护地把希望寄托在它身上。
 
 先登录 GitHub：
 
@@ -490,9 +509,11 @@ git push -u origin main
 
 注意：GitHub Actions 中运行 Gitleaks 只能在 push 后发现问题，不能替代本地 pre-commit。对秘密来说，“远端很快报警”仍然意味着秘密已经到达远端。
 
-## 十、在第二台 Mac 上恢复
+## 十、换台 Mac：先演习，再真正落文件
 
-新设备需要先完成两项身份引导：
+真正检验 dotfiles 的不是“第一台机器 push 成功”，而是第二台机器能否安全恢复。新设备需要先拿到两种身份：GitHub 身份负责读仓库，age identity 负责打开密文。二者必须来自不同的安全路径。
+
+[![新设备安全恢复流程](/assets/img/chezmoi-secure-dotfiles/recovery.svg)](/assets/img/chezmoi-secure-dotfiles/recovery.svg)
 
 1. GitHub 登录，用于读取 Private Repo；
 2. 从独立安全位置恢复 age identity。
@@ -530,15 +551,20 @@ chmod 600 "$HOME/.config/chezmoi/key.txt"
 
 ```bash
 chezmoi init https://github.com/YOUR_GITHUB_USERNAME/dotfiles.git
-chezmoi diff --exclude=encrypted
-chezmoi apply --dry-run --verbose
+chezmoi status
+chezmoi diff "$HOME/.zshrc"
+chezmoi apply --dry-run
 ```
 
-确认路径、模板变量和删除操作都正确后：
+`--verbose` 会打印文件 diff，模板或加密目标可能因此把秘密暴露在终端和日志中，所以不要在整库恢复时使用它。先通过 `status` 看变化范围，再只对确认不敏感的目标单独 diff。
+
+确认路径和变化范围都正确后，应用普通配置时也不打印正文：
 
 ```bash
-chezmoi apply --verbose
+chezmoi apply
 ```
+
+包含秘密的模板或加密目标，在可信的本地终端中按目标单独 apply 和验收，全程不要加 `--verbose`。
 
 重新启用本地 hook：
 
@@ -565,33 +591,28 @@ source state 中没有秘密明文
 日常更新使用：
 
 ```bash
-chezmoi update --dry-run --verbose
-chezmoi update --verbose
+git -C "$(chezmoi source-path)" pull --ff-only
+chezmoi status
+chezmoi apply
 ```
 
-先 dry-run，再 apply。涉及脚本、删除或服务配置时尤其如此。
+先看 source repo 的变更和 `chezmoi status`，再 apply。涉及脚本、删除或服务配置时尤其如此；需要看具体内容时，仍然只 diff 已确认不敏感的目标。
 
-## 十一、如果已经误提交明文怎么办
+## 十一、真泄漏了：先让旧凭证失效
 
-第一原则：**先轮换凭证，再清理历史。**
+这段最好永远用不上，但真出事时顺序比速度更重要。第一原则只有一句：**先轮换凭证，再清理历史。** 删除文件看起来最直观，却不能阻止别人继续使用已经看到的旧 Token。
 
-```text
-停止继续 push
-  → 立即吊销或轮换 Token/密码/密钥
-  → 判断哪些 clone、协作者和应用可能拿到副本
-  → 从当前版本删除明文并改成模板/密文
-  → 使用 git-filter-repo 等工具重写历史
-  → 强制更新远端并通知所有 clone 重新同步
-  → 再次扫描所有历史
-```
+[![秘密误提交后的正确处理顺序](/assets/img/chezmoi-secure-dotfiles/incident-response.svg)](/assets/img/chezmoi-secure-dotfiles/incident-response.svg)
+
+凭证失效后，再确认哪些 clone、GitHub App、协作者和自动化可能拿到过副本。然后把当前版本改成模板或密文，使用 `git-filter-repo` 等工具清理历史，通知所有设备重新同步，最后扫描全部历史确认没有第二处。
 
 仅仅执行一次普通 commit 删除文件是不够的，旧内容仍在历史中。即使完成历史重写，也必须认为原凭证已经泄漏并永久作废；历史清理不能让已经被读取的秘密“重新安全”。
 
 历史重写会改变 commit ID，并影响所有 clone。不要在不了解仓库消费者的情况下直接执行强制推送。个人 dotfiles 仓库通常消费者较少，但仍应先确认设备和自动化清单。
 
-## 十二、最终目录不是目标，可恢复性才是目标
+## 十二、别用文件数量衡量完成度
 
-一个成熟的 dotfiles 仓库大致会包含这些逻辑分区：
+仓库刚建好时只有几个文件很正常。dotfiles 的价值不在于目录看起来多完整，而在于你真的敢在一台新机器上预演、应用，并且知道秘密从未以明文进过历史。随着配置逐批稳定，仓库自然会长成下面这样的逻辑分区：
 
 ```text
 dotfiles/

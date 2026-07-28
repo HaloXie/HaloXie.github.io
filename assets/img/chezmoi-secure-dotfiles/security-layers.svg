@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="720" viewBox="0 0 1440 720" role="img" aria-labelledby="title desc">
+  <title id="title">明文进入 Git 之前的五层防线</title>
+  <desc id="desc">从逐文件纳管到人工复核，五道防线依次阻断秘密泄漏。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#111d35"/></linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#68d5e8"/></marker>
+  </defs>
+  <rect width="1440" height="720" rx="32" fill="url(#bg)"/>
+  <text x="72" y="88" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="42" font-weight="700">秘密要在第一次 commit 之前被拦住</text>
+  <text x="72" y="134" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24">Private Repo 是最后的访问控制，不是第一道安全检查。</text>
+
+  <path d="M135 330H1280" stroke="#27415b" stroke-width="6" marker-end="url(#arrow)"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <g transform="translate(90 220)"><circle cx="85" cy="110" r="76" fill="#183445" stroke="#68d5e8" stroke-width="3"/><text x="85" y="100" text-anchor="middle" fill="#68d5e8" font-size="34" font-weight="700">01</text><text x="85" y="135" text-anchor="middle" fill="#f5f7fb" font-size="20" font-weight="600">逐文件 add</text><text x="85" y="225" text-anchor="middle" fill="#aab7cf" font-size="19">不碰整目录</text></g>
+    <g transform="translate(350 220)"><circle cx="85" cy="110" r="76" fill="#2f2b26" stroke="#f4c66a" stroke-width="3"/><text x="85" y="100" text-anchor="middle" fill="#f4c66a" font-size="34" font-weight="700">02</text><text x="85" y="135" text-anchor="middle" fill="#f5f7fb" font-size="20" font-weight="600">age 加密</text><text x="85" y="225" text-anchor="middle" fill="#aab7cf" font-size="19">明文不落 Git</text></g>
+    <g transform="translate(610 220)"><circle cx="85" cy="110" r="76" fill="#203144" stroke="#6dda9a" stroke-width="3"/><text x="85" y="100" text-anchor="middle" fill="#6dda9a" font-size="34" font-weight="700">03</text><text x="85" y="135" text-anchor="middle" fill="#f5f7fb" font-size="20" font-weight="600">add gate</text><text x="85" y="225" text-anchor="middle" fill="#aab7cf" font-size="19">发现秘密就失败</text></g>
+    <g transform="translate(870 220)"><circle cx="85" cy="110" r="76" fill="#242b45" stroke="#a78bfa" stroke-width="3"/><text x="85" y="100" text-anchor="middle" fill="#a78bfa" font-size="34" font-weight="700">04</text><text x="85" y="135" text-anchor="middle" fill="#f5f7fb" font-size="20" font-weight="600">Gitleaks</text><text x="85" y="225" text-anchor="middle" fill="#aab7cf" font-size="19">提交前再扫描</text></g>
+    <g transform="translate(1130 220)"><circle cx="85" cy="110" r="76" fill="#34252e" stroke="#f08080" stroke-width="3"/><text x="85" y="100" text-anchor="middle" fill="#f08080" font-size="34" font-weight="700">05</text><text x="85" y="135" text-anchor="middle" fill="#f5f7fb" font-size="20" font-weight="600">人工看 staged</text><text x="85" y="225" text-anchor="middle" fill="#aab7cf" font-size="19">工具不替你判断</text></g>
+  </g>
+  <rect x="312" y="550" width="816" height="82" rx="20" fill="#152238" stroke="#2b3a57"/>
+  <text x="720" y="584" text-anchor="middle" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="650">任何一道失败，都停在本地修正</text>
+  <text x="720" y="616" text-anchor="middle" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="19">不要用 “先 push，等 GitHub 报警” 代替预防</text>
+</svg>

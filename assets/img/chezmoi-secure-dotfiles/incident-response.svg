@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="700" viewBox="0 0 1440 700" role="img" aria-labelledby="title desc">
+  <title id="title">秘密误提交后的正确处理顺序</title>
+  <desc id="desc">发现泄漏后先停止推送并轮换凭证，然后确认影响、重写历史、通知设备并复扫。</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#111d35"/></linearGradient><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#f08080"/></marker></defs>
+  <rect width="1440" height="700" rx="32" fill="url(#bg)"/>
+  <text x="72" y="88" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="42" font-weight="700">真泄漏了：先让旧凭证失效，再清理历史</text>
+  <text x="72" y="134" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24">删除文件只是擦掉桌面上的副本，Git 历史里的那份还在。</text>
+  <path d="M105 315H1320" stroke="#59343f" stroke-width="5" marker-end="url(#arrow)"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+    <g transform="translate(55 225)"><circle cx="75" cy="90" r="58" fill="#34252e" stroke="#f08080" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#f08080" font-size="27" font-weight="700">01</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">停止 push</text><text x="75" y="188" text-anchor="middle" fill="#aab7cf" font-size="18">别继续扩散</text></g>
+    <g transform="translate(275 225)"><circle cx="75" cy="90" r="58" fill="#34252e" stroke="#f08080" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#f08080" font-size="27" font-weight="700">02</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">轮换凭证</text><text x="75" y="188" text-anchor="middle" fill="#f08080" font-size="18" font-weight="650">最高优先级</text></g>
+    <g transform="translate(495 225)"><circle cx="75" cy="90" r="58" fill="#2d2931" stroke="#f4c66a" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#f4c66a" font-size="27" font-weight="700">03</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">确认影响</text><text x="75" y="188" text-anchor="middle" fill="#aab7cf" font-size="18">clone · App · 人</text></g>
+    <g transform="translate(715 225)"><circle cx="75" cy="90" r="58" fill="#242b45" stroke="#a78bfa" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#a78bfa" font-size="27" font-weight="700">04</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">重写历史</text><text x="75" y="188" text-anchor="middle" fill="#aab7cf" font-size="18">commit ID 会变</text></g>
+    <g transform="translate(935 225)"><circle cx="75" cy="90" r="58" fill="#203144" stroke="#68d5e8" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#68d5e8" font-size="27" font-weight="700">05</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">通知设备</text><text x="75" y="188" text-anchor="middle" fill="#aab7cf" font-size="18">所有 clone 重同步</text></g>
+    <g transform="translate(1155 225)"><circle cx="75" cy="90" r="58" fill="#203144" stroke="#6dda9a" stroke-width="3"/><text x="75" y="83" text-anchor="middle" fill="#6dda9a" font-size="27" font-weight="700">06</text><text x="75" y="111" text-anchor="middle" fill="#f5f7fb" font-size="18" font-weight="650">全历史复扫</text><text x="75" y="188" text-anchor="middle" fill="#aab7cf" font-size="18">确认没有第二处</text></g>
+  </g>
+  <rect x="265" y="515" width="910" height="90" rx="22" fill="#30242c" stroke="#68404d"/>
+  <text x="720" y="552" text-anchor="middle" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="22" font-weight="650">历史清理不能让已经被读取的秘密重新安全</text>
+  <text x="720" y="585" text-anchor="middle" fill="#f08080" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="19">旧凭证必须永久作废</text>
+</svg>

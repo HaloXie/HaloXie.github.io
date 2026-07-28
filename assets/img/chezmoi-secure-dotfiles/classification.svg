@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="760" viewBox="0 0 1440 760" role="img" aria-labelledby="title desc">
+  <title id="title">配置同步的三条车道</title>
+  <desc id="desc">把配置分为明文管理、加密后管理和永不进入仓库三类。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1220"/><stop offset="1" stop-color="#111d35"/></linearGradient>
+  </defs>
+  <rect width="1440" height="760" rx="32" fill="url(#bg)"/>
+  <text x="72" y="90" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="42" font-weight="700">先分行李，再谈同步</text>
+  <text x="72" y="135" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="24">文件名不决定安全级别，内容和恢复方式才决定。</text>
+
+  <g transform="translate(72 190)">
+    <rect width="400" height="480" rx="26" fill="#152238" stroke="#315343" stroke-width="2"/>
+    <circle cx="52" cy="58" r="22" fill="#6dda9a" opacity=".2"/>
+    <path d="M40 58l8 8 16-19" fill="none" stroke="#6dda9a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="90" y="69" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="30" font-weight="650">明文管理</text>
+    <text x="34" y="116" fill="#6dda9a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="21">能公开给仓库读取者</text>
+    <g fill="#1d3044" stroke="#33516a"><rect x="34" y="156" width="150" height="52" rx="14"/><rect x="200" y="156" width="166" height="52" rx="14"/><rect x="34" y="224" width="180" height="52" rx="14"/><rect x="230" y="224" width="136" height="52" rx="14"/><rect x="34" y="292" width="150" height="52" rx="14"/></g>
+    <g fill="#dce7f5" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20"><text x="109" y="189" text-anchor="middle">.zshrc</text><text x="283" y="189" text-anchor="middle">Ghostty</text><text x="124" y="257" text-anchor="middle">Hammerspoon</text><text x="298" y="257" text-anchor="middle">Finicky</text><text x="109" y="325" text-anchor="middle">AGENTS.md</text></g>
+    <text x="34" y="405" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">先打开检查，再逐文件 add</text>
+    <text x="34" y="440" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">不要整目录打包</text>
+  </g>
+
+  <g transform="translate(520 190)">
+    <rect width="400" height="480" rx="26" fill="#152238" stroke="#67542e" stroke-width="2"/>
+    <path d="M41 54v-8a13 13 0 0126 0v8m-33 0h40v34h-40z" fill="none" stroke="#f4c66a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="90" y="69" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="30" font-weight="650">加密后管理</text>
+    <text x="34" y="116" fill="#f4c66a" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="21">需要恢复，但不能明文出现</text>
+    <g fill="#302b28" stroke="#625238"><rect x="34" y="156" width="150" height="52" rx="14"/><rect x="200" y="156" width="166" height="52" rx="14"/><rect x="34" y="224" width="180" height="52" rx="14"/><rect x="230" y="224" width="136" height="52" rx="14"/></g>
+    <g fill="#f4e8c8" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20"><text x="109" y="189" text-anchor="middle">.pgpass</text><text x="283" y="189" text-anchor="middle">Clash 订阅</text><text x="124" y="257" text-anchor="middle">数据库证书</text><text x="298" y="257" text-anchor="middle">私有 host</text></g>
+    <text x="34" y="405" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">使用 chezmoi add --encrypt</text>
+    <text x="34" y="440" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">只检查密文 header，不打印正文</text>
+  </g>
+
+  <g transform="translate(968 190)">
+    <rect width="400" height="480" rx="26" fill="#152238" stroke="#643b46" stroke-width="2"/>
+    <circle cx="52" cy="58" r="22" fill="#f08080" opacity=".18"/>
+    <path d="M40 46l24 24m0-24L40 70" stroke="#f08080" stroke-width="6" stroke-linecap="round"/>
+    <text x="90" y="69" fill="#f5f7fb" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="30" font-weight="650">不进入仓库</text>
+    <text x="34" y="116" fill="#f08080" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="21">可重建，或风险高于同步收益</text>
+    <g fill="#32262e" stroke="#69404d"><rect x="34" y="156" width="150" height="52" rx="14"/><rect x="200" y="156" width="166" height="52" rx="14"/><rect x="34" y="224" width="180" height="52" rx="14"/><rect x="230" y="224" width="136" height="52" rx="14"/><rect x="34" y="292" width="180" height="52" rx="14"/></g>
+    <g fill="#f2dce2" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20"><text x="109" y="189" text-anchor="middle">sessions</text><text x="283" y="189" text-anchor="middle">workspaceStorage</text><text x="124" y="257" text-anchor="middle">logs / cache</text><text x="298" y="257" text-anchor="middle">Conda pkgs</text><text x="124" y="325" text-anchor="middle">设备 SSH 私钥</text></g>
+    <text x="34" y="405" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">新设备重新生成或重新登录</text>
+    <text x="34" y="440" fill="#aab7cf" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="20">不把运行状态伪装成配置</text>
+  </g>
+</svg>
