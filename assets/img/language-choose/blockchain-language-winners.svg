@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Blockchain language winners</title>
+  <desc id="desc">A hand-drawn summary showing JavaScript as the winner for the most job offers and the most high-paid offers, Solidity as the easiest to learn, and JavaScript plus Solidity as the general winner.</desc>
+  <defs>
+    <filter id="paper" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="28" result="noise"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply"/>
+    </filter>
+    <filter id="wobble" x="-5%" y="-8%" width="110%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="1" seed="17" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.8"/>
+    </filter>
+    <style>
+      .ink{stroke:#242424;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#242424;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+      .text{font-family:"Avenir Next","Trebuchet MS","Helvetica Neue",Arial,sans-serif;fill:#171717}
+      .headline{font-size:42px;font-weight:800;letter-spacing:.4px}
+      .eyebrow{font-size:16px;font-weight:750;letter-spacing:2.5px;fill:#555}
+      .category{font-size:19px;font-weight:700;fill:#3b3b3b}
+      .winner{font-size:30px;font-weight:800}
+      .plus{font-size:24px;font-weight:800;fill:#555}
+      .foot{font-size:17px;font-weight:650;fill:#444}
+    </style>
+  </defs>
+
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <rect width="1200" height="675" fill="#fffaf0" opacity=".2" filter="url(#paper)"/>
+
+  <g class="text">
+    <text x="600" y="58" text-anchor="middle" class="eyebrow">BLOCKCHAIN LANGUAGE CHEAT SHEET</text>
+    <text x="600" y="106" text-anchor="middle" class="headline">Summary of the article’s winners</text>
+    <path d="M363 122 C501 128 711 118 837 124" fill="none" class="thin"/>
+  </g>
+
+  <g filter="url(#wobble)">
+    <g transform="translate(62 162)">
+      <path d="M0 10 Q5 0 16 2 L498 0 Q510 3 510 16 L508 166 Q505 177 493 176 L13 178 Q2 174 3 162Z" fill="#9dcfe0" class="ink"/>
+      <g transform="translate(24 44)">
+        <path d="M0 55 H35 V94 H0Z M48 32 H83 V94 H48Z M96 3 H131 V94 H96Z" fill="#fffdf7" class="thin"/>
+        <path d="M7 15 C35 -3 75 -6 122 -27" fill="none" class="ink"/>
+        <path d="M107 -30 L124 -28 L117 -12" fill="none" class="ink"/>
+      </g>
+      <g class="text">
+        <text x="195" y="56" class="category">MOST JOB OFFERS</text>
+        <text x="195" y="112" class="winner">JavaScript</text>
+        <path d="M194 129 C268 136 349 124 431 131" fill="none" class="thin"/>
+      </g>
+    </g>
+
+    <g transform="translate(628 162)">
+      <path d="M0 12 Q3 1 16 3 L493 0 Q507 3 508 17 L510 163 Q507 176 494 176 L15 178 Q2 175 3 161Z" fill="#f4b66e" class="ink"/>
+      <g transform="translate(27 41)">
+        <path d="M7 24 C42 0 94 0 129 24 L116 87 H20Z" fill="#fffdf7" class="ink"/>
+        <path d="M7 24 L38 52 L68 9 L98 52 L129 24" fill="none" class="ink"/>
+        <circle cx="7" cy="24" r="6" fill="#ffd36a" class="thin"/>
+        <circle cx="68" cy="9" r="6" fill="#ffd36a" class="thin"/>
+        <circle cx="129" cy="24" r="6" fill="#ffd36a" class="thin"/>
+        <path d="M22 87 C47 93 91 82 116 88" fill="none" class="thin"/>
+      </g>
+      <g class="text">
+        <text x="195" y="56" class="category">MOST HIGH-PAID OFFERS</text>
+        <text x="195" y="112" class="winner">JavaScript</text>
+        <path d="M194 129 C276 136 354 124 431 131" fill="none" class="thin"/>
+      </g>
+    </g>
+
+    <g transform="translate(62 374)">
+      <path d="M0 12 Q4 1 16 3 L493 0 Q507 3 508 17 L510 163 Q507 176 494 176 L15 178 Q2 175 3 161Z" fill="#ffd66f" class="ink"/>
+      <g transform="translate(28 35)">
+        <path d="M66 2 C27 2 8 30 16 62 C21 82 36 89 42 105 H91 C97 89 112 82 117 62 C125 30 105 2 66 2Z" fill="#fffdf7" class="ink"/>
+        <path d="M47 106 H87 M50 121 H84 M56 134 H78" fill="none" class="ink"/>
+        <path d="M39 47 C51 30 76 25 92 40" fill="none" class="thin"/>
+        <path d="M66 -12 V-26 M19 6 L7 -5 M113 6 L125 -5" fill="none" class="thin"/>
+      </g>
+      <g class="text">
+        <text x="195" y="56" class="category">EASIEST TO LEARN</text>
+        <text x="195" y="112" class="winner">Solidity</text>
+        <path d="M194 129 C265 136 344 124 412 131" fill="none" class="thin"/>
+      </g>
+    </g>
+
+    <g transform="translate(628 374)">
+      <path d="M0 12 Q4 1 16 3 L493 0 Q507 3 508 17 L510 163 Q507 176 494 176 L15 178 Q2 175 3 161Z" fill="#cce5b2" class="ink"/>
+      <g transform="translate(27 32)">
+        <path d="M12 13 H70 Q79 13 79 22 V92 Q79 101 70 101 H12 Q3 101 3 92 V22 Q3 13 12 13Z" fill="#fffdf7" class="ink"/>
+        <text x="41" y="72" text-anchor="middle" class="text winner" font-size="34">JS</text>
+        <path d="M89 56 H116 M102 43 V69" fill="none" class="ink"/>
+        <path d="M136 13 H194 Q203 13 203 22 V92 Q203 101 194 101 H136 Q127 101 127 92 V22 Q127 13 136 13Z" fill="#fffdf7" class="ink"/>
+        <path d="M165 29 L183 58 L165 88 L147 58Z" fill="none" class="ink"/>
+        <path d="M147 58 L165 68 L183 58" fill="none" class="thin"/>
+      </g>
+      <g class="text">
+        <text x="258" y="52" class="category">GENERAL WINNER</text>
+        <text x="258" y="101" class="winner" font-size="27">JavaScript</text>
+        <text x="258" y="135" class="plus">+ Solidity</text>
+      </g>
+    </g>
+  </g>
+
+</svg>

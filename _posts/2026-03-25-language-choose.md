@@ -401,6 +401,8 @@ The last one is written in Rust Exonum, Exonum is blockchain security-oriented f
 
 ## Summary (Winners)
 
+![Blockchain programming language winners](/assets/img/language-choose/blockchain-language-winners.webp)
+
 **The biggest amount of job offers in blockchain industry**
 
 1. Blockchain Javascript — 565 job offers
