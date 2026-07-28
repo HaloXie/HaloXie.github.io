@@ -4,12 +4,16 @@ description: "2026 年 7 月模型发布潮后，哪些 harness prompt 从有用
 date: 2026-07-25 00:00:00 +0800
 categories: [AI]
 tags: [harness-engineering, prompt-engineering, thinking, reasoning, ai-agent]
+image:
+  path: /assets/img/thinking-on-by-default/cover.webp
 toc: true
 ---
 
 > 本文写于 2026 年 7 月下旬。文中引用的模型状态、定价和 API 参数在这个领域大约以周为单位变化，读到时请以厂商文档为准。
 >
 > 这篇文章不讨论"哪个模型更强"。它想回答一个更具体的问题：**如果你在维护一个 agent harness，这一批新模型让你 prompt 里的哪些句子从"有用"变成了"有害"。**
+
+![模型内建 thinking 后，旧 Prompt 退场，而 Harness 护栏需要加硬](/assets/img/thinking-on-by-default/cover.webp)
 
 2026 年 7 月的发布密度大概是这样的：Grok 4.5（7 月 8 日）、Kimi K3（7 月 16 日）、GPT-5.6 三件套、Claude Opus 5（7 月 24 日），加上 Qwen 3.6 和 GLM-5.2 在开源侧的更新。
 
@@ -70,6 +74,8 @@ subagent 一等公民 →  派发不再需要你手写编排
 ## 二、被低估的第四个收敛：preserved thinking
 
 这条最容易被漏掉，因为它不是能力描述，而是**harness 层的硬约束**。
+
+![同一模型会话回传完整 thinking history，切换模型时建立新会话](/assets/img/thinking-on-by-default/preserved-thinking.webp)
 
 - GLM-5 的论文把它单列为 **Preserved Thinking**：coding agent 场景下自动保留跨多轮的全部 thinking block，复用已有推理而不是从头重推。
 - Qwen 3.6 把 **Thinking Preservation** 列为新特性，跨对话历史保留思考上下文。
