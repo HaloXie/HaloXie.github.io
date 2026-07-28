@@ -31,6 +31,8 @@ Ability 解决的是：面对一类问题，AI 应该怎么判断。
 Tool → Skill → Ability → Cognitive Architecture
 ```
 
+![从 Tool、Skill、Ability 到 Cognitive Architecture 的能力演进阶梯](/assets/img/from-skills-to-abilities/evolution.webp)
+
 | 层级 | 解决的问题 | 典型失效 | 落地形态 |
 |---|---|---|---|
 | Tool | 让 AI 能调用外部能力 | 会调用，但不知道何时该调用 | 函数 / MCP |
@@ -134,6 +136,8 @@ Ability 回答：我会什么？
 ```text
 Ability = 认知入口 + 判断框架 + source routing + 上下文化 + 验收契约
 ```
+
+![Ability 把认知入口、判断框架、来源路由、上下文化和验收契约组成一个认知闭包](/assets/img/from-skills-to-abilities/cognitive-closure.webp)
 
 这句话有点抽象，拆开就是：
 
@@ -394,6 +398,8 @@ MCP 解决的是工具互操作：
 ```text
 任何 Harness 能加载任何认知能力包。
 ```
+
+![ACP Ability Package 通过 runtime contract 被不同 Harness 加载、验证和降级](/assets/img/from-skills-to-abilities/acp-contract.webp)
 
 这里的 ACP，我暂时叫 Agentic Cognitive Protocol。
 
