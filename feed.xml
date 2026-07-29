@@ -1,0 +1,56 @@
+---
+layout: compress
+permalink: /feed.xml
+---
+
+{% assign active_language = site.active_lang | default: site.lang %}
+{% assign locale = site.data.site-locales[active_language] %}
+{% capture language_prefix %}{% if active_language != site.default_lang %}/{{ active_language }}{% endif %}{% endcapture %}
+{% capture home_absolute_url %}{{ site.url }}{{ site.baseurl }}{{ language_prefix }}/{% endcapture %}
+{% capture feed_absolute_url %}{{ site.url }}{{ site.baseurl }}{{ language_prefix }}/feed.xml{% endcapture %}
+{% capture source %}
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>{{ home_absolute_url }}</id>
+  <title>{{ site.title }}</title>
+  <subtitle>{{ locale.description }}</subtitle>
+  <updated>{{ site.time | date_to_xmlschema }}</updated>
+  <author>
+    <name>{{ site.social.name }}</name>
+    <uri>{{ home_absolute_url }}</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" {% static_href %}href="{{ feed_absolute_url }}"{% endstatic_href %}/>
+  <link rel="alternate" type="text/html" hreflang="{{ active_language }}" {% static_href %}href="{{ home_absolute_url }}"{% endstatic_href %}/>
+  <generator uri="https://jekyllrb.com/" version="{{ jekyll.version }}">Jekyll</generator>
+  <rights> © {{ 'now' | date: '%Y' }} {{ site.social.name }} </rights>
+  <icon>{{ site.baseurl }}/assets/img/favicons/favicon.ico</icon>
+  <logo>{{ site.baseurl }}/assets/img/favicons/favicon-96x96.png</logo>
+
+{% for post in site.posts limit: 5 %}
+  {% capture post_absolute_url %}{{ site.url }}{{ site.baseurl }}{{ language_prefix }}{{ post.url }}{% endcapture %}
+  <entry>
+    <title>{{ post.title }}</title>
+    <link {% static_href %}href="{{ post_absolute_url }}"{% endstatic_href %} rel="alternate" type="text/html" title="{{ post.title | xml_escape }}" />
+    <published>{{ post.date | date_to_xmlschema }}</published>
+  {% if post.last_modified_at %}
+    <updated>{{ post.last_modified_at | date_to_xmlschema }}</updated>
+  {% else %}
+    <updated>{{ post.date | date_to_xmlschema }}</updated>
+  {% endif %}
+    <id>{{ post_absolute_url }}</id>
+    <content type="text/html" src="{{ post_absolute_url }}" />
+    <author>
+      <name>{{ post.author | default: site.social.name }}</name>
+    </author>
+
+  {% if post.categories %}
+    {% for category in post.categories %}
+    <category term="{{ category }}" />
+    {% endfor %}
+  {% endif %}
+
+  <summary>{% include post-summary.html max_length=400 %}</summary>
+  </entry>
+{% endfor %}
+</feed>
+{% endcapture %}
+{{ source | replace: '&', '&amp;' }}

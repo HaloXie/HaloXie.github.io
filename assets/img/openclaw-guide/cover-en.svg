@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">The Complete OpenClaw Beginner Guide</title>
+  <desc id="desc">A hand-drawn infographic connecting chat, the AI brain, and local tools through OpenClaw.</desc>
+  <defs>
+    <filter id="paper" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="18" result="n"/><feBlend in="SourceGraphic" in2="n" mode="multiply"/></filter>
+    <filter id="wobble" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".012" numOctaves="1" seed="6" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2"/></filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10z" fill="#252525"/></marker>
+    <style>
+      .ink{stroke:#252525;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.thin{stroke:#252525;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.sans{font-family:"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#171717}.title{font-size:43px;font-weight:750}.sub{font-size:21px;font-weight:550;fill:#444}.label{font-size:23px;font-weight:700}.small{font-size:17px;font-weight:550}.tiny{font-size:15px;font-weight:500}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/><rect width="1200" height="675" fill="#fffaf0" opacity=".2" filter="url(#paper)"/>
+  <g class="sans"><text x="600" y="61" text-anchor="middle" class="title">The Complete OpenClaw Beginner Guide</text><text x="600" y="96" text-anchor="middle" class="sub">Meet the “lobster” that gets work done for you</text></g>
+  <g filter="url(#wobble)">
+    <rect x="65" y="131" width="1070" height="411" rx="18" fill="#fffdf7" class="ink"/>
+    <g transform="translate(421 145)">
+      <path d="M96 72 C79 29 106 0 143 30 C172 4 204 29 191 72 C233 87 238 131 208 151 C217 206 183 254 143 273 C102 254 70 206 79 151 C48 131 54 87 96 72Z" fill="#ef765f" class="ink"/>
+      <path d="M81 112 C43 85 15 105 19 137 C-5 134 -15 161 5 176 C25 191 56 176 63 151" fill="#ef765f" class="ink"/>
+      <path d="M205 112 C243 85 271 105 267 137 C291 134 301 161 281 176 C261 191 230 176 223 151" fill="#ef765f" class="ink"/>
+      <circle cx="117" cy="78" r="11" fill="#fffdf7" class="ink"/><circle cx="169" cy="78" r="11" fill="#fffdf7" class="ink"/><circle cx="119" cy="80" r="4" fill="#252525"/><circle cx="167" cy="80" r="4" fill="#252525"/>
+      <path d="M122 113 C135 124 151 124 164 113 M103 155 H183 M96 184 H190 M106 216 H180" fill="none" class="thin"/>
+      <path d="M82 243 C50 254 37 276 30 302 M204 243 C236 254 249 276 256 302" fill="none" class="ink"/>
+      <rect x="76" y="277" width="134" height="43" rx="10" fill="#ffd36a" class="ink"/>
+      <text x="143" y="305" text-anchor="middle" class="sans label">OpenClaw</text>
+    </g>
+    <g transform="translate(105 216)"><rect width="236" height="119" rx="18" fill="#90c7dc" class="ink"/><path d="M33 25 h170 v50 H74 l-27 22 7-22 H33z" fill="#fffdf7" class="thin"/><path d="M63 43 h107 M63 58 h76" class="thin"/><text x="118" y="107" text-anchor="middle" class="sans label">Chat</text></g>
+    <path d="M347 276 H413" fill="none" class="ink" marker-end="url(#arrow)"/>
+    <g transform="translate(858 183)"><rect width="224" height="96" rx="17" fill="#cfb7df" class="ink"/><path d="M47 55 C39 21 91 11 104 40 C130 24 156 42 151 68 H47Z" fill="#fffdf7" class="thin"/><text x="189" y="58" text-anchor="middle" class="sans label" style="font-size:16px">AI Brain</text></g>
+    <g transform="translate(858 337)"><rect width="224" height="96" rx="17" fill="#dcebc1" class="ink"/><path d="M28 27 h54 v42 H28z M39 18 h32 v10 M47 40 l13 8-13 8z" fill="#fffdf7" class="thin"/><text x="161" y="59" text-anchor="middle" class="sans label">Local Tools</text></g>
+    <path d="M717 259 C776 237 803 231 850 231" fill="none" class="ink" marker-end="url(#arrow)"/><path d="M717 343 C780 379 806 385 850 385" fill="none" class="ink" marker-end="url(#arrow)"/>
+  </g>
+  <g class="sans"><rect x="190" y="568" width="820" height="67" rx="14" fill="#fff2aa" class="ink" filter="url(#wobble)"/><text x="600" y="595" text-anchor="middle" class="small">Send one message from your phone</text><text x="600" y="620" text-anchor="middle" class="label">It plans, uses tools, and reports back from your computer</text></g>
+</svg>

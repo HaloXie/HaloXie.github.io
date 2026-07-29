@@ -1,0 +1,54 @@
+version: 1
+
+# Exact line-level exceptions only. Keep empty unless an English article must
+# quote CJK text verbatim; each entry requires path, line, and the exact text.
+english_cjk_allowlist: []
+
+# Frozen historical set. Entries may be removed after an image is replaced,
+# but the gate rejects paths outside the original 15-image inventory.
+legacy_image_dimensions:
+  - path: /assets/img/chezmoi-secure-dotfiles/cover.webp
+    width: 1600
+    height: 900
+  - path: /assets/img/harness-engineering/chart_codex.webp
+    width: 1200
+    height: 750
+  - path: /assets/img/harness-engineering/chart_harness.webp
+    width: 1200
+    height: 750
+  - path: /assets/img/harness-engineering/cover.webp
+    width: 1200
+    height: 640
+  - path: /assets/img/harness-engineering/six-components-v2.webp
+    width: 1200
+    height: 671
+  - path: /assets/img/harness-engineering/strategy.webp
+    width: 1200
+    height: 671
+  - path: /assets/img/language-choose/1_K5zaMYb0AdjThQxhjmOMqQ.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_QtV2WfXGaxAWv_Vy-GMxiA.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_Zmsk5VDsQV5KfZ4wK8T_bw.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_dAheT-s0FRXM4CcVEF2_nA.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_iull2CFhbPktG_aFiya9lA.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_lC2fbQkrpijlyta1KnH7nw.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_tWq2MX20eWInNDu61WAUdw.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/1_vOZL0UKIE3TZxyrPaVX9IA.webp
+    width: 1200
+    height: 2538
+  - path: /assets/img/language-choose/Programming-languages-in-blockchain-industry.webp
+    width: 881
+    height: 881

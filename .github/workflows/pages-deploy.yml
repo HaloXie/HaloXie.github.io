@@ -45,10 +45,19 @@ jobs:
           ruby-version: 3.4
           bundler-cache: true
 
+      - name: Verify translation pairs
+        run: ruby scripts/check-translations.rb
+
+      - name: Verify source content and images
+        run: ruby scripts/check-content-images.rb
+
       - name: Build site
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: "production"
+
+      - name: Verify rendered localization
+        run: ruby scripts/check-rendered-site.rb
 
       - name: Test site
         run: |

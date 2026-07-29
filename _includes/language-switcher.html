@@ -1,0 +1,45 @@
+{% assign active_language = site.active_lang | default: site.lang %}
+{% assign available_languages = page.available_languages | default: empty %}
+{% assign taxonomy_paths = nil %}
+
+{% if page.layout == 'category' %}
+  {% for taxonomy in site.data.taxonomies.categories %}
+    {% assign active_taxonomy_path = taxonomy[1][active_language] %}
+    {% if active_taxonomy_path == page.url %}
+      {% assign taxonomy_paths = taxonomy[1] %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths or page.layout == 'tag' %}
+  <nav class="language-switcher" aria-label="Language">
+    {% for language in site.languages %}
+      {% if page.layout == 'home' %}
+        {% assign translation_path = '/' %}
+      {% elsif page.layout == 'category' %}
+        {% assign translation_path = taxonomy_paths[language] %}
+      {% elsif page.layout == 'tag' %}
+        {% assign translation_path = page.url %}
+      {% else %}
+        {% assign translation_path = page.permalink_lang[language] %}
+      {% endif %}
+      {% if translation_path %}
+        {%- capture language_href -%}
+          {{- site.baseurl -}}/
+          {%- if language != site.default_lang -%}{{- language -}}/{%- endif -%}
+          {%- unless translation_path == '/' -%}{{- translation_path | remove_first: '/' -}}{%- endunless -%}
+        {%- endcapture -%}
+        <a
+          class="language-link{% if language == active_language %} active{% endif %}"
+          {% static_href %}href="{{ language_href }}"{% endstatic_href %}
+          hreflang="{{ language }}"
+          lang="{{ language }}"
+          {% if language == active_language %}aria-current="page"{% endif %}
+        >
+          {%- if language == 'zh-CN' -%}中文{%- else -%}English{%- endif -%}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+{% endif %}

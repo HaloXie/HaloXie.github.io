@@ -1,0 +1,16 @@
+# Stable cross-language paths for taxonomies whose reader-facing names differ.
+# Taxonomies with identical names, such as tags, use the same path in each
+# language and do not need an entry here.
+categories:
+  ai:
+    zh-CN: /categories/ai/
+    en: /categories/ai/
+  blockchain:
+    zh-CN: /categories/%E5%8C%BA%E5%9D%97%E9%93%BE/
+    en: /categories/blockchain/
+  openclaw:
+    zh-CN: /categories/openclaw/
+    en: /categories/openclaw/
+  tools:
+    zh-CN: /categories/tools/
+    en: /categories/tools/

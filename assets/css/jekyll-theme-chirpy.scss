@@ -1,4 +1,5 @@
 ---
+lang-exclusive: [zh-CN]
 ---
 
 @use 'abstracts/variables' with (
@@ -31,6 +32,29 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   --post-copy-width: 55rem;
   --post-panel-width: 15rem;
   --post-layout-gap: 2.5rem;
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-right: 0.5rem;
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--sidebar-border-color);
+}
+
+.language-switcher .language-link {
+  padding: 0.2rem 0.35rem;
+  border-radius: 0.25rem;
+  color: var(--sidebar-muted-color);
+  font-size: 0.75rem;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.language-switcher .language-link:is(:hover, :focus-visible, .active) {
+  color: var(--sidebar-active-color);
+  background-color: var(--sidebar-hover-bg);
 }
 
 article[data-toc] > .content {

@@ -1,0 +1,194 @@
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e">
+  <meta
+    name="viewport"
+    content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover"
+  >
+
+  {%- capture seo_tags -%}
+    {% seo title=false canonical=false %}
+  {%- endcapture -%}
+
+  {% if site.active_lang != site.default_lang %}
+    {%- capture localized_prefix -%}{{ site.url }}{{ site.baseurl }}/{{ site.active_lang }}{%- endcapture -%}
+    {% if page.url == '/' %}
+      {%- capture old_og_url -%}<meta property="og:url" content="{{ site.url }}{{ site.baseurl }}/" />{%- endcapture -%}
+      {%- capture new_og_url -%}<meta property="og:url" content="{{ localized_prefix }}/" />{%- endcapture -%}
+      {% assign seo_tags = seo_tags | replace: old_og_url, new_og_url %}
+      {%- capture old_json_url -%}"url":"{{ site.url }}{{ site.baseurl }}/"{%- endcapture -%}
+      {%- capture new_json_url -%}"url":"{{ localized_prefix }}/"{%- endcapture -%}
+      {% assign seo_tags = seo_tags | replace: old_json_url, new_json_url %}
+    {% else %}
+      {%- capture unlocalized_page_url -%}{{ page.url | absolute_url }}{%- endcapture -%}
+      {%- capture localized_page_url -%}{{ localized_prefix }}{{ page.url }}{%- endcapture -%}
+      {% assign seo_tags = seo_tags | replace: unlocalized_page_url, localized_page_url %}
+    {% endif %}
+  {% endif %}
+
+  <!-- Setup Open Graph image -->
+
+  {% if page.image %}
+    {% assign src = page.image.path | default: page.image %}
+
+    {% unless src contains '://' %}
+      {%- capture img_url -%}
+        {% include media-url.html src=src subpath=page.media_subpath absolute=true %}
+      {%- endcapture -%}
+
+      {%- capture old_url -%}{{ src | absolute_url }}{%- endcapture -%}
+      {%- capture new_url -%}{{ img_url }}{%- endcapture -%}
+
+      {% assign seo_tags = seo_tags | replace: old_url, new_url %}
+    {% endunless %}
+
+  {% elsif site.social_preview_image %}
+    {%- capture img_url -%}
+      {% include media-url.html src=site.social_preview_image absolute=true %}
+    {%- endcapture -%}
+
+    {%- capture og_image -%}
+      <meta property="og:image" content="{{ img_url }}" />
+    {%- endcapture -%}
+
+    {%- capture twitter_image -%}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta property="twitter:image" content="{{ img_url }}" />
+    {%- endcapture -%}
+
+    {% assign old_meta_clip = '<meta name="twitter:card" content="summary" />' %}
+    {% assign new_meta_clip = og_image | append: twitter_image %}
+    {% assign seo_tags = seo_tags | replace: old_meta_clip, new_meta_clip %}
+  {% endif %}
+
+  {{ seo_tags }}
+  {% assign taxonomy_paths = nil %}
+  {% assign is_taxonomy_page = false %}
+  {% if page.layout == 'category' %}
+    {% for taxonomy in site.data.taxonomies.categories %}
+      {% assign active_taxonomy_path = taxonomy[1][site.active_lang] %}
+      {% if active_taxonomy_path == page.url %}
+        {% assign taxonomy_paths = taxonomy[1] %}
+        {% assign is_taxonomy_page = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% elsif page.layout == 'tag' %}
+    {% assign is_taxonomy_page = true %}
+  {% endif %}
+
+  {% if is_taxonomy_page %}
+    {%- capture taxonomy_canonical -%}{{ site.url }}{{ site.baseurl }}{% if site.active_lang != site.default_lang %}/{{ site.active_lang }}{% endif %}{{ page.url }}{%- endcapture -%}
+    <link rel="canonical" {% static_href %}href="{{ taxonomy_canonical }}"{% endstatic_href %}>
+    {% for language in site.languages %}
+      {% if page.layout == 'category' %}
+        {% assign alternate_taxonomy_path = taxonomy_paths[language] %}
+      {% else %}
+        {% assign alternate_taxonomy_path = page.url %}
+      {% endif %}
+      {% if alternate_taxonomy_path %}
+        {%- capture alternate_taxonomy_url -%}{{ site.url }}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}{{ alternate_taxonomy_path }}{%- endcapture -%}
+        <link rel="alternate" hreflang="{{ language }}" {% static_href %}href="{{ alternate_taxonomy_url }}"{% endstatic_href %}>
+        {% if language == site.default_lang %}<link rel="alternate" hreflang="x-default" {% static_href %}href="{{ alternate_taxonomy_url }}"{% endstatic_href %}>{% endif %}
+      {% endif %}
+    {% endfor %}
+  {% elsif page.layout == 'home' %}
+    {%- capture home_url -%}{{ site.url }}{{ site.baseurl }}{% if site.active_lang != site.default_lang %}/{{ site.active_lang }}{% endif %}/{%- endcapture -%}
+    <link rel="canonical" href="{{ home_url }}">
+    {% for language in site.languages %}
+      {%- capture alternate_home_url -%}{{ site.url }}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}/{%- endcapture -%}
+      <link rel="alternate" hreflang="{{ language }}" href="{{ alternate_home_url }}">
+      {% if language == site.default_lang %}<link rel="alternate" hreflang="x-default" href="{{ alternate_home_url }}">{% endif %}
+    {% endfor %}
+  {% else %}
+    {% I18n_Headers %}
+  {% endif %}
+
+  {%- if site.social.fediverse_handle %}
+    <!-- Fediverse handle/creator -->
+    <meta name="fediverse:creator" content="{{ site.social.fediverse_handle }}">
+  {% endif %}
+
+  <title>
+    {%- unless page.layout == 'home' -%}
+      {%- capture title -%}
+        {%- if page.collection == 'tabs' -%}
+          {%- assign tab_key = page.title | downcase -%}
+          {{- site.data.locales[include.lang].tabs[tab_key] | default: page.title -}}
+        {%- else -%}
+          {{- page.title -}}
+        {%- endif -%}
+      {%- endcapture -%}
+      {{- title | append: ' | ' -}}
+    {%- endunless -%}
+    {{- site.title -}}
+  </title>
+
+  {% include_cached favicons.html %}
+
+  <!-- Resource Hints -->
+  {% unless site.assets.self_host.enabled %}
+    {% for hint in site.data.origin.cors.resource_hints %}
+      {% for link in hint.links %}
+        <link rel="{{ link.rel }}" href="{{ hint.url }}" {{ link.opts | join: ' ' }}>
+      {% endfor %}
+    {% endfor %}
+  {% endunless %}
+
+  <!-- Bootstrap -->
+  {% unless jekyll.environment == 'production' %}
+    <link rel="stylesheet" href="{{ site.data.origin.cors.bootstrap.css }}">
+  {% endunless %}
+
+  <!-- Theme style -->
+  <link rel="stylesheet" {% static_href %}href="{{ '/assets/css/:THEME.css' | replace: ':THEME', site.theme | relative_url }}"{% endstatic_href %}>
+
+  <!-- Web Font -->
+  <link rel="stylesheet" href="{{ site.data.origin[type].webfonts | relative_url }}">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="{{ site.data.origin[type].fontawesome.css | relative_url }}">
+
+  <!-- 3rd-party Dependencies -->
+
+  {% if site.toc and page.toc %}
+    <link rel="stylesheet" href="{{ site.data.origin[type].toc.css | relative_url }}">
+  {% endif %}
+
+  {% if page.layout == 'post' or page.layout == 'page' or page.layout == 'home' %}
+    <link rel="stylesheet" href="{{ site.data.origin[type]['lazy-polyfill'].css | relative_url }}">
+  {% endif %}
+
+  {% if page.layout == 'page' or page.layout == 'post' %}
+    <!-- Image Popup -->
+    <link rel="stylesheet" href="{{ site.data.origin[type].glightbox.css | relative_url }}">
+  {% endif %}
+
+  <!-- Scripts -->
+
+  <script src="{{ '/assets/js/dist/theme.min.js' | relative_url }}"></script>
+
+  {% include js-selector.html lang=lang %}
+
+  {% if jekyll.environment == 'production' %}
+    <!-- PWA -->
+    {% if site.pwa.enabled %}
+      <script
+        defer
+        src="{{ '/app.min.js' | relative_url }}?baseurl={{ site.baseurl | default: '' }}&register={{ site.pwa.cache.enabled }}"
+      ></script>
+    {% endif %}
+
+    <!-- Web Analytics -->
+    {% for analytics in site.analytics %}
+      {% capture str %}{{ analytics }}{% endcapture %}
+      {% assign platform = str | split: '{' | first %}
+      {% if site.analytics[platform].id and site.analytics[platform].id != empty %}
+        {% include analytics/{{ platform }}.html %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  {% include metadata-hook.html %}
+</head>

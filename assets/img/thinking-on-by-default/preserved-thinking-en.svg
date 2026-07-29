@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Preserve Thinking; Switch Sessions with Models</title>
+  <desc id="desc">Replay the full thinking block within one model session; establish a new session when switching models.</desc>
+  <defs>
+    <filter id="paper" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="2" seed="12" result="noise"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply"/>
+    </filter>
+    <filter id="wobble" x="-5%" y="-8%" width="110%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="1" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#252525"/>
+    </marker>
+    <style>
+      .ink{stroke:#252525;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#252525;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .sans{font-family:"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#171717}
+      .title{font-size:39px;font-weight:700}
+      .sub{font-size:20px;font-weight:500;fill:#444}
+      .label{font-size:23px;font-weight:650}
+      .small{font-size:17px;font-weight:550}
+      .tiny{font-size:15px;font-weight:500}
+      .mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:16px;font-weight:600;fill:#333}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <rect width="1200" height="675" fill="#fffaf0" opacity=".2" filter="url(#paper)"/>
+  <g class="sans">
+    <text x="600" y="58" text-anchor="middle" class="title">Preserve Thinking; Switch Sessions with Models</text>
+    <text x="600" y="92" text-anchor="middle" class="sub">Preserved thinking is a multi-turn harness data contract, not an optional optimization</text>
+  </g>
+
+  <g filter="url(#wobble)">
+    <rect x="69" y="130" width="705" height="398" rx="18" fill="#fffdf7" class="ink"/>
+    <path d="M69 187 H774" class="thin"/>
+    <circle cx="101" cy="160" r="9" fill="#ef8f78" class="thin"/>
+    <circle cx="132" cy="160" r="9" fill="#f0c65f" class="thin"/>
+    <circle cx="163" cy="160" r="9" fill="#8fcf8c" class="thin"/>
+    <text x="420" y="168" text-anchor="middle" class="sans label">Session A · Model A</text>
+
+    <g transform="translate(105 225)">
+      <rect width="145" height="82" rx="14" fill="#90c7dc" class="ink"/>
+      <text x="72" y="37" text-anchor="middle" class="sans label">Input</text>
+      <text x="72" y="62" text-anchor="middle" class="sans tiny">user message</text>
+    </g>
+    <g transform="translate(313 225)">
+      <path d="M0 0 h180 v82 H0 z" fill="#ffd36a" class="ink"/>
+      <path d="M14 18 h102 M14 35 h143 M14 52 h125 M14 68 h80" class="thin" opacity=".65"/>
+      <text x="90" y="-13" text-anchor="middle" class="sans small">thinking block</text>
+    </g>
+    <g transform="translate(557 225)">
+      <rect width="165" height="82" rx="14" fill="#f4b66e" class="ink"/>
+      <path d="M24 28 h35 v28 H24 z M32 21 h19 v8" fill="#fff7df" class="thin"/>
+      <text x="112" y="48" text-anchor="middle" class="sans label">Tool Call</text>
+    </g>
+    <path d="M253 266 H307" fill="none" class="ink" marker-end="url(#arrow)"/>
+    <path d="M496 266 H550" fill="none" class="ink" marker-end="url(#arrow)"/>
+    <path d="M641 312 C646 356 607 376 531 376 H256 C194 376 166 354 169 314" fill="none" class="ink" marker-end="url(#arrow)"/>
+
+    <g transform="translate(121 405)">
+      <rect width="588" height="82" rx="14" fill="#dcebc1" class="ink"/>
+      <text x="294" y="33" text-anchor="middle" class="sans label">Next-turn history = replay the complete response</text>
+      <text x="294" y="60" text-anchor="middle" class="mono">thinking + tool use + result + final</text>
+    </g>
+
+    <path d="M814 128 V529" stroke="#c94f3d" stroke-width="4" stroke-dasharray="12 10"/>
+    <path d="M799 300 l30 30 M829 300 l-30 30" class="ink" stroke="#c94f3d"/>
+    <text x="814" y="558" text-anchor="middle" class="sans small" fill="#b84634">Session Boundary</text>
+
+    <g transform="translate(858 130)">
+      <rect width="275" height="398" rx="18" fill="#fffdf7" class="ink"/>
+      <path d="M0 57 H275" class="thin"/>
+      <text x="137" y="38" text-anchor="middle" class="sans label">Session B</text>
+      <circle cx="137" cy="142" r="68" fill="#cfb7df" class="ink"/>
+      <path d="M104 143 C109 97 164 92 171 138 C203 143 198 184 164 184 H111 C78 181 75 148 104 143 Z" fill="#fff7df" class="thin"/>
+      <text x="137" y="154" text-anchor="middle" class="sans label">Model B</text>
+      <path d="M137 222 V274" fill="none" class="ink" marker-end="url(#arrow)"/>
+      <rect x="48" y="282" width="179" height="74" rx="12" fill="#90c7dc" class="ink"/>
+      <text x="137" y="314" text-anchor="middle" class="sans label">New Context</text>
+      <text x="137" y="340" text-anchor="middle" class="sans tiny">Explicit handoff; do not fake continuity</text>
+    </g>
+  </g>
+
+  <g class="sans">
+    <rect x="163" y="572" width="874" height="65" rx="14" fill="#fff2aa" class="ink" filter="url(#wobble)"/>
+    <text x="600" y="599" text-anchor="middle" class="small">Same model: preserve the full thinking history</text>
+    <text x="600" y="624" text-anchor="middle" class="label">New model: end implicit state and hand off explicitly</text>
+  </g>
+</svg>

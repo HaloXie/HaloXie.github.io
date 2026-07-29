@@ -3,8 +3,35 @@
 # Import the theme
 theme: jekyll-theme-chirpy
 
+plugins:
+  - jekyll-polyglot
+
 # The language of the webpage
 lang: zh-CN
+
+# Polyglot publishes the existing Chinese routes at the root and English under
+# /en/. `lang_vars` keeps Chirpy's locale lookup aligned with each build.
+languages: [zh-CN, en]
+default_lang: zh-CN
+lang_vars: [lang]
+lang_from_path: true
+parallel_localization: false
+fallback_canonical_to_default_lang: true
+exclude_from_localization:
+  # Static assets are shared. Rendered asset pages are kept readable so their
+  # `lang-exclusive` front matter can prevent localized copies.
+  - assets/js/dist
+  - assets/img/avatar
+  - assets/img/chezmoi-secure-dotfiles
+  - assets/img/from-skills-to-abilities
+  - assets/img/harness-engineering
+  - assets/img/language-choose
+  - assets/img/openclaw-guide
+  - assets/img/thinking-on-by-default
+  - assets/img/favicons/apple-touch-icon
+  - assets/img/favicons/favicon
+  - assets/img/favicons/web-app-manifest
+  - CNAME
 
 # Change to your timezone
 timezone: Asia/Shanghai
@@ -97,6 +124,7 @@ defaults:
 
 sass:
   style: compressed
+  sourcemap: never
 
 compress_html:
   clippings: all
@@ -108,6 +136,7 @@ compress_html:
     envs: [development]
 
 exclude:
+  - AGENTS.md
   - "*.gem"
   - "*.gemspec"
   - docs
@@ -117,6 +146,7 @@ exclude:
   - purgecss.js
   - "*.config.js"
   - "package*.json"
+  - scripts
 
 jekyll-archives:
   enabled: [categories, tags]

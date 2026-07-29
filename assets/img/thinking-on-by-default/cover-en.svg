@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">When Models Think by Default, Old Prompts Retire</title>
+  <desc id="desc">Built-in thinking retires reminder prompts while clarification, pushback, and independent validation remain.</desc>
+  <defs>
+    <filter id="paper" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="2" seed="8" result="noise"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply"/>
+    </filter>
+    <filter id="wobble" x="-5%" y="-8%" width="110%" height="116%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="1" seed="4" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#252525"/>
+    </marker>
+    <style>
+      .ink{stroke:#252525;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#252525;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+      .sans{font-family:"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#171717}
+      .title{font-size:39px;font-weight:700;letter-spacing:1px}
+      .sub{font-size:20px;font-weight:500;fill:#444}
+      .label{font-size:23px;font-weight:650}
+      .small{font-size:17px;font-weight:550}
+      .mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:18px;font-weight:600;fill:#3f3f3f}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <rect width="1200" height="675" fill="#fffaf0" opacity=".2" filter="url(#paper)"/>
+
+  <g class="sans">
+    <text x="600" y="60" text-anchor="middle" class="title">When Models Think by Default</text>
+    <text x="600" y="94" text-anchor="middle" class="sub">Harnesses shift from reminding models to think toward constraining direction</text>
+  </g>
+
+  <g filter="url(#wobble)">
+    <path d="M85 132 H1115 V535 H85 Z" fill="#fffdf7" class="ink"/>
+    <path d="M90 444 C300 424 470 446 600 435 C758 421 934 446 1110 429 V535 H90 Z" fill="#dcebc1" opacity=".75"/>
+    <path d="M89 442 C290 426 465 449 600 437 C770 422 935 448 1111 430" fill="none" class="ink" stroke-dasharray="10 8"/>
+
+    <g transform="translate(452 147)">
+      <path d="M61 65 C52 10 151 -12 171 39 C227 18 272 60 252 108 C294 140 263 199 214 191 C188 231 111 229 92 190 C34 203 4 148 39 111 C4 91 17 48 61 65 Z" fill="#ffd36a" class="ink"/>
+      <path d="M91 53 C111 70 114 93 105 113 M152 35 C139 63 145 83 161 101 M211 61 C188 73 179 94 181 116 M72 146 C101 133 126 138 145 158 M220 145 C192 130 171 137 153 162" fill="none" class="thin"/>
+      <circle cx="143" cy="116" r="39" fill="#fff7df" class="ink"/>
+      <path d="M126 117 l12 12 24-29" fill="none" class="ink"/>
+      <rect x="73" y="196" width="145" height="42" rx="10" fill="#90c7dc" class="ink"/>
+      <text x="145" y="224" text-anchor="middle" class="sans label">THINKING ON</text>
+    </g>
+
+    <g transform="translate(115 166)">
+      <path d="M0 0 h270 v66 H0 z" fill="#ddd8cf" class="thin"/>
+      <text x="135" y="40" text-anchor="middle" class="mono">think step by step</text>
+      <path d="M18 13 L250 53" class="ink" stroke="#c94f3d"/>
+      <path d="M250 13 L18 53" class="ink" stroke="#c94f3d"/>
+    </g>
+    <g transform="translate(123 265) rotate(-2)">
+      <path d="M0 0 h262 v66 H0 z" fill="#ddd8cf" class="thin"/>
+      <text x="131" y="40" text-anchor="middle" class="sans small">remember to self-verify</text>
+      <path d="M18 13 L242 53" class="ink" stroke="#c94f3d"/>
+      <path d="M242 13 L18 53" class="ink" stroke="#c94f3d"/>
+    </g>
+    <g transform="translate(125 364) rotate(1)">
+      <path d="M0 0 h258 v66 H0 z" fill="#ddd8cf" class="thin"/>
+      <text x="129" y="40" text-anchor="middle" class="mono">temperature: 0.7</text>
+      <path d="M18 13 L238 53" class="ink" stroke="#c94f3d"/>
+      <path d="M238 13 L18 53" class="ink" stroke="#c94f3d"/>
+    </g>
+    <path d="M390 297 C423 294 431 293 453 292" fill="none" class="ink" marker-end="url(#arrow)"/>
+    <text x="249" y="473" text-anchor="middle" class="sans label" fill="#b84634">Old Prompts Retire</text>
+
+    <g transform="translate(810 165)">
+      <path d="M0 0 h254 v68 H0 z" fill="#f4b66e" class="thin"/>
+      <circle cx="30" cy="34" r="13" fill="#fffaf0" class="thin"/>
+      <path d="M24 34 l5 5 9-12" fill="none" class="thin"/>
+      <text x="145" y="42" text-anchor="middle" class="sans label">Clarification Gate</text>
+    </g>
+    <g transform="translate(810 267)">
+      <path d="M0 0 h254 v68 H0 z" fill="#f4b66e" class="thin"/>
+      <circle cx="30" cy="34" r="13" fill="#fffaf0" class="thin"/>
+      <path d="M24 34 l5 5 9-12" fill="none" class="thin"/>
+      <text x="145" y="42" text-anchor="middle" class="sans label">Allow Pushback</text>
+    </g>
+    <g transform="translate(810 369)">
+      <path d="M0 0 h254 v68 H0 z" fill="#f4b66e" class="thin"/>
+      <circle cx="30" cy="34" r="13" fill="#fffaf0" class="thin"/>
+      <path d="M24 34 l5 5 9-12" fill="none" class="thin"/>
+      <text x="155" y="41" text-anchor="middle" class="sans label" style="font-size:16px">Independent Validation</text>
+    </g>
+    <path d="M743 298 C770 298 782 299 806 299" fill="none" class="ink" marker-end="url(#arrow)"/>
+    <text x="938" y="473" text-anchor="middle" class="sans label" fill="#476b2b">Harness Guardrails Harden</text>
+  </g>
+
+  <g class="sans">
+    <rect x="215" y="562" width="770" height="66" rx="14" fill="#fff2aa" class="ink" filter="url(#wobble)"/>
+    <text x="600" y="589" text-anchor="middle" class="small">Remove reminders about what to do</text>
+    <text x="600" y="614" text-anchor="middle" class="label">Keep the contract for what counts as done</text>
+  </g>
+</svg>
