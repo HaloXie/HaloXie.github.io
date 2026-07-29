@@ -195,7 +195,7 @@ body:has(main article[data-toc])
 /* Keep the compact TOC until the canvas can accommodate the wider prose and
    full panel together; this avoids a width drop at an intermediate desktop
    breakpoint. */
-@media (min-width: 1200px) and (max-width: 1499.98px) {
+@media (min-width: 1200px) and (max-width: 1535.98px) {
   body:has(main article[data-toc]) {
     --post-panel-width: 12rem;
     --post-layout-gap: 1.5rem;
