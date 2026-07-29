@@ -21,15 +21,14 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 /*
  * Post reading mode
  *
- * Chirpy's wide-screen layout combines a 300px sidebar with a centered
- * three-column container. On large displays that pushes the article away
- * from the visual centre. Keep the original layout for index and archive
- * pages, but let a post behave more like an editorial reading surface.
+ * Use one desktop sidebar measure across index and post pages so navigation
+ * never shifts when a reader opens an article. The post itself keeps a
+ * slightly wider editorial measure without turning into a full-width canvas.
  */
 
 :root {
-  --post-sidebar-width: 14rem;
-  --post-copy-width: 47.5rem;
+  --desktop-sidebar-width: 16.25rem;
+  --post-copy-width: 50rem;
   --post-panel-width: 12rem;
   --post-layout-gap: 2.5rem;
 }
@@ -72,18 +71,56 @@ body:has(main article[data-toc]) article[data-toc] > .content .table-wrapper {
   overflow-x: auto;
 }
 
-@media (min-width: 850px) {
-  /* Keep desktop navigation visible, but narrower than Chirpy's 260/300px
-     default so the reading surface does not inherit the old left void. */
+/* Markdown tables should reveal their complete meaning without requiring a
+   horizontal swipe. Unbreakable identifiers still wrap as a last resort;
+   overflow remains on the wrapper for genuinely non-wrappable content. */
+body:has(main article[data-toc])
+  article[data-toc]
+  > .content
+  .table-wrapper
+  > table:not(.rouge-table) {
+  width: 100%;
+  table-layout: auto;
+}
+
+body:has(main article[data-toc])
+  article[data-toc]
+  > .content
+  .table-wrapper
+  > table:not(.rouge-table)
+  :is(th, td) {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+body:has(main article[data-toc])
+  article[data-toc]
+  > .content
+  .table-wrapper
+  > table:not(.rouge-table)
+  :is(th, td)
+  code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 992px) {
+  /* One navigation rail for every page prevents a visible horizontal jump
+     between the index and the reading view. */
+  #sidebar {
+    width: var(--desktop-sidebar-width);
+  }
+
+  #main-wrapper {
+    margin-left: var(--desktop-sidebar-width);
+  }
+
   body:has(main article[data-toc]) #sidebar {
-    width: var(--post-sidebar-width);
     transform: none;
     visibility: visible;
     transition: none;
-  }
-
-  body:has(main article[data-toc]) #main-wrapper {
-    margin-left: var(--post-sidebar-width);
   }
 
   body:has(main article[data-toc]) #sidebar-trigger {
@@ -92,37 +129,6 @@ body:has(main article[data-toc]) article[data-toc] > .content .table-wrapper {
 
   body:has(main article[data-toc]) #mask {
     display: none !important;
-  }
-
-  body:has(main article[data-toc]) #sidebar .profile-wrapper {
-    width: 100%;
-    margin-top: 2.5rem;
-    margin-bottom: 1.5rem;
-    padding-right: 1rem;
-    padding-left: 2rem;
-  }
-
-  body:has(main article[data-toc]) #sidebar #avatar {
-    width: 6rem;
-    height: 6rem;
-  }
-
-  body:has(main article[data-toc]) #sidebar .site-title {
-    font-size: 1.5rem;
-  }
-
-  body:has(main article[data-toc]) #sidebar ul li.nav-item {
-    padding-right: 1.25rem;
-    padding-left: 1.25rem;
-  }
-
-  body:has(main article[data-toc]) #sidebar ul li.nav-item a.nav-link i {
-    margin-right: 1.25rem;
-  }
-
-  body:has(main article[data-toc]) #sidebar .sidebar-bottom {
-    padding-right: 0.75rem;
-    padding-left: 1.5rem;
   }
 
   body:has(main article[data-toc]) #main-wrapper > .container {
@@ -210,9 +216,16 @@ body:has(main article[data-toc]) article[data-toc] > .content .table-wrapper {
     > .row:has(> main > article[data-toc]) {
     display: grid !important;
     grid-template-columns:
-      minmax(0, var(--post-copy-width))
+      minmax(0, 1fr)
       var(--post-layout-gap)
       var(--post-panel-width);
+    width: 100%;
+    max-width: calc(
+      var(--post-copy-width) + var(--post-layout-gap) +
+        var(--post-panel-width)
+    );
+    margin-right: auto !important;
+    margin-left: auto !important;
     justify-content: center;
     align-items: start;
   }
