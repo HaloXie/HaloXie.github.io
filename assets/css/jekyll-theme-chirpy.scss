@@ -27,8 +27,8 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
  */
 
 :root {
-  --desktop-sidebar-width: 16.25rem;
-  --post-copy-width: 50rem;
+  --desktop-sidebar-width: clamp(16.25rem, 15vw, 18.75rem);
+  --post-copy-width: 55rem;
   --post-panel-width: 15rem;
   --post-layout-gap: 2.5rem;
 }
@@ -192,10 +192,10 @@ body:has(main article[data-toc])
   }
 }
 
-/* The fixed sidebar leaves less room at Chirpy's 1200px panel breakpoint.
-   Use a compact TOC here so the prose does not become narrower as the
-   viewport grows from 1199px to 1200px. */
-@media (min-width: 1200px) and (max-width: 1319.98px) {
+/* Keep the compact TOC until the canvas can accommodate the wider prose and
+   full panel together; this avoids a width drop at an intermediate desktop
+   breakpoint. */
+@media (min-width: 1200px) and (max-width: 1499.98px) {
   body:has(main article[data-toc]) {
     --post-panel-width: 12rem;
     --post-layout-gap: 1.5rem;
