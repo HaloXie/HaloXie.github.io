@@ -41,7 +41,16 @@ avatar: /assets/img/avatar.png
 toc: true
 
 comments:
-  provider:
+  provider: giscus
+  giscus:
+    repo: HaloXie/HaloXie.github.io
+    repo_id: "MDEwOlJlcG9zaXRvcnkyNDM1NTExMjk="
+    category: Announcements
+    category_id: "DIC_kwDODoRLmc4DCPpz"
+    mapping: pathname
+    strict: 1
+    input_position: bottom
+    reactions_enabled: 1
 
 paginate: 10
 
