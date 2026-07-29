@@ -29,7 +29,7 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 :root {
   --desktop-sidebar-width: 16.25rem;
   --post-copy-width: 50rem;
-  --post-panel-width: 12rem;
+  --post-panel-width: 15rem;
   --post-layout-gap: 2.5rem;
 }
 
@@ -197,7 +197,7 @@ body:has(main article[data-toc])
    viewport grows from 1199px to 1200px. */
 @media (min-width: 1200px) and (max-width: 1319.98px) {
   body:has(main article[data-toc]) {
-    --post-panel-width: 10rem;
+    --post-panel-width: 12rem;
     --post-layout-gap: 1.5rem;
   }
 
