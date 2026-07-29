@@ -28,6 +28,7 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
  */
 
 :root {
+  --post-sidebar-width: 14rem;
   --post-copy-width: 47.5rem;
   --post-panel-width: 12rem;
   --post-layout-gap: 2.5rem;
@@ -42,32 +43,86 @@ article[data-toc] > .content :is(p, li) {
   text-wrap: pretty;
 }
 
-@media (min-width: 850px) {
-  /* The full navigation remains one click away, instead of occupying the
-     reading canvas permanently. Chirpy's own toggle controls the drawer. */
-  body:has(main article[data-toc]) #sidebar {
-    width: 17.5rem;
-    transform: translateX(-100%);
-    visibility: hidden;
-    transition:
-      transform 0.3s ease,
-      visibility 0s linear 0.3s;
-  }
+/* Prose media follows the same measure as the text. Wide tables and code
+   scroll inside their own wrapper instead of widening the page. */
+body:has(main article[data-toc]) article[data-toc] > .content > :is(
+    figure,
+    blockquote,
+    .table-wrapper,
+    .mermaid,
+    div[class^='language-']
+  ) {
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+}
 
-  body[sidebar-display]:has(main article[data-toc]) #sidebar {
-    transform: translateX(0);
+body:has(main article[data-toc])
+  article[data-toc]
+  > .content
+  > p
+  > a.img-link {
+  max-width: 100%;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+body:has(main article[data-toc]) article[data-toc] > .content .table-wrapper {
+  overflow-x: auto;
+}
+
+@media (min-width: 850px) {
+  /* Keep desktop navigation visible, but narrower than Chirpy's 260/300px
+     default so the reading surface does not inherit the old left void. */
+  body:has(main article[data-toc]) #sidebar {
+    width: var(--post-sidebar-width);
+    transform: none;
     visibility: visible;
-    transition-delay: 0s;
+    transition: none;
   }
 
   body:has(main article[data-toc]) #main-wrapper {
-    margin-left: 0;
+    margin-left: var(--post-sidebar-width);
   }
 
   body:has(main article[data-toc]) #sidebar-trigger {
-    display: block;
-    order: -1;
-    margin-right: 0.75rem;
+    display: none;
+  }
+
+  body:has(main article[data-toc]) #mask {
+    display: none !important;
+  }
+
+  body:has(main article[data-toc]) #sidebar .profile-wrapper {
+    width: 100%;
+    margin-top: 2.5rem;
+    margin-bottom: 1.5rem;
+    padding-right: 1rem;
+    padding-left: 2rem;
+  }
+
+  body:has(main article[data-toc]) #sidebar #avatar {
+    width: 6rem;
+    height: 6rem;
+  }
+
+  body:has(main article[data-toc]) #sidebar .site-title {
+    font-size: 1.5rem;
+  }
+
+  body:has(main article[data-toc]) #sidebar ul li.nav-item {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  body:has(main article[data-toc]) #sidebar ul li.nav-item a.nav-link i {
+    margin-right: 1.25rem;
+  }
+
+  body:has(main article[data-toc]) #sidebar .sidebar-bottom {
+    padding-right: 0.75rem;
+    padding-left: 1.5rem;
   }
 
   body:has(main article[data-toc]) #main-wrapper > .container {
@@ -121,95 +176,62 @@ article[data-toc] > .content :is(p, li) {
   }
 }
 
-/* Below 1320px the TOC uses Chirpy's compact popup, leaving the article
-   centred and comfortably wide on laptops and landscape tablets. */
-@media (min-width: 850px) and (max-width: 1319.98px) {
+/* Below Chirpy's panel breakpoint the article fills the remaining canvas. */
+@media (min-width: 850px) and (max-width: 1199.98px) {
   body:has(main article[data-toc])
     #main-wrapper
     > .container
     > .row:has(> main > article[data-toc]) {
     justify-content: center !important;
   }
+}
 
-  body:has(main article[data-toc]) #panel-wrapper {
-    display: none;
+/* The fixed sidebar leaves less room at Chirpy's 1200px panel breakpoint.
+   Use a compact TOC here so the prose does not become narrower as the
+   viewport grows from 1199px to 1200px. */
+@media (min-width: 1200px) and (max-width: 1319.98px) {
+  body:has(main article[data-toc]) {
+    --post-panel-width: 10rem;
+    --post-layout-gap: 1.5rem;
+  }
+
+  body:has(main article[data-toc]) #main-wrapper > .container {
+    padding-right: 1rem !important;
+    padding-left: 1rem !important;
   }
 }
 
-/* A balanced ghost column mirrors the TOC so the prose itself—not the
-   combined content-plus-panel group—stays on the viewport centre line. */
-@media (min-width: 1320px) {
+/* Centring the prose + TOC group inside the space beside the fixed sidebar
+   keeps the prose close to the physical viewport centre. */
+@media (min-width: 1200px) {
   body:has(main article[data-toc])
     #main-wrapper
     > .container
     > .row:has(> main > article[data-toc]) {
     display: grid !important;
     grid-template-columns:
-      minmax(0, 1fr)
-      var(--post-panel-width)
-      var(--post-layout-gap)
       minmax(0, var(--post-copy-width))
       var(--post-layout-gap)
-      var(--post-panel-width)
-      minmax(0, 1fr);
+      var(--post-panel-width);
+    justify-content: center;
     align-items: start;
   }
 
   body:has(main article[data-toc]) main:has(> article[data-toc]) {
-    grid-column: 4;
+    grid-column: 1;
   }
 
   body:has(main article[data-toc]) #panel-wrapper {
     display: block;
-    grid-column: 6;
+    grid-column: 3;
     width: 100%;
     max-width: var(--post-panel-width);
     padding-left: 0 !important;
   }
 }
 
-/* On very wide screens, diagrams, tables, and code gain a 960px editorial
-   breakout while the prose retains its readable 760px measure. */
-@media (min-width: 1920px) {
-  :root {
-    --post-panel-width: 13.75rem;
-    --post-layout-gap: 6.5rem;
-  }
-
-  body:has(main article[data-toc]) article[data-toc] > .content > :is(
-      figure,
-      .table-wrapper,
-      .mermaid,
-      div[class^='language-']
-    ) {
-    width: calc(100% + 12.5rem);
-    max-width: calc(100vw - 4rem);
-    margin-right: -6.25rem;
-    margin-left: -6.25rem;
-  }
-
-  /* Chirpy already centres image links with left: 50% + translateX(-50%).
-     Expanding the width is enough; negative margins would shift them twice. */
-  body:has(main article[data-toc])
-    article[data-toc]
-    > .content
-    > p
-    > a.img-link {
-    width: calc(100% + 12.5rem);
-    max-width: calc(100vw - 4rem);
-    margin-right: 0;
-    margin-left: 0;
-  }
-}
-
 @media (max-width: 575.98px) {
   article[data-toc] > .content {
     line-height: 1.68;
-  }
-}
-
-@media (min-width: 850px) and (prefers-reduced-motion: reduce) {
-  body:has(main article[data-toc]) #sidebar {
-    transition: none;
   }
 }
