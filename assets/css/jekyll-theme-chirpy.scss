@@ -1,7 +1,16 @@
 ---
 ---
 
-@import 'jekyll-theme-chirpy';
+@use 'abstracts/variables' with (
+  $theme: '{{ site.theme_mode }}'
+);
+
+/* prettier-ignore */
+@use 'main
+{%- if jekyll.environment == 'production' -%}
+  .bundle
+{%- endif -%}
+';
 
 /* Keep the existing wide-content treatment on non-post pages. */
 body:not(:has(main article[data-toc])) .col-xl-11 {
