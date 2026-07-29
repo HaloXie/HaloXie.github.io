@@ -13,8 +13,6 @@ toc: true
 >
 > 这篇文章不讨论"哪个模型更强"。它想回答一个更具体的问题：**如果你在维护一个 agent harness，这一批新模型让你 prompt 里的哪些句子从"有用"变成了"有害"。**
 
-![模型内建 thinking 后，旧 Prompt 退场，而 Harness 护栏需要加硬](/assets/img/thinking-on-by-default/cover.webp)
-
 2026 年 7 月的发布密度大概是这样的：Grok 4.5（7 月 8 日）、Kimi K3（7 月 16 日）、GPT-5.6 三件套、Claude Opus 5（7 月 24 日），加上 Qwen 3.6 和 GLM-5.2 在开源侧的更新。
 
 如果只看 benchmark，这些发布互相咬得很紧，看不出统一叙事。但如果你维护的是 harness——给模型套上工具、上下文、验证和恢复机制的那一层——你会发现这批模型在**同一个方向上做了同一件事**。而这件事意味着：一批曾经是最佳实践的 prompt 写法，现在开始产生负收益。

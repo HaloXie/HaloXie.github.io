@@ -170,7 +170,7 @@ article[data-toc] > .content :is(p, li) {
 
 /* On very wide screens, diagrams, tables, and code gain a 960px editorial
    breakout while the prose retains its readable 760px measure. */
-@media (min-width: 1650px) {
+@media (min-width: 1920px) {
   :root {
     --post-panel-width: 13.75rem;
     --post-layout-gap: 6.5rem;
