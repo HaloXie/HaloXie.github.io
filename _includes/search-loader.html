@@ -16,9 +16,11 @@
   const loadingText = {% if include.lang == 'en' %}'Loading search…'{% else %}'正在加载搜索…'{% endif %};
   const unavailableText = {% if include.lang == 'en' %}'Search is temporarily unavailable.'{% else %}'搜索暂时不可用。'{% endif %};
   const currentLanguage = document.documentElement.lang;
+  const SEARCH_DEBOUNCE_MS = 200;
   let pagefind;
   let activeElement;
   let requestId = 0;
+  let searchTimer;
 
   const setStatus = (message) => {
     status.textContent = message;
@@ -84,6 +86,22 @@
     }
   };
 
+  const scheduleSearch = () => {
+    window.clearTimeout(searchTimer);
+    requestId += 1;
+
+    if (!input.value.trim()) {
+      clearResults();
+      setStatus('');
+      return;
+    }
+
+    searchTimer = window.setTimeout(() => {
+      searchTimer = undefined;
+      search();
+    }, SEARCH_DEBOUNCE_MS);
+  };
+
   const openSearch = () => {
     if (dialog.open) return;
     activeElement = document.activeElement;
@@ -108,7 +126,7 @@
 
   input.addEventListener('input', (event) => {
     event.stopImmediatePropagation();
-    search();
+    scheduleSearch();
   }, { capture: true });
 
   input.addEventListener('keydown', (event) => {
@@ -152,6 +170,8 @@
   });
 
   dialog.addEventListener('close', () => {
+    window.clearTimeout(searchTimer);
+    searchTimer = undefined;
     input.value = '';
     requestId += 1;
     clearResults();
