@@ -34,6 +34,200 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   --post-layout-gap: 2.5rem;
 }
 
+/*
+ * Editorial archive
+ *
+ * The index borrows the quiet warmth of a paper archive: the canvas is
+ * slightly warmer than the cards, borders replace heavy shadows, and a
+ * restrained terracotta accent carries interaction. Article pages keep their
+ * open reading layout below; only the post index becomes a card grid.
+ */
+
+:root[data-bs-theme='light'] {
+  --main-bg: #f7f5f1;
+  --main-border-color: #e6e1da;
+  --text-color: #37332f;
+  --text-muted-color: #777069;
+  --heading-color: #27231f;
+  --label-color: #5f5851;
+  --link-color: #9f4e3c;
+  --link-underline-color: #d9b8ae;
+  --button-bg: #f1ede7;
+  --btn-border-color: #ded8d0;
+  --sidebar-bg: #efeae2;
+  --sidebar-border-color: #e2dcd3;
+  --sidebar-active-color: #8f4434;
+  --sidebar-hover-bg: rgb(159 78 60 / 9%);
+  --sidebar-btn-bg: #f8f5f0;
+  --topbar-bg: rgb(247 245 241 / 88%);
+  --topbar-text-color: #4b4540;
+  --search-border-color: #d9d2c9;
+  --card-bg: #fffdfa;
+  --card-hover-bg: transparent;
+  --card-shadow: none;
+  --toc-highlight: #9f4e3c;
+  --archive-card-border: #dfd9d1;
+  --archive-card-border-hover: #b86c58;
+  --archive-card-shadow-hover: 0 0.85rem 2.2rem rgb(67 48 39 / 9%);
+  --archive-category-bg: #f2e7e1;
+  --archive-category-text: #8f4434;
+}
+
+:root[data-bs-theme='dark'] {
+  --link-color: #d99a87;
+  --link-underline-color: #744b40;
+  --card-bg: #211f1d;
+  --card-hover-bg: transparent;
+  --card-shadow: none;
+  --toc-highlight: #d99a87;
+  --archive-card-border: #3d3935;
+  --archive-card-border-hover: #a96755;
+  --archive-card-shadow-hover: 0 0.85rem 2.2rem rgb(0 0 0 / 24%);
+  --archive-category-bg: #3a2b27;
+  --archive-category-text: #e0aa99;
+}
+
+#post-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+#post-list .card-wrapper,
+#post-list .card-wrapper:not(:last-child) {
+  min-width: 0;
+  height: 100%;
+  margin-bottom: 0;
+}
+
+#post-list .post-preview {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  flex-direction: column !important;
+  border: 1px solid var(--archive-card-border);
+  border-radius: 0.35rem;
+  background: var(--card-bg);
+  box-shadow: none;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+#post-list .post-preview::before {
+  display: none;
+}
+
+#post-list .post-preview > [class*='col-'] {
+  width: 100%;
+  max-width: none;
+  flex: 0 0 auto;
+}
+
+#post-list .post-preview > .col-md-7 {
+  flex: 1 1 auto;
+}
+
+#post-list .preview-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-bottom: 1px solid var(--archive-card-border);
+  border-radius: 0;
+}
+
+#post-list .card .preview-img img {
+  width: 100%;
+  border-radius: 0;
+  transition: transform 360ms ease;
+}
+
+#post-list .card .card-body {
+  height: 100%;
+  min-height: 13.25rem;
+  padding: 1.35rem 1.4rem 1.2rem;
+}
+
+#post-list .card .card-body .card-title {
+  margin-bottom: 0.75rem !important;
+  color: var(--heading-color) !important;
+  font-family: Georgia, 'Noto Serif SC', 'Songti SC', serif;
+  font-size: clamp(1.12rem, 1.35vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.42;
+  text-wrap: pretty;
+}
+
+#post-list .card .card-body .card-text.content {
+  margin-bottom: 1.2rem !important;
+  color: var(--text-muted-color) !important;
+}
+
+#post-list .card .card-body .card-text.content p {
+  line-height: 1.6;
+}
+
+#post-list .card .card-body .post-meta {
+  color: var(--text-muted-color) !important;
+  font-size: 0.78rem;
+  letter-spacing: 0.015em;
+}
+
+#post-list .card .card-body .post-meta i:not(:first-child) {
+  margin-left: 1rem;
+}
+
+#post-list .card .card-body .post-meta .categories {
+  padding: 0.16rem 0.42rem;
+  border-radius: 0.2rem;
+  background: var(--archive-category-bg);
+  color: var(--archive-category-text);
+  font-weight: 600;
+}
+
+#post-list .post-preview:hover,
+#post-list .post-preview:focus-visible {
+  border-color: var(--archive-card-border-hover);
+  outline: none;
+  box-shadow: var(--archive-card-shadow-hover);
+  transform: translateY(-2px);
+}
+
+#post-list .post-preview:hover .preview-img img,
+#post-list .post-preview:focus-visible .preview-img img {
+  transform: scale(1.018);
+}
+
+@media (min-width: 768px) {
+  #post-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575.98px) {
+  #post-list {
+    gap: 1.1rem;
+  }
+
+  #post-list .card .card-body {
+    min-height: 0;
+    padding: 1.1rem 1.05rem 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #post-list .post-preview,
+  #post-list .card .preview-img img {
+    transition: none;
+  }
+
+  #post-list .post-preview:hover,
+  #post-list .post-preview:focus-visible {
+    transform: none;
+  }
+}
+
 #topbar {
   position: relative;
 }
