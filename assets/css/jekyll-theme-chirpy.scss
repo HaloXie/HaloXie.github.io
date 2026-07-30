@@ -34,27 +34,65 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   --post-layout-gap: 2.5rem;
 }
 
-.language-switcher {
+#sidebar .language-switcher {
   display: inline-flex;
   align-items: center;
-  gap: 0.25rem;
-  margin-right: 0.5rem;
-  padding-right: 0.75rem;
-  border-right: 1px solid var(--sidebar-border-color);
+  flex: 0 0 6.5rem;
+  width: 6.5rem;
+  height: 2.75rem;
+  margin-right: 0.75rem;
+  padding: 2px;
+  overflow: hidden;
+  border: 1px solid var(--sidebar-border-color);
+  border-radius: 0.875rem;
+  background: var(--sidebar-btn-bg);
+  white-space: nowrap;
 }
 
-.language-switcher .language-link {
-  padding: 0.2rem 0.35rem;
-  border-radius: 0.25rem;
+#sidebar .language-switcher .language-link {
+  display: inline-flex;
+  flex: 1 1 50%;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border-radius: 0.6875rem;
   color: var(--sidebar-muted-color);
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   line-height: 1;
   text-decoration: none;
+  transition:
+    color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
-.language-switcher .language-link:is(:hover, :focus-visible, .active) {
+#sidebar .language-switcher .language-link:hover {
+  color: var(--sidebar-active-color);
+}
+
+#sidebar .language-switcher .language-link.active {
   color: var(--sidebar-active-color);
   background-color: var(--sidebar-hover-bg);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+  font-weight: 650;
+}
+
+#sidebar .language-switcher .language-link:focus-visible {
+  position: relative;
+  z-index: 1;
+  color: var(--sidebar-active-color);
+  outline: 2px solid var(--sidebar-active-color);
+  outline-offset: -2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sidebar .language-switcher .language-link {
+    transition: none;
+  }
 }
 
 article[data-toc] > .content {

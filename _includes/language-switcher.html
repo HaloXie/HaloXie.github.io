@@ -13,7 +13,10 @@
 {% endif %}
 
 {% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths or page.layout == 'tag' %}
-  <nav class="language-switcher" aria-label="Language">
+  <nav
+    class="language-switcher"
+    aria-label="{% if active_language == 'zh-CN' %}选择语言{% else %}Select language{% endif %}"
+  >
     {% for language in site.languages %}
       {% if page.layout == 'home' %}
         {% assign translation_path = '/' %}
@@ -35,9 +38,11 @@
           {% static_href %}href="{{ language_href }}"{% endstatic_href %}
           hreflang="{{ language }}"
           lang="{{ language }}"
+          data-language-preference="{% if language == 'zh-CN' %}zh{% else %}en{% endif %}"
+          aria-label="{% if language == 'zh-CN' %}切换到中文{% else %}Switch to English{% endif %}"
           {% if language == active_language %}aria-current="page"{% endif %}
         >
-          {%- if language == 'zh-CN' -%}中文{%- else -%}English{%- endif -%}
+          {%- if language == 'zh-CN' -%}中文{%- else -%}EN{%- endif -%}
         </a>
       {% endif %}
     {% endfor %}

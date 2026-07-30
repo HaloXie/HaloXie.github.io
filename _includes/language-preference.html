@@ -1,0 +1,44 @@
+<script data-language-preference-controller>
+  (() => {
+    const storageKey = 'halo.language-preference';
+    const rootPath = {{ site.baseurl | default: '' | append: '/' | jsonify }};
+    const englishRootPath = {{ site.baseurl | default: '' | append: '/en/' | jsonify }};
+
+    const readPreference = () => {
+      try {
+        const value = window.localStorage.getItem(storageKey);
+        return value === 'zh' || value === 'en' ? value : null;
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const writePreference = (value) => {
+      try {
+        window.localStorage.setItem(storageKey, value);
+        return true;
+      } catch (error) {
+        return false;
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[data-language-preference]');
+      if (link) {
+        writePreference(link.dataset.languagePreference);
+      }
+    });
+
+    if (window.location.pathname !== rootPath) {
+      return;
+    }
+
+    const storedPreference = readPreference();
+    const browserLanguage = navigator.languages?.[0] || navigator.language || '';
+    const preferredLanguage = storedPreference || (/^zh(?:-|$)/i.test(browserLanguage) ? 'zh' : 'en');
+
+    if (preferredLanguage === 'en') {
+      window.location.replace(englishRootPath + window.location.search + window.location.hash);
+    }
+  })();
+</script>

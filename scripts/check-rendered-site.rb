@@ -86,10 +86,33 @@ def assert_discovery_links(doc, url, alternates, switch_paths, errors)
   rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
   errors << "#{url}: wrong hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == alternates
 
-  switcher = doc.css(".language-switcher a")
+  switcher_navs = doc.css("nav.language-switcher")
+  errors << "#{url}: expected one language switcher, got #{switcher_navs.length}" unless switcher_navs.length == 1
+  switcher = switcher_navs.css("a.language-link")
   rendered_switch_paths = switcher.map { |node| internal_path(node["href"]) }.sort
   errors << "#{url}: wrong switcher targets #{rendered_switch_paths.inspect}" unless rendered_switch_paths == switch_paths.sort
   errors << "#{url}: switcher contains a template placeholder" if switcher.any? { |node| node["href"].match?(/[:{}]/) }
+
+  switcher_contract = switcher.to_h do |node|
+    [node["data-language-preference"], {
+      "text" => node.text.strip,
+      "lang" => node["lang"],
+      "hreflang" => node["hreflang"],
+      "aria-label" => node["aria-label"]
+    }]
+  end
+  expected_switcher_contract = {
+    "zh" => { "text" => "中文", "lang" => "zh-CN", "hreflang" => "zh-CN", "aria-label" => "切换到中文" },
+    "en" => { "text" => "EN", "lang" => "en", "hreflang" => "en", "aria-label" => "Switch to English" }
+  }
+  errors << "#{url}: wrong language switcher contract #{switcher_contract.inspect}" unless switcher_contract == expected_switcher_contract
+
+  current_links = switcher.select { |node| node["aria-current"] == "page" }
+  errors << "#{url}: expected one current language, got #{current_links.length}" unless current_links.length == 1
+  expected_preference = url.start_with?("/en/") ? "en" : "zh"
+  if current_links.first && current_links.first["data-language-preference"] != expected_preference
+    errors << "#{url}: wrong current language #{current_links.first['data-language-preference'].inspect}"
+  end
 
   (alternates.values + switch_paths).uniq.each do |target|
     errors << "#{url}: discovery target does not exist #{target}" unless site_file(target).file?
@@ -287,6 +310,26 @@ SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE)
   doc = Nokogiri::HTML(source)
+
+  preference_scripts = doc.css("script[data-language-preference-controller]")
+  errors << "#{relative}: expected one language preference controller, got #{preference_scripts.length}" unless preference_scripts.length == 1
+  preference_source = preference_scripts.first&.text.to_s
+  preference_contract = [
+    "const storageKey = 'halo.language-preference'",
+    "const rootPath = \"/\"",
+    "const englishRootPath = \"/en/\"",
+    "event.target.closest('a[data-language-preference]')",
+    "window.location.pathname !== rootPath",
+    "navigator.languages?.[0] || navigator.language",
+    "/^zh(?:-|$)/i.test(browserLanguage)",
+    "window.location.replace(englishRootPath + window.location.search + window.location.hash)"
+  ]
+  missing_preference_contract = preference_contract.reject { |fragment| preference_source.include?(fragment) }
+  unless missing_preference_contract.empty?
+    errors << "#{relative}: incomplete language preference contract #{missing_preference_contract.inspect}"
+  end
+  errors << "#{relative}: language preference script contains a template placeholder" if preference_source.match?(/{{|{%|:THEME/)
+
   prefix = relative.to_s.start_with?("en/") ? "/en" : ""
   expected_message_path = "#{prefix}/message/"
   rendered_message_paths = doc.css('#sidebar a[aria-label="message"]').map { |node| internal_path(node["href"]) }
