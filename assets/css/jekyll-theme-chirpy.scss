@@ -32,6 +32,9 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   --post-copy-width: 55rem;
   --post-panel-width: 15rem;
   --post-layout-gap: 2.5rem;
+  --home-canvas-width: 100rem;
+  --home-panel-width: clamp(14rem, 15vw, 16rem);
+  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
 }
 
 /*
@@ -89,8 +92,13 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 
 #post-list {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(100%, 19rem), 1fr)
+  );
   gap: 1.5rem;
+  padding-right: 0 !important;
+  padding-left: 0 !important;
 }
 
 #post-list .card-wrapper,
@@ -199,9 +207,48 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   transform: scale(1.018);
 }
 
-@media (min-width: 768px) {
-  #post-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+/* Home is a discovery surface, not a reading measure. It can use the space
+   beside the fixed sidebar while the post layout keeps its independent prose
+   and TOC constraints below. */
+@media (min-width: 850px) {
+  body:has(#post-list) #main-wrapper > .container {
+    width: 100%;
+    max-width: var(--home-canvas-width);
+    padding-right: clamp(1.25rem, 2.2vw, 2.75rem) !important;
+    padding-left: clamp(1.25rem, 2.2vw, 2.75rem) !important;
+  }
+
+  body:has(#post-list) main:has(#post-list) {
+    width: 100%;
+    max-width: none;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    flex: 1 1 auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  body:has(#post-list)
+    #main-wrapper
+    > .container
+    > .row:has(#post-list) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) var(--home-panel-width);
+    gap: var(--home-layout-gap);
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    align-items: start;
+  }
+
+  body:has(#post-list) main:has(#post-list) {
+    grid-column: 1;
+  }
+
+  body:has(#post-list) #panel-wrapper {
+    grid-column: 2;
+    width: 100%;
+    max-width: none;
+    padding-left: 0 !important;
   }
 }
 
