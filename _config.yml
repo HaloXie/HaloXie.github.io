@@ -45,13 +45,12 @@ description: >-
 url: "https://halo.xin"
 
 github:
-  username: HaloXie
+  username: cognirail
 
 social:
   name: Halo Xie
-  email: minghao.xie@ddit.ai
   links:
-    - https://github.com/HaloXie
+    - https://github.com/cognirail
 
 # Web Analytics Settings
 analytics:
