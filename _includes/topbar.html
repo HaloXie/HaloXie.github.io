@@ -74,6 +74,9 @@
       aria-keyshortcuts="Meta+K Control+K"
     >
       <i class="fas fa-search fa-fw"></i>
+      <span class="command-search-placeholder">
+        {{- site.data.locales[include.lang].search.hint | capitalize -}}
+      </span>
       <kbd class="command-search-shortcut" aria-hidden="true">
         <span class="command-search-shortcut-mac">⌘</span><span class="command-search-shortcut-other">Ctrl</span>K
       </kbd>

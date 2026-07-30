@@ -54,10 +54,17 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 #topbar .command-search-trigger {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  width: auto;
-  padding: 0 0.45rem;
+  justify-content: center;
+  gap: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
   color: var(--text-muted-color);
+}
+
+.command-search-placeholder,
+.command-search-shortcut {
+  display: none;
 }
 
 #topbar .command-search-trigger:hover,
@@ -93,9 +100,9 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 }
 
 .command-search-dialog {
-  width: min(42rem, calc(100vw - 2rem));
-  max-height: min(38rem, calc(100dvh - 4rem));
-  margin: clamp(4rem, 12vh, 8rem) auto auto;
+  width: min(42rem, calc(100vw - 3rem));
+  max-height: min(38rem, calc(100dvh - 3rem));
+  margin: auto;
   padding: 0;
   overflow: hidden;
   border: 1px solid var(--main-border-color);
@@ -118,8 +125,10 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 
 .command-search-panel {
   display: flex;
-  max-height: min(38rem, calc(100dvh - 4rem));
+  min-height: 0;
+  max-height: min(38rem, calc(100dvh - 3rem));
   flex-direction: column;
+  overflow: hidden;
 }
 
 .command-search-form {
@@ -128,6 +137,7 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   align-items: center;
   gap: 0.75rem;
   min-height: 3.75rem;
+  flex: 0 0 auto;
   padding: 0 1rem;
   border-bottom: 1px solid var(--main-border-color);
 }
@@ -172,16 +182,28 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 
 #search-result-wrapper.command-search-results-wrapper {
   display: block;
+  flex: 1 1 auto;
   width: 100%;
+  max-width: 100%;
   height: auto;
-  min-height: 5.5rem;
+  min-width: 0;
+  min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 0.45rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
 }
 
 #search-results.command-search-results {
+  display: block;
+  position: static;
+  left: auto;
+  right: auto;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding-bottom: 0;
+  text-align: left;
 }
 
 #search-results.command-search-results[aria-busy='true']::before {
@@ -194,9 +216,14 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 }
 
 #search-results.command-search-results > .command-search-result {
+  position: static;
+  left: auto;
   right: auto;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   margin: 0;
+  text-align: left;
 }
 
 #search-results.command-search-results > .command-search-result:not(:last-child) {
@@ -206,12 +233,16 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 #search-results.command-search-results .command-search-result a {
   position: relative;
   display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   gap: 0.25rem;
   padding: 0.75rem 2.75rem 0.75rem 0.85rem;
   border-radius: 0.55rem;
   color: var(--text-color);
   font-size: 0.95rem;
   line-height: 1.35;
+  text-align: left;
   text-decoration: none;
 }
 
@@ -223,6 +254,10 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 }
 
 .command-search-result-title {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   font-size: 0.95rem;
   font-weight: 650;
   line-height: 1.35;
@@ -230,6 +265,9 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 
 .command-search-result-excerpt {
   display: -webkit-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow: hidden;
   color: var(--text-muted-color);
   font-size: 0.82rem;
@@ -272,14 +310,62 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   text-align: center;
 }
 
+.command-search-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  white-space: nowrap;
+}
+
 .command-search-footer {
   display: flex;
+  flex: 0 0 auto;
   justify-content: space-between;
   min-height: 2.35rem;
   padding: 0.55rem 0.85rem;
   border-top: 1px solid var(--main-border-color);
   color: var(--text-muted-color);
   font-size: 0.72rem;
+}
+
+@media (min-width: 992px) {
+  #topbar .command-search-trigger {
+    justify-content: flex-start;
+    gap: 0.55rem;
+    width: clamp(13rem, 18vw, 18rem);
+    padding: 0 0.55rem 0 0.7rem;
+    border: 1px solid var(--main-border-color);
+    border-radius: 0.65rem;
+    background: var(--main-bg);
+  }
+
+  #topbar .command-search-trigger:hover,
+  #topbar .command-search-trigger:focus-visible {
+    border-color: var(--search-border-color);
+    background: var(--button-bg);
+  }
+
+  .command-search-placeholder {
+    display: block;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    color: var(--text-muted-color);
+    font-size: 0.84rem;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .command-search-shortcut {
+    display: inline-flex;
+    flex: 0 0 auto;
+  }
 }
 
 .command-search-footer kbd {
@@ -394,26 +480,18 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
     display: none;
   }
 
-  #topbar .command-search-trigger {
-    width: 2.25rem;
-    padding: 0;
-    justify-content: center;
-  }
-
-  .command-search-shortcut {
-    display: none;
-  }
 }
 
 @media (max-width: 575.98px) {
   .command-search-dialog {
     width: calc(100vw - 1rem);
     max-height: calc(100dvh - 1rem);
-    margin-top: 0.5rem;
+    margin: auto;
     border-radius: 0.75rem;
   }
 
   .command-search-panel {
+    min-height: 0;
     max-height: calc(100dvh - 1rem);
   }
 

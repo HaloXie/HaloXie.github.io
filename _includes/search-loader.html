@@ -112,7 +112,11 @@
   }, { capture: true });
 
   input.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowDown') {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      closeSearch();
+    } else if (event.key === 'ArrowDown') {
       event.preventDefault();
       results.querySelector('a')?.focus();
     } else if (event.key === 'Enter') {

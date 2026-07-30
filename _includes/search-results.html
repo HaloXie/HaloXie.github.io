@@ -3,13 +3,9 @@
 <dialog
   id="command-search-dialog"
   class="command-search-dialog"
-  aria-labelledby="command-search-title"
+  aria-label="{{ site.data.locales[include.lang].search.hint | capitalize }}"
 >
   <div class="command-search-panel">
-    <h2 id="command-search-title" class="visually-hidden">
-      {{- site.data.locales[include.lang].search.hint | capitalize -}}
-    </h2>
-
     <form id="search" class="command-search-form" role="search">
       <i class="fas fa-search fa-fw" aria-hidden="true"></i>
       <input
@@ -22,8 +18,12 @@
         spellcheck="false"
         placeholder="{{ site.data.locales[include.lang].search.hint | capitalize }}…"
       >
-      <button id="search-cancel" class="command-search-close" type="button">
-        <span class="visually-hidden">{{ site.data.locales[include.lang].search.cancel }}</span>
+      <button
+        id="search-cancel"
+        class="command-search-close"
+        type="button"
+        aria-label="{{ site.data.locales[include.lang].search.cancel }}"
+      >
         <kbd aria-hidden="true">Esc</kbd>
       </button>
     </form>
@@ -38,7 +38,7 @@
       <p id="command-search-empty" class="command-search-empty" hidden>
         {{- site.data.locales[include.lang].search.no_results -}}
       </p>
-      <p id="command-search-status" class="visually-hidden" role="status"></p>
+      <p id="command-search-status" class="command-search-status" role="status"></p>
     </div>
 
     <footer class="command-search-footer" aria-hidden="true">
@@ -49,11 +49,11 @@
 </dialog>
 
 <template id="command-search-result-template">
-  <article class="command-search-result" role="listitem">
+  <div class="command-search-result" role="listitem">
     <a href="{{ '/' | relative_url }}">
       <span class="command-search-result-title"></span>
       <span class="command-search-result-excerpt"></span>
       <i class="fas fa-arrow-right command-search-result-arrow" aria-hidden="true"></i>
     </a>
-  </article>
+  </div>
 </template>

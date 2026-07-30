@@ -198,9 +198,17 @@ SITE.glob("**/*.html").each do |path|
   doc = Nokogiri::HTML(source)
   dialogs = doc.css("dialog#command-search-dialog")
   errors << "#{relative}: expected one command search dialog, got #{dialogs.length}" unless dialogs.length == 1
+  expected_search_label = relative.start_with?("en/") ? "Search" : "搜索"
+  errors << "#{relative}: command search dialog lacks localized aria-label" unless dialogs.first&.[]("aria-label") == expected_search_label
+  errors << "#{relative}: obsolete command search title remains" if doc.at_css("#command-search-title")
   errors << "#{relative}: missing command search trigger" unless doc.at_css("#search-trigger[aria-controls='command-search-dialog'][aria-haspopup='dialog']")
+  placeholder = doc.at_css("#search-trigger .command-search-placeholder")&.text&.strip
+  errors << "#{relative}: wrong command search placeholder #{placeholder.inspect}" unless placeholder == expected_search_label
   errors << "#{relative}: missing Pagefind search input" unless doc.at_css("#command-search-dialog #search-input[aria-controls='search-results']")
+  errors << "#{relative}: search close lacks localized aria-label" unless doc.at_css("#command-search-dialog #search-cancel[aria-label='#{relative.start_with?("en/") ? "Cancel" : "取消"}']")
   errors << "#{relative}: missing accessible search results" unless doc.at_css("#command-search-dialog #search-results[aria-live='polite']")
+  errors << "#{relative}: search result template must use div listitems" unless doc.at_css("template#command-search-result-template > div.command-search-result[role='listitem']")
+  errors << "#{relative}: search result template must not use direct article results" if doc.at_css("template#command-search-result-template > article.command-search-result")
 
   search_contract = [
     "const pagefindUrl = \"/pagefind/pagefind.js\"",
@@ -209,6 +217,9 @@ SITE.glob("**/*.html").each do |path|
     "event.metaKey || event.ctrlKey",
     "event.key.toLowerCase() === 'k'",
     "dialog.showModal()",
+    "if (event.key === 'Escape')",
+    "event.stopImmediatePropagation()",
+    "closeSearch()",
     "dialog.addEventListener('close'",
     "activeElement?.focus()",
     "currentLanguage === 'en' ? pathname.startsWith('/en/') : !pathname.startsWith('/en/')"
@@ -217,6 +228,21 @@ SITE.glob("**/*.html").each do |path|
   errors << "#{relative}: incomplete command search contract #{missing_search_contract.inspect}" unless missing_search_contract.empty?
   errors << "#{relative}: legacy SimpleJekyllSearch found" if source.match?(/SimpleJekyllSearch|simple-jekyll-search/i)
 end
+
+search_styles = ROOT.join("assets/css/jekyll-theme-chirpy.scss").read
+search_style_contract = [
+  "width: clamp(13rem, 18vw, 18rem)",
+  "width: min(42rem, calc(100vw - 3rem))",
+  "max-height: min(38rem, calc(100dvh - 3rem))",
+  "#search-result-wrapper.command-search-results-wrapper",
+  "flex: 1 1 auto",
+  "min-height: 0",
+  "overflow-y: auto",
+  "#search-results.command-search-results > .command-search-result",
+  "text-align: left"
+]
+missing_search_styles = search_style_contract.reject { |fragment| search_styles.include?(fragment) }
+errors << "search layout contract incomplete #{missing_search_styles.inspect}" unless missing_search_styles.empty?
 
 pagefind_entry_path = SITE.join("pagefind/pagefind-entry.json")
 unless pagefind_entry_path.file?
