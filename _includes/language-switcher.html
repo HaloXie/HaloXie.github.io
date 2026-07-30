@@ -13,38 +13,71 @@
 {% endif %}
 
 {% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths or page.layout == 'tag' %}
-  <nav
-    class="language-switcher"
-    aria-label="{% if active_language == 'zh-CN' %}选择语言{% else %}Select language{% endif %}"
-  >
-    {% for language in site.languages %}
-      {% if page.layout == 'home' %}
-        {% assign translation_path = '/' %}
-      {% elsif page.layout == 'category' %}
-        {% assign translation_path = taxonomy_paths[language] %}
-      {% elsif page.layout == 'tag' %}
-        {% assign translation_path = page.url %}
+  {% for language in site.languages %}
+    {% if page.layout == 'home' %}
+      {% assign translation_path = '/' %}
+    {% elsif page.layout == 'category' %}
+      {% assign translation_path = taxonomy_paths[language] %}
+    {% elsif page.layout == 'tag' %}
+      {% assign translation_path = page.url %}
+    {% else %}
+      {% assign translation_path = page.permalink_lang[language] %}
+    {% endif %}
+    {% if translation_path %}
+      {%- capture language_href -%}
+        {{- site.baseurl -}}/
+        {%- if language != site.default_lang -%}{{- language -}}/{%- endif -%}
+        {%- unless translation_path == '/' -%}{{- translation_path | remove_first: '/' -}}{%- endunless -%}
+      {%- endcapture -%}
+      {% if language == 'zh-CN' %}
+        {% assign zh_language_href = language_href %}
       {% else %}
-        {% assign translation_path = page.permalink_lang[language] %}
+        {% assign en_language_href = language_href %}
       {% endif %}
-      {% if translation_path %}
-        {%- capture language_href -%}
-          {{- site.baseurl -}}/
-          {%- if language != site.default_lang -%}{{- language -}}/{%- endif -%}
-          {%- unless translation_path == '/' -%}{{- translation_path | remove_first: '/' -}}{%- endunless -%}
-        {%- endcapture -%}
-        <a
-          class="language-link{% if language == active_language %} active{% endif %}"
-          {% static_href %}href="{{ language_href }}"{% endstatic_href %}
-          hreflang="{{ language }}"
-          lang="{{ language }}"
-          data-language-preference="{% if language == 'zh-CN' %}zh{% else %}en{% endif %}"
-          aria-label="{% if language == 'zh-CN' %}切换到中文{% else %}Switch to English{% endif %}"
-          {% if language == active_language %}aria-current="page"{% endif %}
-        >
-          {%- if language == 'zh-CN' -%}中文{%- else -%}EN{%- endif -%}
-        </a>
-      {% endif %}
-    {% endfor %}
+    {% endif %}
+  {% endfor %}
+
+  {% if active_language == 'zh-CN' %}
+    {% assign counterpart_href = en_language_href %}
+  {% else %}
+    {% assign counterpart_href = zh_language_href %}
+  {% endif %}
+
+  <nav class="language-switcher dropdown" aria-label="{% if active_language == 'zh-CN' %}选择语言{% else %}Select language{% endif %}">
+    <a
+      class="language-trigger btn btn-link"
+      {% static_href %}href="{{ counterpart_href }}"{% endstatic_href %}
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+      aria-label="{% if active_language == 'zh-CN' %}选择语言，当前为中文{% else %}Select language, English selected{% endif %}"
+    >
+      <i class="fas fa-language" aria-hidden="true"></i>
+    </a>
+
+    <ul class="language-menu dropdown-menu dropdown-menu-end">
+      {% for language in site.languages %}
+        {% if language == 'zh-CN' %}
+          {% assign language_href = zh_language_href %}
+        {% else %}
+          {% assign language_href = en_language_href %}
+        {% endif %}
+        {% if language_href %}
+          <li>
+            <a
+              class="language-link dropdown-item{% if language == active_language %} active{% endif %}"
+              {% static_href %}href="{{ language_href }}"{% endstatic_href %}
+              hreflang="{{ language }}"
+              lang="{{ language }}"
+              data-language-preference="{% if language == 'zh-CN' %}zh{% else %}en{% endif %}"
+              aria-label="{% if language == 'zh-CN' %}切换到中文{% else %}Switch to English{% endif %}"
+              {% if language == active_language %}aria-current="page"{% endif %}
+            >
+              <span>{%- if language == 'zh-CN' -%}中文{%- else -%}English{%- endif -%}</span>
+              <i class="fas fa-check language-check" aria-hidden="true"></i>
+            </a>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ul>
   </nav>
 {% endif %}

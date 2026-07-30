@@ -46,8 +46,6 @@
   </nav>
 
   <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
-    {% include language-switcher.html %}
-
     {% unless site.theme_mode == 'light' or site.theme_mode == 'dark' %}
       {%- capture icon_system -%}
         <i class="fa-solid fa-display" data-theme-mode="system"></i>

@@ -37,6 +37,13 @@ def site_file(url)
   SITE.join(path)
 end
 
+def content_post_links(doc)
+  doc.css('a[href*="/posts/"]')
+    .reject { |node| node.ancestors.any? { |ancestor| ancestor["class"].to_s.split.include?("language-switcher") } }
+    .map { |node| internal_path(node["href"]) }
+    .select { |href| href.start_with?("/") }
+end
+
 def assert_metadata(doc, url, errors, expected_description = nil)
   absolute_url = "#{ORIGIN}#{url}"
   canonicals = doc.css('link[rel="canonical"]')
@@ -86,8 +93,13 @@ def assert_discovery_links(doc, url, alternates, switch_paths, errors)
   rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
   errors << "#{url}: wrong hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == alternates
 
-  switcher_navs = doc.css("nav.language-switcher")
+  switcher_navs = doc.css("#topbar nav.language-switcher")
   errors << "#{url}: expected one language switcher, got #{switcher_navs.length}" unless switcher_navs.length == 1
+  errors << "#{url}: sidebar must not contain a language switcher" unless doc.css("#sidebar .language-switcher").empty?
+  trigger = switcher_navs.at_css("a.language-trigger[data-bs-toggle='dropdown']")
+  errors << "#{url}: missing topbar language dropdown trigger" unless trigger
+  errors << "#{url}: language trigger must use fa-language" unless trigger&.at_css("i.fa-language")
+  errors << "#{url}: language trigger must expose collapsed state" unless trigger&.[]("aria-expanded") == "false"
   switcher = switcher_navs.css("a.language-link")
   rendered_switch_paths = switcher.map { |node| internal_path(node["href"]) }.sort
   errors << "#{url}: wrong switcher targets #{rendered_switch_paths.inspect}" unless rendered_switch_paths == switch_paths.sort
@@ -95,15 +107,16 @@ def assert_discovery_links(doc, url, alternates, switch_paths, errors)
 
   switcher_contract = switcher.to_h do |node|
     [node["data-language-preference"], {
-      "text" => node.text.strip,
+      "text" => node.at_css("span")&.text&.strip,
       "lang" => node["lang"],
       "hreflang" => node["hreflang"],
-      "aria-label" => node["aria-label"]
+      "aria-label" => node["aria-label"],
+      "check" => !node.at_css("i.language-check.fa-check").nil?
     }]
   end
   expected_switcher_contract = {
-    "zh" => { "text" => "中文", "lang" => "zh-CN", "hreflang" => "zh-CN", "aria-label" => "切换到中文" },
-    "en" => { "text" => "EN", "lang" => "en", "hreflang" => "en", "aria-label" => "Switch to English" }
+    "zh" => { "text" => "中文", "lang" => "zh-CN", "hreflang" => "zh-CN", "aria-label" => "切换到中文", "check" => true },
+    "en" => { "text" => "English", "lang" => "en", "hreflang" => "en", "aria-label" => "Switch to English", "check" => true }
   }
   errors << "#{url}: wrong language switcher contract #{switcher_contract.inspect}" unless switcher_contract == expected_switcher_contract
 
@@ -112,6 +125,12 @@ def assert_discovery_links(doc, url, alternates, switch_paths, errors)
   expected_preference = url.start_with?("/en/") ? "en" : "zh"
   if current_links.first && current_links.first["data-language-preference"] != expected_preference
     errors << "#{url}: wrong current language #{current_links.first['data-language-preference'].inspect}"
+  end
+
+  counterpart_path = switch_paths.find { |path| path != url }
+  rendered_trigger_path = internal_path(trigger&.[]("href"))
+  unless rendered_trigger_path == counterpart_path
+    errors << "#{url}: language trigger must fall back to counterpart #{counterpart_path.inspect}, got #{rendered_trigger_path.inspect}"
   end
 
   (alternates.values + switch_paths).uniq.each do |target|
@@ -157,7 +176,7 @@ expected_pages.each do |url, lang|
   base_path = url.sub(%r{\A/en}, "")
   assert_discovery_links(doc, url, expected_alternates(base_path), [base_path, "/en#{base_path}"], errors)
 
-  post_links = doc.css('a[href*="/posts/"]:not(.language-link)').map { |node| internal_path(node["href"]) }.select { |href| href.start_with?("/") }
+  post_links = content_post_links(doc)
   wrong_links = post_links.reject { |href| href.start_with?("#{prefix}/posts/") }
   errors << "#{url}: cross-language post links #{wrong_links.uniq.inspect}" unless wrong_links.empty?
 end
@@ -205,7 +224,7 @@ LANGUAGES.each do |lang, prefix|
     url = "#{prefix}/#{section}/"
     doc = document(site_file(url), errors)
     next unless doc
-    links = doc.css('a[href*="/posts/"]').map { |node| internal_path(node["href"]) }.select { |href| href.start_with?("/") }
+    links = content_post_links(doc)
     wrong = links.reject { |href| href.start_with?("#{prefix}/posts/") }
     errors << "#{url}: cross-language post links #{wrong.uniq.inspect}" unless wrong.empty?
   end
@@ -310,6 +329,8 @@ SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE)
   doc = Nokogiri::HTML(source)
+
+  errors << "#{relative}: sidebar must not contain a language switcher" unless doc.css("#sidebar .language-switcher").empty?
 
   preference_scripts = doc.css("script[data-language-preference-controller]")
   errors << "#{relative}: expected one language preference controller, got #{preference_scripts.length}" unless preference_scripts.length == 1
