@@ -1,47 +1,157 @@
-<!-- Jekyll Simple Search loader with language-aware result URLs. -->
+<!-- Pagefind command-search controller. The index is generated after Jekyll. -->
 
-{% capture result_elem %}
-  <article class="px-1 px-sm-2 px-lg-4 px-xl-0">
-    <header>
-      <h2><a href="{url}">{title}</a></h2>
-      <div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
-        {categories}
-        {tags}
-      </div>
-    </header>
-    <p>{content}</p>
-  </article>
-{% endcapture %}
+<script type="module">
+  document.documentElement.dataset.platform = /Mac|iPhone|iPad/.test(navigator.platform) ? 'mac' : 'other';
+  const dialog = document.getElementById('command-search-dialog');
+  const trigger = document.getElementById('search-trigger');
+  const closeButton = document.getElementById('search-cancel');
+  const searchBox = document.getElementById('search');
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  const emptyState = document.getElementById('command-search-empty');
+  const status = document.getElementById('command-search-status');
+  const resultTemplate = document.getElementById('command-search-result-template');
+  const pagefindUrl = {{ '/pagefind/pagefind.js' | relative_url | jsonify }};
+  const noResultsText = {{ site.data.locales[include.lang].search.no_results | jsonify }};
+  const loadingText = {% if include.lang == 'en' %}'Loading search…'{% else %}'正在加载搜索…'{% endif %};
+  const unavailableText = {% if include.lang == 'en' %}'Search is temporarily unavailable.'{% else %}'搜索暂时不可用。'{% endif %};
+  const currentLanguage = document.documentElement.lang;
+  let pagefind;
+  let activeElement;
+  let requestId = 0;
 
-{% capture not_found %}<p class="mt-5">{{ site.data.locales[include.lang].search.no_results }}</p>{% endcapture %}
+  const setStatus = (message) => {
+    status.textContent = message;
+  };
 
-<script>
-  {% comment %} Note: dependent library will be loaded in `js-selector.html` {% endcomment %}
-  {% capture search_index_url %}{% if site.active_lang != site.default_lang %}/{{ site.active_lang }}{% endif %}/search.json{% endcapture %}
-  document.addEventListener('DOMContentLoaded', () => {
-    SimpleJekyllSearch({
-      searchInput: document.getElementById('search-input'),
-      resultsContainer: document.getElementById('search-results'),
-      json: '{{ site.baseurl }}{{ search_index_url }}',
-      searchResultTemplate: '{{ result_elem | strip_newlines }}',
-      noResultsText: '{{ not_found }}',
-      templateMiddleware: function(prop, value, template) {
-        if (prop === 'categories') {
-          if (value === '') {
-            return `${value}`;
-          } else {
-            return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`;
-          }
-        }
+  const clearResults = () => {
+    results.replaceChildren();
+    emptyState.hidden = true;
+    results.removeAttribute('aria-busy');
+  };
 
-        if (prop === 'tags') {
-          if (value === '') {
-            return `${value}`;
-          } else {
-            return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`;
-          }
-        }
+  const loadPagefind = async () => {
+    if (!pagefind) {
+      pagefind = await import(pagefindUrl);
+      await pagefind.init();
+    }
+    return pagefind;
+  };
+
+  const renderResult = (data) => {
+    const item = resultTemplate.content.firstElementChild.cloneNode(true);
+    const link = item.querySelector('a');
+    link.href = data.url;
+    item.querySelector('.command-search-result-title').textContent = data.meta.title;
+    item.querySelector('.command-search-result-excerpt').innerHTML = data.excerpt;
+    return item;
+  };
+
+  const belongsToCurrentLanguage = (data) => {
+    const pathname = new URL(data.url, window.location.origin).pathname;
+    return currentLanguage === 'en' ? pathname.startsWith('/en/') : !pathname.startsWith('/en/');
+  };
+
+  const search = async () => {
+    const query = input.value.trim();
+    const currentRequest = ++requestId;
+    clearResults();
+    if (!query) {
+      setStatus('');
+      return;
+    }
+
+    results.setAttribute('aria-busy', 'true');
+    setStatus(loadingText);
+    try {
+      const api = await loadPagefind();
+      const response = await api.search(query);
+      const candidates = await Promise.all(response.results.slice(0, 16).map((result) => result.data()));
+      const data = candidates.filter(belongsToCurrentLanguage).slice(0, 8);
+      if (currentRequest !== requestId) return;
+
+      const fragment = document.createDocumentFragment();
+      data.forEach((result) => fragment.append(renderResult(result)));
+      results.replaceChildren(fragment);
+      results.removeAttribute('aria-busy');
+      emptyState.hidden = data.length !== 0;
+      setStatus(data.length === 0 ? noResultsText : '');
+    } catch (error) {
+      if (currentRequest !== requestId) return;
+      results.removeAttribute('aria-busy');
+      setStatus(unavailableText);
+      console.error('Pagefind search failed', error);
+    }
+  };
+
+  const openSearch = () => {
+    if (dialog.open) return;
+    activeElement = document.activeElement;
+    dialog.showModal();
+    requestAnimationFrame(() => input.focus());
+  };
+
+  const closeSearch = () => {
+    if (!dialog.open) return;
+    dialog.close();
+  };
+
+  trigger.addEventListener('click', (event) => {
+    event.stopImmediatePropagation();
+    openSearch();
+  }, { capture: true });
+
+  closeButton.addEventListener('click', (event) => {
+    event.stopImmediatePropagation();
+    closeSearch();
+  }, { capture: true });
+
+  input.addEventListener('input', (event) => {
+    event.stopImmediatePropagation();
+    search();
+  }, { capture: true });
+
+  input.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      results.querySelector('a')?.focus();
+    } else if (event.key === 'Enter') {
+      const firstResult = results.querySelector('a');
+      if (firstResult) {
+        event.preventDefault();
+        firstResult.click();
       }
-    });
+    }
+  });
+
+  results.addEventListener('keydown', (event) => {
+    if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+    event.preventDefault();
+    const links = [...results.querySelectorAll('a')];
+    const currentIndex = links.indexOf(document.activeElement);
+    const nextIndex = event.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1;
+    if (nextIndex < 0) input.focus();
+    else links[Math.min(nextIndex, links.length - 1)]?.focus();
+  });
+
+  searchBox.addEventListener('submit', (event) => event.preventDefault());
+
+  document.addEventListener('keydown', (event) => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      openSearch();
+    }
+  });
+
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) closeSearch();
+  });
+
+  dialog.addEventListener('close', () => {
+    input.value = '';
+    requestId += 1;
+    clearResults();
+    setStatus('');
+    activeElement?.focus();
   });
 </script>

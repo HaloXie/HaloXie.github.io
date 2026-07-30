@@ -191,34 +191,53 @@ SITE.glob("**/*.html").each do |path|
   assert_metadata(Nokogiri::HTML(path.read), url, errors, expected_description)
 end
 
-# Every rendered page that loads search must use the index belonging to its URL language.
+# Every rendered page must expose one Pagefind command palette and its keyboard contract.
 SITE.glob("**/*.html").each do |path|
   source = path.read
-  next unless source.include?("SimpleJekyllSearch")
-
   relative = path.relative_path_from(SITE).to_s
-  prefix = relative.start_with?("en/") ? "/en" : ""
-  expected_search = "json: '#{prefix}/search.json'"
-  errors << "#{relative}: search loader must use #{prefix}/search.json" unless source.include?(expected_search)
+  doc = Nokogiri::HTML(source)
+  dialogs = doc.css("dialog#command-search-dialog")
+  errors << "#{relative}: expected one command search dialog, got #{dialogs.length}" unless dialogs.length == 1
+  errors << "#{relative}: missing command search trigger" unless doc.at_css("#search-trigger[aria-controls='command-search-dialog'][aria-haspopup='dialog']")
+  errors << "#{relative}: missing Pagefind search input" unless doc.at_css("#command-search-dialog #search-input[aria-controls='search-results']")
+  errors << "#{relative}: missing accessible search results" unless doc.at_css("#command-search-dialog #search-results[aria-live='polite']")
+
+  search_contract = [
+    "const pagefindUrl = \"/pagefind/pagefind.js\"",
+    "await import(pagefindUrl)",
+    "await pagefind.init()",
+    "event.metaKey || event.ctrlKey",
+    "event.key.toLowerCase() === 'k'",
+    "dialog.showModal()",
+    "dialog.addEventListener('close'",
+    "activeElement?.focus()",
+    "currentLanguage === 'en' ? pathname.startsWith('/en/') : !pathname.startsWith('/en/')"
+  ]
+  missing_search_contract = search_contract.reject { |fragment| source.include?(fragment) }
+  errors << "#{relative}: incomplete command search contract #{missing_search_contract.inspect}" unless missing_search_contract.empty?
+  errors << "#{relative}: legacy SimpleJekyllSearch found" if source.match?(/SimpleJekyllSearch|simple-jekyll-search/i)
 end
 
+pagefind_entry_path = SITE.join("pagefind/pagefind-entry.json")
+unless pagefind_entry_path.file?
+  errors << "missing Pagefind entry: #{pagefind_entry_path.relative_path_from(ROOT)}"
+else
+  pagefind_entry = JSON.parse(pagefind_entry_path.read)
+  expected_page_counts = {
+    "zh-cn" => ROOT.glob("_posts/zh-CN/*.md").length,
+    "en" => ROOT.glob("_posts/en/*.md").length
+  }
+  actual_page_counts = pagefind_entry.fetch("languages").transform_values { |language| language.fetch("page_count") }
+  errors << "Pagefind language indexes drifted: #{actual_page_counts.inspect}" unless actual_page_counts == expected_page_counts
+  errors << "Pagefind version must be 1.5.2" unless pagefind_entry["version"] == "1.5.2"
+end
+
+errors << "legacy root search.json must not exist" if SITE.join("search.json").exist?
+errors << "legacy English search.json must not exist" if SITE.join("en/search.json").exist?
+errors << "legacy Chirpy search index must not exist" if SITE.join("assets/js/data/search.json").exist?
+errors << "localized legacy Chirpy search index must not exist" if SITE.join("en/assets/js/data/search.json").exist?
+
 LANGUAGES.each do |lang, prefix|
-  source_titles = ROOT.glob("_posts/#{lang}/*.md").map do |path|
-    front_matter = path.read.match(/\A---\s*\n(.*?)\n---\s*\n/m)&.[](1)
-    YAML.safe_load(front_matter, permitted_classes: [Date, Time], aliases: true).fetch("title")
-  end.sort
-  search_path = SITE.join(prefix.delete_prefix("/"), "search.json")
-  unless search_path.file?
-    errors << "missing rendered search index: #{search_path.relative_path_from(ROOT)}"
-    next
-  end
-  search = JSON.parse(search_path.read)
-  errors << "#{prefix}/search.json: wrong titles or post count" unless search.map { |entry| entry.fetch("title") }.sort == source_titles
-  wrong_urls = search.filter_map do |entry|
-    url = entry.fetch("url")
-    url unless url.start_with?("#{prefix}/posts/")
-  end
-  errors << "#{prefix}/search.json: cross-language URLs #{wrong_urls.inspect}" unless wrong_urls.empty?
 
   %w[archives categories tags].each do |section|
     url = "#{prefix}/#{section}/"
@@ -374,7 +393,7 @@ SLUGS.each do |slug|
 end
 
 if errors.empty?
-  puts "Rendered localization check passed: language-aware metadata, discovery links, search, sitemaps, feeds and shared assets."
+  puts "Rendered localization check passed: language-aware metadata, discovery links, Pagefind command search, sitemaps, feeds and shared assets."
 else
   warn "Rendered localization check failed with #{errors.length} error(s):"
   errors.each { |error| warn "- #{error}" }

@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "scripts": {
+    "index:search": "pagefind --root-selector 'article[data-toc]' --keep-index-url --quiet"
+  },
+  "devDependencies": {
+    "pagefind": "1.5.2"
+  }
+}

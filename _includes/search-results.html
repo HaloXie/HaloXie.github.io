@@ -1,0 +1,59 @@
+<!-- Pagefind command-search dialog. IDs also satisfy Chirpy's search DOM contract. -->
+
+<dialog
+  id="command-search-dialog"
+  class="command-search-dialog"
+  aria-labelledby="command-search-title"
+>
+  <div class="command-search-panel">
+    <h2 id="command-search-title" class="visually-hidden">
+      {{- site.data.locales[include.lang].search.hint | capitalize -}}
+    </h2>
+
+    <form id="search" class="command-search-form" role="search">
+      <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+      <input
+        id="search-input"
+        class="command-search-input"
+        type="search"
+        aria-label="{{ site.data.locales[include.lang].search.hint | capitalize }}"
+        aria-controls="search-results"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="{{ site.data.locales[include.lang].search.hint | capitalize }}…"
+      >
+      <button id="search-cancel" class="command-search-close" type="button">
+        <span class="visually-hidden">{{ site.data.locales[include.lang].search.cancel }}</span>
+        <kbd aria-hidden="true">Esc</kbd>
+      </button>
+    </form>
+
+    <div id="search-result-wrapper" class="command-search-results-wrapper">
+      <div
+        id="search-results"
+        class="command-search-results"
+        role="list"
+        aria-live="polite"
+      ></div>
+      <p id="command-search-empty" class="command-search-empty" hidden>
+        {{- site.data.locales[include.lang].search.no_results -}}
+      </p>
+      <p id="command-search-status" class="visually-hidden" role="status"></p>
+    </div>
+
+    <footer class="command-search-footer" aria-hidden="true">
+      <span>{% if include.lang == 'en' %}Search this language{% else %}搜索当前语言{% endif %}</span>
+      <span><kbd>↵</kbd> {% if include.lang == 'en' %}Open{% else %}打开{% endif %}</span>
+    </footer>
+  </div>
+</dialog>
+
+<template id="command-search-result-template">
+  <article class="command-search-result" role="listitem">
+    <a href="{{ '/' | relative_url }}">
+      <span class="command-search-result-title"></span>
+      <span class="command-search-result-excerpt"></span>
+      <i class="fas fa-arrow-right command-search-result-arrow" aria-hidden="true"></i>
+    </a>
+  </article>
+</template>

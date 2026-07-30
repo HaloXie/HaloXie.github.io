@@ -45,6 +45,15 @@ jobs:
           ruby-version: 3.4
           bundler-cache: true
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install search indexer
+        run: npm ci
+
       - name: Verify translation pairs
         run: ruby scripts/check-translations.rb
 
@@ -55,6 +64,9 @@ jobs:
         run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
         env:
           JEKYLL_ENV: "production"
+
+      - name: Build Pagefind index
+        run: npm run index:search -- --site "_site${{ steps.pages.outputs.base_path }}" --output-path "_site${{ steps.pages.outputs.base_path }}/pagefind"
 
       - name: Verify rendered localization
         run: bundle exec ruby scripts/check-rendered-site.rb
