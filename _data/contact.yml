@@ -2,9 +2,16 @@
 
 - type: github
   icon: "fab fa-github"
+  url: "https://github.com/cognirail"
 
 - type: twitter
   icon: "fa-brands fa-x-twitter"
+
+- type: message
+  icon: "fas fa-envelope"
+  url: "/message/"
+  localized: true
+  noblank: true
 
 - type: rss
   icon: "fas fa-rss"

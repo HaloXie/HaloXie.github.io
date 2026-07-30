@@ -102,6 +102,27 @@ LANGUAGES.each do |lang, prefix|
   SLUGS.each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
 end
 
+# The public message page is localized but intentionally absent from the primary tabs.
+LANGUAGES.each do |lang, prefix|
+  url = "#{prefix}/message/"
+  doc = document(site_file(url), errors)
+  next unless doc
+
+  expected_description = if lang == "en"
+                           "Leave Halo a public message to discuss an article or share feedback."
+                         else
+                           "在 Halo 的博客留言，与我讨论文章内容或分享建议。"
+                         end
+  assert_metadata(doc, url, errors, expected_description)
+  assert_discovery_links(doc, url, expected_alternates("/message/"), ["/message/", "/en/message/"], errors)
+  errors << "#{url}: html lang must be #{lang}" unless doc.at("html")&.[]("lang") == lang
+
+  source = doc.to_html
+  errors << "#{url}: missing Giscus client" unless source.include?("https://giscus.app/client.js")
+  errors << "#{url}: Giscus must map discussions by pathname" unless source.include?("'data-mapping': 'pathname'")
+  errors << "#{url}: Giscus must use HaloXie/HaloXie.github.io" unless source.include?("'data-repo': 'HaloXie/HaloXie.github.io'")
+end
+
 expected_pages.each do |url, lang|
   doc = document(site_file(url), errors)
   next unless doc
@@ -124,7 +145,7 @@ SITE.glob("**/*.html").each do |path|
   url = "/#{relative.sub(%r{index\.html\z}, '')}"
   url = URI::DEFAULT_PARSER.escape(url)
   language = url.start_with?("/en/") ? "en" : "zh-CN"
-  expected_description = SITE_LOCALES.fetch(language).fetch("description") unless url.include?("/posts/")
+  expected_description = SITE_LOCALES.fetch(language).fetch("description") unless url.include?("/posts/") || url.end_with?("/message/")
   assert_metadata(Nokogiri::HTML(path.read), url, errors, expected_description)
 end
 
@@ -262,6 +283,23 @@ rescue Nokogiri::XML::SyntaxError => e
 end
 
 errors << "localized assets directory must not exist" if SITE.join("en/assets").exist?
+SITE.glob("**/*.html").each do |path|
+  source = path.read
+  relative = path.relative_path_from(SITE)
+  doc = Nokogiri::HTML(source)
+  prefix = relative.to_s.start_with?("en/") ? "/en" : ""
+  expected_message_path = "#{prefix}/message/"
+  rendered_message_paths = doc.css('#sidebar a[aria-label="message"]').map { |node| internal_path(node["href"]) }
+  errors << "#{relative}: wrong message contact link #{rendered_message_paths.inspect}" unless rendered_message_paths == [expected_message_path]
+
+  nav_paths = doc.css("#sidebar .nav-item > a").map { |node| internal_path(node["href"]) }
+  errors << "#{relative}: hidden message page appears in primary tabs" if nav_paths.include?(expected_message_path)
+
+  github_targets = doc.css('#sidebar a[aria-label="github"]').map { |node| node["href"] }
+  errors << "#{relative}: wrong GitHub contact link #{github_targets.inspect}" unless github_targets == ["https://github.com/cognirail"]
+  errors << "#{relative}: public mailto link found" if source.match?(/mailto:/i)
+  errors << "#{relative}: private email address found" if source.match?(/minghao\.xie@ddit\.ai/i)
+end
 errors << "AGENTS.md must not be published at the root" if SITE.join("AGENTS.md").exist?
 errors << "AGENTS.md must not be published under /en" if SITE.join("en/AGENTS.md").exist?
 cname_files = SITE.glob("**/CNAME").map { |path| path.relative_path_from(SITE).to_s }
