@@ -214,7 +214,7 @@ SITE.glob("**/*.html").each do |path|
     "const pagefindUrl = \"/pagefind/pagefind.js\"",
     "await import(pagefindUrl)",
     "await pagefind.init()",
-    "const SEARCH_DEBOUNCE_MS = 200",
+    "const SEARCH_DEBOUNCE_MS = 300",
     "window.clearTimeout(searchTimer)",
     "scheduleSearch()",
     "}, SEARCH_DEBOUNCE_MS)",

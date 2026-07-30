@@ -16,7 +16,7 @@
   const loadingText = {% if include.lang == 'en' %}'Loading search…'{% else %}'正在加载搜索…'{% endif %};
   const unavailableText = {% if include.lang == 'en' %}'Search is temporarily unavailable.'{% else %}'搜索暂时不可用。'{% endif %};
   const currentLanguage = document.documentElement.lang;
-  const SEARCH_DEBOUNCE_MS = 200;
+  const SEARCH_DEBOUNCE_MS = 300;
   let pagefind;
   let activeElement;
   let requestId = 0;
