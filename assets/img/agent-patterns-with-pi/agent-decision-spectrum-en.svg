@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">A ladder of Agent decision authority</title>
+  <desc id="desc">From Prompt Routing to Multi-Agent, each level adds capability selection, tool choice, planning, recovery, or termination.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#292929"/>
+    </marker>
+    <style>.i{stroke:#292929;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.s{font-family:Arial Unicode MS;fill:#1d1d1d}.t{font-size:39px;font-weight:750}.h{font-size:20px;font-weight:700}.b{font-size:16px;font-weight:550}.n{font-size:14px;fill:#444}</style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <text x="600" y="60" text-anchor="middle" class="s t">An Agent pattern is defined by what it can decide</text>
+  <text x="600" y="94" text-anchor="middle" class="s b">More roles do not mean more autonomy; each level adds runtime authority</text>
+  <path d="M80 557 H1120" class="i" marker-end="url(#a)"/>
+  <g class="s">
+    <g transform="translate(75 395)">
+      <rect width="170" height="145" rx="18" fill="#90c7dc" class="i"/>
+      <text x="85" y="37" text-anchor="middle" class="h">Prompt Routing</text>
+      <text x="85" y="72" text-anchor="middle" class="b">select a role</text>
+      <text x="85" y="105" text-anchor="middle" class="n">one response</text>
+    </g>
+    <g transform="translate(260 337)">
+      <rect width="170" height="203" rx="18" fill="#90c7dc" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">Soft routing</text>
+      <text x="85" y="75" text-anchor="middle" class="b">select capability</text>
+      <text x="85" y="109" text-anchor="middle" class="n">Prompt / Skill</text>
+      <text x="85" y="134" text-anchor="middle" class="n">Context / Agent</text>
+    </g>
+    <g transform="translate(445 279)">
+      <rect width="170" height="261" rx="18" fill="#ffd36a" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">Tool selection</text>
+      <text x="85" y="75" text-anchor="middle" class="b">select an action</text>
+      <rect x="35" y="112" width="42" height="42" rx="8" fill="#fffdf7" class="i"/>
+      <rect x="93" y="112" width="42" height="42" rx="8" fill="#fffdf7" class="i"/>
+    </g>
+    <g transform="translate(630 221)">
+      <rect width="170" height="319" rx="18" fill="#f4b66e" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">Agent Loop</text>
+      <text x="85" y="75" text-anchor="middle" class="b">plan &#xB7; recover &#xB7; stop</text>
+      <circle cx="85" cy="155" r="38" fill="#fffdf7" class="i"/>
+      <path d="M85 117 C158 119 160 190 123 205 M85 117 C12 119 10 190 47 205" fill="none" class="i" marker-end="url(#a)"/>
+    </g>
+    <g transform="translate(815 163)">
+      <rect width="140" height="377" rx="18" fill="#dcebc1" class="i"/>
+      <text x="70" y="38" text-anchor="middle" class="h">Role split</text>
+      <text x="70" y="76" text-anchor="middle" class="b">Plan</text>
+      <text x="70" y="110" text-anchor="middle" class="b">Execute</text>
+      <text x="70" y="144" text-anchor="middle" class="b">Evaluate</text>
+      <path d="M70 165 V280" class="i" marker-end="url(#a)"/>
+    </g>
+    <g transform="translate(970 105)">
+      <rect width="150" height="435" rx="18" fill="#dcebc1" class="i"/>
+      <text x="75" y="38" text-anchor="middle" class="h">Multi-Agent</text>
+      <circle cx="75" cy="129" r="28" fill="#fffdf7" class="i"/>
+      <circle cx="43" cy="225" r="25" fill="#fffdf7" class="i"/>
+      <circle cx="107" cy="225" r="25" fill="#fffdf7" class="i"/>
+      <circle cx="75" cy="317" r="25" fill="#fffdf7" class="i"/>
+      <path d="M68 157 49 198 M82 157 101 198 M55 248 69 291 M95 248 81 291" class="i"/>
+    </g>
+  </g>
+  <text x="600" y="618" text-anchor="middle" class="s h">Every new decision also adds permission, cost, coordination, and validation work</text>
+</svg>

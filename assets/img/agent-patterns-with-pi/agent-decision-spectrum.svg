@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Agent &#x5F62;&#x6001;&#x7684;&#x51B3;&#x7B56;&#x6743;&#x9636;&#x68AF;</title>
+  <desc id="desc">&#x4ECE; Prompt Routing &#x5230; Multi-Agent&#xFF0C;&#x9010;&#x6B65;&#x589E;&#x52A0;&#x80FD;&#x529B;&#x9009;&#x62E9;&#x3001;&#x5DE5;&#x5177;&#x9009;&#x62E9;&#x3001;&#x89C4;&#x5212;&#x3001;&#x6062;&#x590D;&#x548C;&#x7ED3;&#x675F;&#x5224;&#x65AD;&#x3002;</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#292929"/>
+    </marker>
+    <style>.i{stroke:#292929;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.s{font-family:Arial Unicode MS;fill:#1d1d1d}.t{font-size:39px;font-weight:750}.h{font-size:21px;font-weight:700}.b{font-size:16px;font-weight:550}.n{font-size:15px;fill:#444}</style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <text x="600" y="60" text-anchor="middle" class="s t">Agent &#x7684;&#x5F62;&#x6001;&#xFF0C;&#x53D6;&#x51B3;&#x4E8E;&#x5B83;&#x80FD;&#x51B3;&#x5B9A;&#x4EC0;&#x4E48;</text>
+  <text x="600" y="94" text-anchor="middle" class="s b">&#x89D2;&#x8272;&#x8D8A;&#x591A;&#x4E0D;&#x4EE3;&#x8868;&#x8D8A;&#x81EA;&#x4E3B;&#xFF1B;&#x6BCF;&#x4E00;&#x7EA7;&#x53EA;&#x662F;&#x589E;&#x52A0;&#x4E00;&#x79CD;&#x8FD0;&#x884C;&#x65F6;&#x51B3;&#x7B56;&#x6743;</text>
+  <path d="M80 557 H1120" class="i" marker-end="url(#a)"/>
+  <g class="s">
+    <g transform="translate(75 395)">
+      <rect width="170" height="145" rx="18" fill="#90c7dc" class="i"/>
+      <text x="85" y="37" text-anchor="middle" class="h">Prompt Routing</text>
+      <text x="85" y="72" text-anchor="middle" class="b">&#x9009;&#x62E9;&#x89D2;&#x8272;</text>
+      <text x="85" y="105" text-anchor="middle" class="n">&#x4E00;&#x6B21;&#x56DE;&#x7B54;</text>
+    </g>
+    <g transform="translate(260 337)">
+      <rect width="170" height="203" rx="18" fill="#90c7dc" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">&#x8F6F;&#x8DEF;&#x7531;</text>
+      <text x="85" y="75" text-anchor="middle" class="b">&#x9009;&#x62E9;&#x80FD;&#x529B;</text>
+      <text x="85" y="109" text-anchor="middle" class="n">Prompt / Skill</text>
+      <text x="85" y="134" text-anchor="middle" class="n">Context / Agent</text>
+    </g>
+    <g transform="translate(445 279)">
+      <rect width="170" height="261" rx="18" fill="#ffd36a" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">&#x5DE5;&#x5177;&#x5339;&#x914D;</text>
+      <text x="85" y="75" text-anchor="middle" class="b">&#x9009;&#x62E9;&#x52A8;&#x4F5C;</text>
+      <rect x="35" y="112" width="42" height="42" rx="8" fill="#fffdf7" class="i"/>
+      <rect x="93" y="112" width="42" height="42" rx="8" fill="#fffdf7" class="i"/>
+    </g>
+    <g transform="translate(630 221)">
+      <rect width="170" height="319" rx="18" fill="#f4b66e" class="i"/>
+      <text x="85" y="38" text-anchor="middle" class="h">Agent Loop</text>
+      <text x="85" y="75" text-anchor="middle" class="b">&#x89C4;&#x5212; &#xB7; &#x6062;&#x590D; &#xB7; &#x7ED3;&#x675F;</text>
+      <circle cx="85" cy="155" r="38" fill="#fffdf7" class="i"/>
+      <path d="M85 117 C158 119 160 190 123 205 M85 117 C12 119 10 190 47 205" fill="none" class="i" marker-end="url(#a)"/>
+    </g>
+    <g transform="translate(815 163)">
+      <rect width="140" height="377" rx="18" fill="#dcebc1" class="i"/>
+      <text x="70" y="38" text-anchor="middle" class="h">&#x89D2;&#x8272;&#x5206;&#x79BB;</text>
+      <text x="70" y="76" text-anchor="middle" class="b">Plan</text>
+      <text x="70" y="110" text-anchor="middle" class="b">Execute</text>
+      <text x="70" y="144" text-anchor="middle" class="b">Evaluate</text>
+      <path d="M70 165 V280" class="i" marker-end="url(#a)"/>
+    </g>
+    <g transform="translate(970 105)">
+      <rect width="150" height="435" rx="18" fill="#dcebc1" class="i"/>
+      <text x="75" y="38" text-anchor="middle" class="h">Multi-Agent</text>
+      <circle cx="75" cy="129" r="28" fill="#fffdf7" class="i"/>
+      <circle cx="43" cy="225" r="25" fill="#fffdf7" class="i"/>
+      <circle cx="107" cy="225" r="25" fill="#fffdf7" class="i"/>
+      <circle cx="75" cy="317" r="25" fill="#fffdf7" class="i"/>
+      <path d="M68 157 49 198 M82 157 101 198 M55 248 69 291 M95 248 81 291" class="i"/>
+    </g>
+  </g>
+  <text x="600" y="618" text-anchor="middle" class="s h">&#x65B0;&#x589E;&#x51B3;&#x7B56;&#x6743;&#xFF0C;&#x4E5F;&#x65B0;&#x589E;&#x6743;&#x9650;&#x3001;&#x6210;&#x672C;&#x3001;&#x534F;&#x8C03;&#x548C;&#x9A8C;&#x6536;&#x8D23;&#x4EFB;</text>
+</svg>

@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">A minimal Agent Loop in Pi</title>
+  <desc id="desc">A goal enters a Pi Session, the model selects read-only tools, results return to the model, and the model continues or stops within external boundaries.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#292929"/>
+    </marker>
+    <style>.i{stroke:#292929;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.d{stroke:#b4513d;stroke-width:3;stroke-dasharray:10 8;fill:none}.s{font-family:Arial Unicode MS;fill:#1d1d1d}.t{font-size:40px;font-weight:750}.h{font-size:25px;font-weight:700}.b{font-size:18px;font-weight:550}.n{font-size:16px;fill:#444}</style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <text x="600" y="60" text-anchor="middle" class="s t">Pi makes the minimal Agent Loop visible</text>
+  <text x="600" y="95" text-anchor="middle" class="s b">The model decides whether to continue from real tool results</text>
+  <rect x="210" y="135" width="780" height="410" rx="28" fill="#fffdf7" class="d"/>
+  <text x="600" y="168" text-anchor="middle" class="s n">boundary: tool allowlist &#xB7; project trust &#xB7; external container / low privilege</text>
+  <rect x="55" y="255" width="180" height="120" rx="18" fill="#90c7dc" class="i"/>
+  <text x="145" y="301" text-anchor="middle" class="s h">Goal</text>
+  <text x="145" y="335" text-anchor="middle" class="s n">read only</text>
+  <rect x="300" y="215" width="210" height="200" rx="22" fill="#ffd36a" class="i"/>
+  <text x="405" y="265" text-anchor="middle" class="s h">Pi Session</text>
+  <text x="405" y="306" text-anchor="middle" class="s b">context + state</text>
+  <text x="405" y="339" text-anchor="middle" class="s n">messages + tools</text>
+  <text x="405" y="380" text-anchor="middle" class="s n">returns every result</text>
+  <circle cx="660" cy="315" r="98" fill="#f4b66e" class="i"/>
+  <text x="660" y="306" text-anchor="middle" class="s h">MODEL</text>
+  <text x="660" y="342" text-anchor="middle" class="s b">act / decide to stop</text>
+  <rect x="825" y="200" width="280" height="230" rx="22" fill="#dcebc1" class="i"/>
+  <text x="965" y="246" text-anchor="middle" class="s h">Read-only tools</text>
+  <rect x="858" y="278" width="91" height="53" rx="10" fill="#fffdf7" class="i"/>
+  <rect x="981" y="278" width="91" height="53" rx="10" fill="#fffdf7" class="i"/>
+  <rect x="858" y="349" width="91" height="53" rx="10" fill="#fffdf7" class="i"/>
+  <rect x="981" y="349" width="91" height="53" rx="10" fill="#fffdf7" class="i"/>
+  <text x="903" y="312" text-anchor="middle" class="s n">read</text>
+  <text x="1026" y="312" text-anchor="middle" class="s n">grep</text>
+  <text x="903" y="383" text-anchor="middle" class="s n">find</text>
+  <text x="1026" y="383" text-anchor="middle" class="s n">ls</text>
+  <path d="M238 315 H289 M518 315 H550 M760 315 H814" class="i" marker-end="url(#a)"/>
+  <path d="M965 440 C965 505 660 520 660 425" fill="none" class="i" marker-end="url(#a)"/>
+  <text x="834" y="505" text-anchor="middle" class="s b">tool result</text>
+  <path d="M660 423 C600 495 510 490 452 425" fill="none" class="i" marker-end="url(#a)"/>
+  <rect x="300" y="580" width="600" height="55" rx="14" fill="#fff2aa" class="i"/>
+  <text x="600" y="615" text-anchor="middle" class="s b">Tool access is not an OS sandbox</text>
+</svg>

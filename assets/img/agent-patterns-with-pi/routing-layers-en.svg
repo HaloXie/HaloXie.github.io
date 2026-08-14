@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Automatic selection happens at different layers</title>
+  <desc id="desc">A model may select a Prompt, Skill, Tool, or Agent; each layer solves a different problem and does not imply the others.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0 0 10 5 0 10z" fill="#292929"/>
+    </marker>
+    <style>.i{stroke:#292929;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.s{font-family:Arial Unicode MS;fill:#1d1d1d}.t{font-size:39px;font-weight:750}.h{font-size:25px;font-weight:700}.b{font-size:17px;font-weight:550}.n{font-size:16px;fill:#444}</style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <text x="600" y="60" text-anchor="middle" class="s t">&#x201C;Automatic selection&#x201D; can mean four different layers</text>
+  <text x="600" y="95" text-anchor="middle" class="s b">Selecting a Tool does not automatically provide a Skill, specialist Agent, or full loop</text>
+  <rect x="60" y="150" width="210" height="355" rx="20" fill="#90c7dc" class="i"/>
+  <rect x="350" y="150" width="210" height="355" rx="20" fill="#ffd36a" class="i"/>
+  <rect x="640" y="150" width="210" height="355" rx="20" fill="#f4b66e" class="i"/>
+  <rect x="930" y="150" width="210" height="355" rx="20" fill="#dcebc1" class="i"/>
+  <g class="s">
+    <text x="165" y="204" text-anchor="middle" class="h">PROMPT</text>
+    <text x="165" y="245" text-anchor="middle" class="n">Role + instructions?</text>
+    <path d="M105 292 h120 v120 H105z" fill="#fffdf7" class="i"/>
+    <path d="M125 320 h80 M125 350 h60 M125 380 h72" class="i"/>
+    <text x="165" y="464" text-anchor="middle" class="n">changes perspective</text>
+    <text x="455" y="204" text-anchor="middle" class="h">SKILL</text>
+    <text x="455" y="245" text-anchor="middle" class="b">Which procedure?</text>
+    <circle cx="407" cy="320" r="13" fill="#fffdf7" class="i"/>
+    <circle cx="455" cy="365" r="13" fill="#fffdf7" class="i"/>
+    <circle cx="503" cy="410" r="13" fill="#fffdf7" class="i"/>
+    <path d="M417 329 445 356 M465 374 493 401" class="i" marker-end="url(#a)"/>
+    <text x="455" y="464" text-anchor="middle" class="n">loads process and rules</text>
+    <text x="745" y="204" text-anchor="middle" class="h">TOOL</text>
+    <text x="745" y="245" text-anchor="middle" class="b">Which action?</text>
+    <rect x="686" y="302" width="52" height="52" rx="9" fill="#fffdf7" class="i"/>
+    <rect x="752" y="302" width="52" height="52" rx="9" fill="#fffdf7" class="i"/>
+    <rect x="719" y="370" width="52" height="52" rx="9" fill="#fffdf7" class="i"/>
+    <text x="745" y="464" text-anchor="middle" class="n">adds external capability</text>
+    <text x="1035" y="204" text-anchor="middle" class="h">AGENT</text>
+    <text x="1035" y="245" text-anchor="middle" class="b">Who receives the goal?</text>
+    <circle cx="1035" cy="345" r="65" fill="#fffdf7" class="i"/>
+    <circle cx="1013" cy="332" r="8" fill="#292929"/>
+    <circle cx="1057" cy="332" r="8" fill="#292929"/>
+    <path d="M1009 368 Q1035 386 1061 368" fill="none" class="i"/>
+    <text x="1035" y="464" text-anchor="middle" class="n">delegates state and loop</text>
+  </g>
+  <path d="M282 327 H337 M572 327 H627 M862 327 H917" class="i" marker-end="url(#a)"/>
+  <rect x="220" y="555" width="760" height="63" rx="14" fill="#fff2aa" class="i"/>
+  <text x="600" y="594" text-anchor="middle" class="s h">Name the selected object before debating whether it is an Agent</text>
+</svg>
