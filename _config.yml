@@ -22,7 +22,9 @@ exclude_from_localization:
   # `lang-exclusive` front matter can prevent localized copies.
   - assets/js/dist
   - assets/img/avatar
+  - assets/img/agent-patterns-with-pi
   - assets/img/chezmoi-secure-dotfiles
+  - assets/img/chat-workflow-agent-guide
   - assets/img/from-skills-to-abilities
   - assets/img/harness-engineering
   - assets/img/language-choose
