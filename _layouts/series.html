@@ -13,7 +13,11 @@ layout: page
 {% for stage in series.stages %}
   {% for lesson in stage.lessons %}
     {% assign total_lessons = total_lessons | plus: 1 %}
-    {% if lesson.status == 'published' %}
+    {% assign lesson_status = lesson.status %}
+    {% if lesson.statuses and lesson.statuses[active_lang] %}
+      {% assign lesson_status = lesson.statuses[active_lang] %}
+    {% endif %}
+    {% if lesson_status == 'published' %}
       {% assign published_lessons = published_lessons | plus: 1 %}
       {% unless first_lesson_path %}
         {% assign first_lesson_path = lesson.paths[active_lang] %}
@@ -80,7 +84,11 @@ layout: page
       {% assign stage_locale = stage.locales[active_lang] %}
       {% assign stage_published = 0 %}
       {% for lesson in stage.lessons %}
-        {% if lesson.status == 'published' %}
+        {% assign lesson_status = lesson.status %}
+        {% if lesson.statuses and lesson.statuses[active_lang] %}
+          {% assign lesson_status = lesson.statuses[active_lang] %}
+        {% endif %}
+        {% if lesson_status == 'published' %}
           {% assign stage_published = stage_published | plus: 1 %}
         {% endif %}
       {% endfor %}
@@ -98,16 +106,20 @@ layout: page
         <ol class="series-lessons">
           {% for lesson in stage.lessons %}
             {% assign lesson_locale = lesson.locales[active_lang] %}
-            {% if lesson.status == 'published' %}
+            {% assign lesson_status = lesson.status %}
+            {% if lesson.statuses and lesson.statuses[active_lang] %}
+              {% assign lesson_status = lesson.statuses[active_lang] %}
+            {% endif %}
+            {% if lesson_status == 'published' %}
               {% assign status_label = published_label %}
-            {% elsif lesson.status == 'draft' %}
+            {% elsif lesson_status == 'draft' %}
               {% assign status_label = draft_label %}
             {% else %}
               {% assign status_label = planned_label %}
             {% endif %}
 
-            <li class="series-lesson series-lesson--{{ lesson.status }}">
-              {% if lesson.status == 'published' %}
+            <li class="series-lesson series-lesson--{{ lesson_status }}">
+              {% if lesson_status == 'published' %}
                 <a href="{{ lesson.paths[active_lang] | relative_url }}">
                   <span class="series-lesson__number">{{ lesson.number }}</span>
                   <span class="series-lesson__copy">

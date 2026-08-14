@@ -78,6 +78,18 @@
     {% endfor %}
   {% elsif page.layout == 'tag' %}
     {% assign is_taxonomy_page = true %}
+    {% assign tag_has_counterpart = false %}
+    {% if site.active_lang == 'zh-CN' %}
+      {% assign counterpart_language = 'en' %}
+    {% else %}
+      {% assign counterpart_language = 'zh-CN' %}
+    {% endif %}
+    {% for tagged_post in page.posts %}
+      {% if tagged_post.available_languages contains counterpart_language %}
+        {% assign tag_has_counterpart = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
   {% endif %}
 
   {% if is_taxonomy_page %}
@@ -87,7 +99,10 @@
       {% if page.layout == 'category' %}
         {% assign alternate_taxonomy_path = taxonomy_paths[language] %}
       {% else %}
-        {% assign alternate_taxonomy_path = page.url %}
+        {% assign alternate_taxonomy_path = nil %}
+        {% if language == site.active_lang or tag_has_counterpart %}
+          {% assign alternate_taxonomy_path = page.url %}
+        {% endif %}
       {% endif %}
       {% if alternate_taxonomy_path %}
         {%- capture alternate_taxonomy_url -%}{{ site.url }}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}{{ alternate_taxonomy_path }}{%- endcapture -%}

@@ -80,30 +80,34 @@ series_list.each do |series|
 
   lessons.each do |lesson|
     lesson_id = lesson.fetch("page_id")
-    status = lesson["status"]
-    errors << "#{series_id}/#{lesson_id}: invalid status #{status.inspect}" unless LESSON_STATUSES.include?(status)
+    default_status = lesson["status"]
+    errors << "#{series_id}/#{lesson_id}: invalid status #{default_status.inspect}" unless LESSON_STATUSES.include?(default_status)
+    localized_statuses = lesson.fetch("statuses", {})
+    unknown_status_languages = localized_statuses.keys - LANGUAGES
+    errors << "#{series_id}/#{lesson_id}: unknown status languages #{unknown_status_languages.inspect}" unless unknown_status_languages.empty?
+    localized_statuses.each do |language, status|
+      errors << "#{series_id}/#{lesson_id}/#{language}: invalid status #{status.inspect}" unless LESSON_STATUSES.include?(status)
+    end
 
     LANGUAGES.each do |language|
       locale = lesson.fetch("locales", {}).fetch(language, {})
       %w[title description].each do |field|
         errors << "#{series_id}/#{lesson_id}/#{language}: missing #{field}" if locale[field].to_s.strip.empty?
       end
-    end
-
-    if status == "published"
-      LANGUAGES.each do |language|
+      status = localized_statuses.fetch(language, default_status)
+      expected_path = lesson.fetch("paths", {})[language]
+      if status == "published"
         post = posts.dig(lesson_id, language)
         unless post
-          errors << "#{series_id}/#{lesson_id}: published lesson missing #{language} post"
+          errors << "#{series_id}/#{lesson_id}/#{language}: published lesson missing post"
           next
         end
-        expected_path = lesson.fetch("paths", {})[language]
         errors << "#{series_id}/#{lesson_id}/#{language}: missing published path" if expected_path.to_s.empty?
         actual_path = post.fetch("data")["permalink"]
         errors << "#{series_id}/#{lesson_id}/#{language}: path #{expected_path.inspect} != post permalink #{actual_path.inspect}" unless expected_path == actual_path
+      elsif !expected_path.to_s.empty?
+        errors << "#{series_id}/#{lesson_id}/#{language}: #{status} lesson must not expose a link"
       end
-    elsif lesson.key?("paths")
-      errors << "#{series_id}/#{lesson_id}: #{status} lesson must not expose a link"
     end
   end
 end

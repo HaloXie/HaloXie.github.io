@@ -12,7 +12,11 @@ ROOT = Pathname.new(__dir__).parent
 SITE = ROOT.join("_site")
 ORIGIN = "https://halo.xin"
 LANGUAGES = { "zh-CN" => "", "en" => "/en" }.freeze
-SLUGS = ROOT.glob("_posts/zh-CN/*.md").map { |path| path.basename(".md").to_s.sub(/^\d{4}-\d{2}-\d{2}-/, "") }.sort.freeze
+POST_SLUGS_BY_LANG = LANGUAGES.keys.to_h do |language|
+  slugs = ROOT.glob("_posts/#{language}/*.md").map { |path| path.basename(".md").to_s.sub(/^\d{4}-\d{2}-\d{2}-/, "") }.sort
+  [language, slugs]
+end.freeze
+PAIRED_POST_SLUGS = POST_SLUGS_BY_LANG.values.reduce(:&).freeze
 SITE_LOCALES = YAML.safe_load(ROOT.join("_data/site-locales.yml").read).freeze
 TAXONOMIES = YAML.safe_load(ROOT.join("_data/taxonomies.yml").read).freeze
 SERIES = YAML.safe_load(ROOT.join("_data/series.yml").read).fetch("series").freeze
@@ -100,6 +104,10 @@ def expected_alternates(base_path)
   }
 end
 
+def lesson_status(lesson, language)
+  lesson.fetch("statuses", {}).fetch(language, lesson.fetch("status"))
+end
+
 def assert_discovery_links(doc, url, alternates, switch_paths, errors)
   rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
   errors << "#{url}: wrong hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == alternates
@@ -156,7 +164,7 @@ LANGUAGES.each do |lang, prefix|
   SERIES.reject { |series| series["status"] == "planned" }.each do |series|
     expected_pages["#{prefix}#{series.fetch('path')}"] = lang
   end
-  SLUGS.each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
+  POST_SLUGS_BY_LANG.fetch(lang).each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
 end
 
 # The public message page is localized but intentionally absent from the primary tabs.
@@ -189,7 +197,18 @@ expected_pages.each do |url, lang|
   assert_metadata(doc, url, errors, PAGE_DESCRIPTIONS.dig(base_path, lang))
   errors << "#{url}: html lang must be #{lang}" unless doc.at("html")&.[]("lang") == lang
 
-  assert_discovery_links(doc, url, expected_alternates(base_path), [base_path, "/en#{base_path}"], errors)
+  post_slug = base_path[%r{\A/posts/([^/]+)/\z}, 1]
+  if post_slug && !PAIRED_POST_SLUGS.include?(post_slug)
+    rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
+    expected_single_language_alternates = {
+      "zh-CN" => "#{ORIGIN}#{base_path}",
+      "x-default" => "#{ORIGIN}#{base_path}"
+    }
+    errors << "#{url}: wrong pending-translation hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == expected_single_language_alternates
+    errors << "#{url}: pending-translation post must not expose a language switcher" unless doc.css("#topbar nav.language-switcher").empty?
+  else
+    assert_discovery_links(doc, url, expected_alternates(base_path), [base_path, "/en#{base_path}"], errors)
+  end
 
   post_links = content_post_links(doc)
   wrong_links = post_links.reject { |href| href.start_with?("#{prefix}/posts/") }
@@ -214,8 +233,8 @@ LANGUAGES.each do |lang, prefix|
     next unless series_doc
 
     lessons = series.fetch("stages").flat_map { |stage| stage.fetch("lessons") }
-    published_count = lessons.count { |lesson| lesson["status"] == "published" }
-    planned_count = lessons.count { |lesson| lesson["status"] == "planned" }
+    published_count = lessons.count { |lesson| lesson_status(lesson, lang) == "published" }
+    planned_count = lessons.count { |lesson| lesson_status(lesson, lang) == "planned" }
     errors << "#{series_url}: expected #{series.fetch('stages').length} stages" unless series_doc.css(".series-stage").length == series.fetch("stages").length
     errors << "#{series_url}: expected #{lessons.length} lessons" unless series_doc.css(".series-lesson").length == lessons.length
     errors << "#{series_url}: expected #{published_count} published lessons" unless series_doc.css(".series-lesson--published a").length == published_count
@@ -454,17 +473,34 @@ LANGUAGES.each do |lang, prefix|
   errors << "#{prefix}/categories: taxonomy map drift; rendered=#{rendered.inspect}, mapped=#{expected.inspect}" unless rendered == expected
 end
 
-# Tags currently have language-neutral stable names, so their counterpart path is identical.
-SITE.join("tags").glob("*/index.html").each do |path|
-  tag_path = "/tags/#{path.parent.basename}/"
-  alternates = expected_alternates(tag_path)
-  switch_paths = [tag_path, "/en#{tag_path}"]
-  LANGUAGES.each_value do |prefix|
+# Tags keep stable names, but a Chinese-first post may introduce a tag before
+# its English counterpart exists.
+tag_paths_by_lang = LANGUAGES.to_h do |lang, prefix|
+  directory = SITE.join(prefix.delete_prefix("/"), "tags")
+  paths = directory.glob("*/index.html").map { |path| "/tags/#{path.parent.basename}/" }.sort
+  [lang, paths]
+end
+
+tag_paths_by_lang.values.flatten.uniq.each do |tag_path|
+  present_languages = LANGUAGES.keys.select { |lang| tag_paths_by_lang.fetch(lang).include?(tag_path) }
+  present_languages.each do |lang|
+    prefix = LANGUAGES.fetch(lang)
     url = "#{prefix}#{tag_path}"
     doc = document(site_file(url), errors)
     next unless doc
     assert_metadata(doc, url, errors)
-    assert_discovery_links(doc, url, alternates, switch_paths, errors)
+
+    if present_languages.sort == LANGUAGES.keys.sort
+      assert_discovery_links(doc, url, expected_alternates(tag_path), [tag_path, "/en#{tag_path}"], errors)
+    else
+      expected_single_language_alternates = {
+        "zh-CN" => "#{ORIGIN}#{tag_path}",
+        "x-default" => "#{ORIGIN}#{tag_path}"
+      }
+      rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
+      errors << "#{url}: wrong single-language tag hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == expected_single_language_alternates
+      errors << "#{url}: single-language tag must not expose a language switcher" unless doc.css("#topbar nav.language-switcher").empty?
+    end
   end
 end
 
@@ -485,7 +521,7 @@ LANGUAGES.each do |lang, prefix|
     wrong = locations.select { |location| location.start_with?("#{ORIGIN}/en/") }
   end
   errors << "#{prefix}/sitemap.xml: cross-language loc entries #{wrong.inspect}" unless wrong.empty?
-  SLUGS.each do |slug|
+  POST_SLUGS_BY_LANG.fetch(lang).each do |slug|
     expected = "#{ORIGIN}#{prefix}/posts/#{slug}/"
     errors << "#{prefix}/sitemap.xml: missing #{expected}" unless locations.include?(expected)
   end
@@ -573,7 +609,7 @@ errors << "AGENTS.md must not be published under /en" if SITE.join("en/AGENTS.md
 cname_files = SITE.glob("**/CNAME").map { |path| path.relative_path_from(SITE).to_s }
 errors << "expected only root CNAME, got #{cname_files.inspect}" unless cname_files == ["CNAME"]
 
-SLUGS.each do |slug|
+POST_SLUGS_BY_LANG.fetch("zh-CN").each do |slug|
   errors << "original Chinese URL missing: /posts/#{slug}/" unless SITE.join("posts", slug, "index.html").file?
 end
 

@@ -56,6 +56,11 @@ series:
           - number: "03"
             page_id: agent-architecture-map
             status: planned
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /posts/agent-architecture-map/
             locales:
               zh-CN:
                 title: Agent 架构全景图

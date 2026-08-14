@@ -1,6 +1,7 @@
 {% assign active_language = site.active_lang | default: site.lang %}
 {% assign available_languages = page.available_languages | default: empty %}
 {% assign taxonomy_paths = nil %}
+{% assign tag_has_counterpart = false %}
 
 {% if page.layout == 'category' %}
   {% for taxonomy in site.data.taxonomies.categories %}
@@ -12,7 +13,28 @@
   {% endfor %}
 {% endif %}
 
-{% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths or page.layout == 'tag' %}
+{% if page.layout == 'tag' %}
+  {% if active_language == 'zh-CN' %}
+    {% assign counterpart_language = 'en' %}
+  {% else %}
+    {% assign counterpart_language = 'zh-CN' %}
+  {% endif %}
+  {% for tagged_post in page.posts %}
+    {% if tagged_post.available_languages contains counterpart_language %}
+      {% assign tag_has_counterpart = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% assign show_language_switcher = false %}
+{% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths %}
+  {% assign show_language_switcher = true %}
+{% elsif page.layout == 'tag' and tag_has_counterpart %}
+  {% assign show_language_switcher = true %}
+{% endif %}
+
+{% if show_language_switcher %}
   {% for language in site.languages %}
     {% if page.layout == 'home' %}
       {% assign translation_path = '/' %}

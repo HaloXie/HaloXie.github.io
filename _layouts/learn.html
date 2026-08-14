@@ -36,7 +36,11 @@ layout: page
       {% for stage in series.stages %}
         {% for lesson in stage.lessons %}
           {% assign lesson_count = lesson_count | plus: 1 %}
-          {% if lesson.status == 'published' %}
+          {% assign lesson_status = lesson.status %}
+          {% if lesson.statuses and lesson.statuses[active_lang] %}
+            {% assign lesson_status = lesson.statuses[active_lang] %}
+          {% endif %}
+          {% if lesson_status == 'published' %}
             {% assign published_count = published_count | plus: 1 %}
           {% endif %}
         {% endfor %}

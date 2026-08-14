@@ -2,16 +2,17 @@
 
 本文件是 Codex 在本仓库工作的项目级指令。涉及 `_posts/` 文章及其配图时，必须遵守以下约束。
 
-## 中英双语发布
+## 中文先行、定稿后英译
 
-- 每篇新文章必须在同一次交付中提供 `zh-CN` 和 `en` 两个完整版本；不允许只提交单语文章后续再补，也不允许用占位文案、机器直译草稿或复制原文通过检查。
-- 中文文章放在 `_posts/zh-CN/`，英文文章放在 `_posts/en/`。同一文章的两个文件必须使用相同的 `YYYY-MM-DD-<slug>.md` 文件名，并保持 front matter 中的 `date`、`page_id` 和由文件名确定的 slug 一致。
+- 系列文章先以中文完整编写并正常发布，明昊在线上读完整个系列并确认定稿后，再统一进行英文改写；不得为了通过门禁提前生成英文草稿、占位文案或机器直译版本。
+- 尚未英译的中文文章放在 `_posts/zh-CN/`，并在 front matter 声明 `translation_status: pending`。它是正式发布的中文文章，不是 `_drafts/` 草稿。
+- 英文版本完成后放在 `_posts/en/`。同一文章的两个文件必须使用相同的 `YYYY-MM-DD-<slug>.md` 文件名，并保持 front matter 中的 `date`、`page_id` 和由文件名确定的 slug 一致；同时删除中文文章的 `translation_status: pending`。
 - 两个版本分别声明 `lang: zh-CN` 和 `lang: en`；`page_id` 使用稳定的英文 kebab-case slug，作为语言切换和 SEO 关联键。
 - 翻译结果必须作为 Markdown 文件进入 Git，允许人工审校和后续修订。Jekyll build、浏览器运行时和页面请求不得调用外部翻译 API。
 - 标题、description、正文、图片 alt text 和图内面向读者的文字必须随文章语言本地化；代码标识符、API、CLI、产品名和无需翻译的专有名词保持原文。
 - 两个语言版本共用图片时，必须确认图片不依赖单一语言文字；包含中文或英文说明文字的图片应分别提供本地化版本，并在对应文章中引用正确文件。
-- 提交前必须运行 `ruby scripts/check-translations.rb`。配对、语言、`page_id`、日期或 slug 检查失败时，不得进入构建或发布。
-- 双语门禁不提供历史豁免或新文章例外；缺少任一语言版本时不得构建或发布。
+- 提交前必须运行 `ruby scripts/check-translations.rb`。门禁必须允许显式标记为 `translation_status: pending` 的中文文章单语发布，同时拒绝未标记的缺失翻译、英文单边文章、过期 pending 标记、配对语言错误及 `page_id`、日期或 slug 漂移。
+- 中文待译期间，英文站不得生成空文章、复制中文正文或死链接；学习路线按语言分别显示发布状态。整个中文系列确认定稿后，英文转译属于必须收口项，不能无限保留 pending。
 
 ## 目标
 

@@ -11,7 +11,7 @@ POSTS_PATH = ROOT.join("_posts")
 TABS_PATH = ROOT.join("_tabs")
 POST_NAME = /\A(?<date>\d{4}-\d{2}-\d{2})-(?<slug>.+)\.md\z/
 
-Post = Struct.new(:path, :lang, :page_id, :date, :slug, :body, keyword_init: true)
+Post = Struct.new(:path, :lang, :page_id, :date, :slug, :body, :translation_status, keyword_init: true)
 
 def load_yaml(path, source)
   YAML.safe_load(source, permitted_classes: [Date, Time], aliases: true) || {}
@@ -59,6 +59,8 @@ posts = POSTS_PATH.glob("**/*.md").sort.each_with_object([]) do |path, result|
   page_id = data["page_id"].to_s
   permalink = data["permalink"].to_s
   date = data["date"]
+  translation_status = data["translation_status"]
+  exclusive_languages = Array(data["lang-exclusive"])
   slug = match[:slug]
   expected_permalink = "/posts/#{slug}/"
 
@@ -69,8 +71,27 @@ posts = POSTS_PATH.glob("**/*.md").sort.each_with_object([]) do |path, result|
   errors << "#{relative}: front-matter date is required" if date.nil?
   errors << "#{relative}: filename date must match front-matter date" if date && date.strftime("%Y-%m-%d") != match[:date]
   errors << "#{relative}: article body is empty" if body.to_s.strip.length < 200
+  unless translation_status.nil? || translation_status == "pending"
+    errors << "#{relative}: translation_status must be pending when present"
+  end
+  if lang == "en" && translation_status
+    errors << "#{relative}: English posts must not declare translation_status"
+  end
+  if translation_status == "pending" && exclusive_languages != ["zh-CN"]
+    errors << "#{relative}: pending Chinese posts must declare lang-exclusive: [zh-CN]"
+  elsif translation_status.nil? && !exclusive_languages.empty?
+    errors << "#{relative}: lang-exclusive is only allowed while translation_status is pending"
+  end
 
-  result << Post.new(path: relative.to_s, lang: lang, page_id: page_id, date: date, slug: slug, body: body.to_s)
+  result << Post.new(
+    path: relative.to_s,
+    lang: lang,
+    page_id: page_id,
+    date: date,
+    slug: slug,
+    body: body.to_s,
+    translation_status: translation_status
+  )
 end
 
 posts.group_by(&:page_id).each do |page_id, translations|
@@ -81,8 +102,14 @@ posts.group_by(&:page_id).each do |page_id, translations|
   errors << "#{page_id}: duplicate translations for #{duplicates.join(', ')}" unless duplicates.empty?
 
   missing = languages - by_lang.keys
+  if missing == ["en"] && by_lang["zh-CN"]&.one? && by_lang["zh-CN"].first.translation_status == "pending"
+    next
+  end
   errors << "#{page_id}: missing translations for #{missing.join(', ')}" unless missing.empty?
   next unless missing.empty? && duplicates.empty?
+
+  pending = translations.select { |post| post.translation_status == "pending" }
+  errors << "#{page_id}: remove stale translation_status after English is added" unless pending.empty?
 
   dates = translations.map { |post| post.date.to_s }.uniq
   slugs = translations.map(&:slug).uniq
@@ -129,7 +156,9 @@ end
 
 if errors.empty?
   complete_pairs = posts.group_by(&:page_id).count { |_page_id, entries| entries.map(&:lang).uniq.sort == languages.sort }
+  pending_translations = posts.count { |post| post.lang == "zh-CN" && post.translation_status == "pending" }
   puts "Translation check passed: #{complete_pairs} complete post pair(s), " \
+       "#{pending_translations} Chinese post(s) pending series-level translation, " \
        "#{tabs.length} complete tab pair(s) (#{languages.join(', ')})."
 else
   warn "Translation check failed with #{errors.length} error(s):"

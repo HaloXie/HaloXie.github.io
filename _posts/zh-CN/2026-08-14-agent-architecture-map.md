@@ -3,6 +3,8 @@ title: "Agent 架构全景图：经典 Agent、LLM Agent 和 Multi-Agent 到底�
 description: "用四条独立坐标轴整理 Agent 架构，分清 Reflex、Goal、BDI、Reactive、LLM Agent 与 Multi-Agent"
 date: 2026-08-14 18:50:00 +0800
 lang: zh-CN
+translation_status: pending
+lang-exclusive: [zh-CN]
 page_id: agent-architecture-map
 permalink: /posts/agent-architecture-map/
 categories: [AI]
