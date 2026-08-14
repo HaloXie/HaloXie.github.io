@@ -48,7 +48,7 @@ flowchart LR
 
 Agent 从环境得到信息，根据已有状态和目标选择行动，行动再改变环境。
 
-《Artificial Intelligence: A Modern Approach》（AIMA）把 Agent Function 写成“感知历史到行动的映射”。书里还强调 **Rational Agent**：它会根据目前能拿到的信息，选择预期最有利于目标的行动。
+[《Artificial Intelligence: A Modern Approach》](https://aima.cs.berkeley.edu/)（AIMA；配套开源实现：[aimacode/aima-python](https://github.com/aimacode/aima-python)）把 Agent Function 写成“感知历史到行动的映射”。书里还强调 **Rational Agent**：它会根据目前能拿到的信息，选择预期最有利于目标的行动。
 
 “理性”不代表全知全能，也不代表结果永远正确。一个 Agent 可能因为信息不足而失败，但只要它在现有证据下作出了合理选择，仍然可以是 rational 的。
 

@@ -55,10 +55,7 @@ series:
                 description: Understand the decision spectrum and run a constrained Agent Loop with Pi.
           - number: "03"
             page_id: agent-architecture-map
-            status: published
-            paths:
-              zh-CN: /posts/agent-architecture-map/
-              en: /posts/agent-architecture-map/
+            status: planned
             locales:
               zh-CN:
                 title: Agent 架构全景图
