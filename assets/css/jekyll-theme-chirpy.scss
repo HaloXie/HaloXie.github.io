@@ -297,16 +297,16 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
 }
 
 :root[data-bs-theme='dark'] {
-  --learning-paper: #211f1c;
-  --learning-paper-soft: #292620;
-  --learning-ink: #f0e9df;
-  --learning-muted: #aaa198;
-  --learning-line: #454039;
-  --learning-accent: #dda18e;
-  --learning-accent-soft: #4a3029;
+  --learning-paper: #202023;
+  --learning-paper-soft: #27272b;
+  --learning-ink: var(--heading-color);
+  --learning-muted: var(--text-color);
+  --learning-line: #34363a;
+  --learning-accent: #d58f78;
+  --learning-accent-soft: #3a2823;
   --learning-success: #9fc9ad;
   --learning-success-soft: #283b30;
-  --learning-planned: #aaa198;
+  --learning-planned: var(--text-muted-color);
 }
 
 body:has(.learning-hub),
@@ -349,6 +349,33 @@ body:has(.category-catalog) {
   color: var(--learning-ink);
 }
 
+/* Theme article links use a bottom border. These are application-style
+   navigation surfaces, so interaction is expressed through color, motion,
+   and a keyboard focus ring instead of persistent underlines. */
+.content .learning-hub a,
+.content .series-roadmap a,
+.content .category-catalog a {
+  border-bottom: 0;
+  text-decoration: none;
+}
+
+.content .learning-hub a:hover,
+.content .learning-hub a:focus-visible,
+.content .series-roadmap a:hover,
+.content .series-roadmap a:focus-visible,
+.content .category-catalog a:hover,
+.content .category-catalog a:focus-visible {
+  border-bottom: 0;
+}
+
+.content .learning-hub a:focus-visible,
+.content .series-roadmap a:focus-visible,
+.content .category-catalog a:focus-visible {
+  border-radius: 0.2rem;
+  outline: 2px solid var(--learning-accent);
+  outline-offset: 3px;
+}
+
 .learning-hub__intro,
 .category-catalog__intro {
   display: flex;
@@ -371,11 +398,17 @@ body:has(.category-catalog) {
 
 .category-catalog__intro > a {
   flex: 0 0 auto;
-  padding-bottom: 0.15rem;
-  border-bottom: 1px solid var(--learning-accent);
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.35rem;
   color: var(--learning-accent);
   font-weight: 650;
   text-decoration: none;
+}
+
+.category-catalog__intro > a:hover,
+.category-catalog__intro > a:focus-visible {
+  background: var(--learning-accent-soft);
+  color: var(--learning-accent) !important;
 }
 
 .learning-hub__grid {
@@ -457,8 +490,9 @@ body:has(.category-catalog) {
   text-decoration: none;
 }
 
-.series-card h2 a:hover {
-  color: var(--link-color);
+.series-card h2 a:hover,
+.series-card h2 a:focus-visible {
+  color: var(--learning-accent) !important;
 }
 
 .series-card > p {
@@ -533,8 +567,14 @@ body:has(.category-catalog) {
 }
 
 .series-card__link {
-  padding-bottom: 0.18rem;
-  border-bottom: 1px solid var(--learning-accent);
+  padding: 0.3rem 0.45rem;
+  border-radius: 0.35rem;
+}
+
+.series-card__link:hover,
+.series-card__link:focus-visible {
+  background: var(--learning-accent-soft);
+  color: var(--learning-accent) !important;
 }
 
 .series-card__link span,
@@ -968,6 +1008,11 @@ body:has(.category-catalog) {
   text-decoration: none;
 }
 
+.category-tile h3 a:hover,
+.category-tile h3 a:focus-visible {
+  color: var(--learning-accent) !important;
+}
+
 .category-tile__title > div > span {
   color: var(--learning-muted);
   font-size: 0.72rem;
@@ -988,9 +1033,9 @@ body:has(.category-catalog) {
 
 .category-tile__latest > span {
   color: var(--learning-accent);
-  font-size: 0.66rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -1014,16 +1059,25 @@ body:has(.category-catalog) {
 }
 
 .category-tile__latest a:hover {
-  color: var(--learning-accent);
+  color: var(--learning-accent) !important;
 }
 
 .category-tile__link {
   width: fit-content;
   margin-top: auto;
+  margin-left: -0.35rem;
+  padding: 0.2rem 0.35rem;
+  border-radius: 0.35rem;
   color: var(--learning-accent);
-  font-size: 0.8rem;
-  font-weight: 700;
+  font-size: 0.72rem;
+  font-weight: 650;
   text-decoration: none;
+}
+
+.category-tile__link:hover,
+.category-tile__link:focus-visible {
+  background: var(--learning-accent-soft);
+  color: var(--learning-accent) !important;
 }
 
 @media (max-width: 767.98px) {
