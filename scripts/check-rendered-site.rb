@@ -15,6 +15,16 @@ LANGUAGES = { "zh-CN" => "", "en" => "/en" }.freeze
 SLUGS = ROOT.glob("_posts/zh-CN/*.md").map { |path| path.basename(".md").to_s.sub(/^\d{4}-\d{2}-\d{2}-/, "") }.sort.freeze
 SITE_LOCALES = YAML.safe_load(ROOT.join("_data/site-locales.yml").read).freeze
 TAXONOMIES = YAML.safe_load(ROOT.join("_data/taxonomies.yml").read).freeze
+PAGE_DESCRIPTIONS = {
+  "/learn/" => {
+    "zh-CN" => "按阶段学习完整主题，从基础概念走到可运行、可验证的项目。",
+    "en" => "Follow staged learning paths from first principles to runnable, verifiable projects."
+  },
+  "/learn/agent-zero-to-one/" => {
+    "zh-CN" => "用 28 篇短课建立 Agent 的正确心智模型，并用 Pi 完成一个证据优先的技术研究 Agent。",
+    "en" => "Build the right agent engineering mental model in 28 short lessons, then ship an evidence-first research agent with Pi."
+  }
+}.freeze
 errors = []
 
 def document(path, errors)
@@ -141,6 +151,8 @@ end
 expected_pages = {}
 LANGUAGES.each do |lang, prefix|
   expected_pages["#{prefix}/"] = lang
+  expected_pages["#{prefix}/learn/"] = lang
+  expected_pages["#{prefix}/learn/agent-zero-to-one/"] = lang
   SLUGS.each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
 end
 
@@ -170,15 +182,44 @@ expected_pages.each do |url, lang|
   next unless doc
 
   prefix = LANGUAGES.fetch(lang)
-  assert_metadata(doc, url, errors)
+  base_path = url.sub(%r{\A/en}, "")
+  assert_metadata(doc, url, errors, PAGE_DESCRIPTIONS.dig(base_path, lang))
   errors << "#{url}: html lang must be #{lang}" unless doc.at("html")&.[]("lang") == lang
 
-  base_path = url.sub(%r{\A/en}, "")
   assert_discovery_links(doc, url, expected_alternates(base_path), [base_path, "/en#{base_path}"], errors)
 
   post_links = content_post_links(doc)
   wrong_links = post_links.reject { |href| href.start_with?("#{prefix}/posts/") }
   errors << "#{url}: cross-language post links #{wrong_links.uniq.inspect}" unless wrong_links.empty?
+end
+
+LANGUAGES.each do |lang, prefix|
+  learn_url = "#{prefix}/learn/"
+  learn_doc = document(site_file(learn_url), errors)
+  if learn_doc
+    errors << "#{learn_url}: expected one learning-path card" unless learn_doc.css(".learning-hub .series-card").length == 1
+    expected_series_path = "#{prefix}/learn/agent-zero-to-one/"
+    series_links = learn_doc.css(".series-card__link").map { |node| internal_path(node["href"]) }
+    errors << "#{learn_url}: wrong series link #{series_links.inspect}" unless series_links == [expected_series_path]
+  end
+
+  series_url = "#{prefix}/learn/agent-zero-to-one/"
+  series_doc = document(site_file(series_url), errors)
+  if series_doc
+    errors << "#{series_url}: expected 7 stages" unless series_doc.css(".series-stage").length == 7
+    errors << "#{series_url}: expected 28 lessons" unless series_doc.css(".series-lesson").length == 28
+    errors << "#{series_url}: expected 2 published lessons" unless series_doc.css(".series-lesson--published a").length == 2
+    errors << "#{series_url}: expected 26 planned lessons" unless series_doc.css(".series-lesson--planned > div").length == 26
+    breadcrumb_parent = series_doc.at_css("#breadcrumb a[href='#{prefix}/learn/']")
+    errors << "#{series_url}: missing learning-path breadcrumb" unless breadcrumb_parent
+  end
+
+  categories_url = "#{prefix}/categories/"
+  categories_doc = document(site_file(categories_url), errors)
+  if categories_doc
+    errors << "#{categories_url}: expected 4 curated category tiles" unless categories_doc.css(".category-catalog .category-tile").length == 4
+    errors << "#{categories_url}: legacy folder cards remain" unless categories_doc.css(".card.categories").empty?
+  end
 end
 
 # Reading highlights are an article-only progressive enhancement. The rendered
@@ -278,7 +319,9 @@ SITE.glob("**/*.html").each do |path|
   url = "/#{relative.sub(%r{index\.html\z}, '')}"
   url = URI::DEFAULT_PARSER.escape(url)
   language = url.start_with?("/en/") ? "en" : "zh-CN"
-  expected_description = SITE_LOCALES.fetch(language).fetch("description") unless url.include?("/posts/") || url.end_with?("/message/")
+  base_path = url.sub(%r{\A/en}, "")
+  expected_description = PAGE_DESCRIPTIONS.dig(base_path, language)
+  expected_description ||= SITE_LOCALES.fetch(language).fetch("description") unless url.include?("/posts/") || url.end_with?("/message/")
   assert_metadata(Nokogiri::HTML(path.read), url, errors, expected_description)
 end
 
@@ -498,6 +541,17 @@ SITE.glob("**/*.html").each do |path|
 
   nav_paths = doc.css("#sidebar .nav-item > a").map { |node| internal_path(node["href"]) }
   errors << "#{relative}: hidden message page appears in primary tabs" if nav_paths.include?(expected_message_path)
+  expected_nav_paths = [
+    "#{prefix}/",
+    "#{prefix}/learn/",
+    "#{prefix}/categories/",
+    "#{prefix}/tags/",
+    "#{prefix}/archives/",
+    "#{prefix}/about/"
+  ]
+  errors << "#{relative}: wrong primary navigation order #{nav_paths.inspect}" unless nav_paths == expected_nav_paths
+  hidden_series_path = "#{prefix}/learn/agent-zero-to-one/"
+  errors << "#{relative}: hidden series detail appears in primary tabs" if nav_paths.include?(hidden_series_path)
 
   github_targets = doc.css('#sidebar a[aria-label="github"]').map { |node| node["href"] }
   errors << "#{relative}: wrong GitHub contact link #{github_targets.inspect}" unless github_targets == ["https://github.com/cognirail"]

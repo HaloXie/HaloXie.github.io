@@ -19,6 +19,17 @@
         <!-- index page -->
         <span>{{ site.data.locales[include.lang].tabs.home | capitalize }}</span>
 
+      {% elsif page.parent_path %}
+        <span>
+          <a href="{{ '/' | relative_url }}">
+            {{- site.data.locales[include.lang].tabs.home | capitalize -}}
+          </a>
+        </span>
+        <span>
+          <a href="{{ page.parent_path | relative_url }}">{{ page.parent_title }}</a>
+        </span>
+        <span>{{ page.title }}</span>
+
       {% else %}
         {% for item in paths %}
           {% if forloop.first %}

@@ -7,7 +7,7 @@ page_id: message
 permalink: /message/
 hidden: true
 comments: true
-order: 5
+order: 6
 ---
 
 如果你想讨论文章内容或分享建议，可以在下方留言。

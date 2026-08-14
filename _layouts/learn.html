@@ -1,0 +1,70 @@
+---
+layout: page
+---
+
+{% include lang.html %}
+{% assign active_lang = site.active_lang | default: site.lang %}
+
+{% if active_lang == 'en' %}
+  {% assign intro = 'A series is a path with prerequisites and an outcome. Categories remain a separate way to browse topics without implying reading order.' %}
+  {% assign active_label = 'In progress' %}
+  {% assign lessons_label = 'lessons' %}
+  {% assign stages_label = 'stages' %}
+  {% assign published_label = 'published' %}
+  {% assign open_label = 'Open learning path' %}
+{% else %}
+  {% assign intro = '专栏不是按发布时间堆文章，而是一条有前置关系、有阶段目标、有最终产物的学习路径。分类仍然保留，用来按主题浏览。' %}
+  {% assign active_label = '连载中' %}
+  {% assign lessons_label = '篇短课' %}
+  {% assign stages_label = '个阶段' %}
+  {% assign published_label = '篇已发布' %}
+  {% assign open_label = '查看学习路线' %}
+{% endif %}
+
+<div class="learning-hub">
+  <header class="learning-hub__intro">
+    <p>{{ intro }}</p>
+  </header>
+
+  <div class="learning-hub__grid">
+    {% for series in site.data.series.series %}
+      {% assign locale = series.locales[active_lang] %}
+      {% assign lesson_count = 0 %}
+      {% assign published_count = 0 %}
+      {% for stage in series.stages %}
+        {% for lesson in stage.lessons %}
+          {% assign lesson_count = lesson_count | plus: 1 %}
+          {% if lesson.status == 'published' %}
+            {% assign published_count = published_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+
+      <article class="series-card">
+        <div class="series-card__topline">
+          <span class="series-card__eyebrow">{{ locale.eyebrow }}</span>
+          <span class="series-status series-status--{{ series.status }}">{{ active_label }}</span>
+        </div>
+        <h2><a href="{{ series.path | relative_url }}">{{ locale.title }}</a></h2>
+        <p>{{ locale.description }}</p>
+
+        <dl class="series-card__stats" aria-label="{% if active_lang == 'en' %}Learning path statistics{% else %}学习路线统计{% endif %}">
+          <div><dt>{{ published_count }}</dt><dd>{{ published_label }}</dd></div>
+          <div><dt>{{ lesson_count }}</dt><dd>{{ lessons_label }}</dd></div>
+          <div><dt>{{ series.stages | size }}</dt><dd>{{ stages_label }}</dd></div>
+        </dl>
+
+        <ol class="series-card__stage-list">
+          {% for stage in series.stages %}
+            {% assign stage_locale = stage.locales[active_lang] %}
+            <li><span>{{ stage.number }}</span>{{ stage_locale.title }}</li>
+          {% endfor %}
+        </ol>
+
+        <a class="series-card__link" href="{{ series.path | relative_url }}">
+          {{ open_label }} <span aria-hidden="true">→</span>
+        </a>
+      </article>
+    {% endfor %}
+  </div>
+</div>

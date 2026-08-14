@@ -60,6 +60,9 @@ jobs:
       - name: Verify translation pairs
         run: ruby scripts/check-translations.rb
 
+      - name: Verify learning paths and category catalog
+        run: ruby scripts/check-series.rb
+
       - name: Verify source content and images
         run: ruby scripts/check-content-images.rb
 

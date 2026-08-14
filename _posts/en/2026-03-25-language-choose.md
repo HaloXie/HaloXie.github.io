@@ -5,7 +5,7 @@ date: 2026-03-25 19:30:04 +0800
 lang: en
 page_id: language-choose
 permalink: /posts/language-choose/
-categories: [BlockChain]
+categories: [Blockchain]
 tags: [blockchain, programming-language, javascript, solidity, golang, rust]
 image:
   path: /assets/img/language-choose/Programming-languages-in-blockchain-industry.webp

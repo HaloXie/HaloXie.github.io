@@ -1,0 +1,152 @@
+---
+layout: page
+---
+
+{% include lang.html %}
+{% assign active_lang = site.active_lang | default: site.lang %}
+{% assign series = site.data.series.series | where: 'id', page.series_id | first %}
+{% assign locale = series.locales[active_lang] %}
+{% assign total_lessons = 0 %}
+{% assign published_lessons = 0 %}
+{% assign first_lesson_path = nil %}
+
+{% for stage in series.stages %}
+  {% for lesson in stage.lessons %}
+    {% assign total_lessons = total_lessons | plus: 1 %}
+    {% if lesson.status == 'published' %}
+      {% assign published_lessons = published_lessons | plus: 1 %}
+      {% unless first_lesson_path %}
+        {% assign first_lesson_path = lesson.paths[active_lang] %}
+      {% endunless %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% assign progress_percent = published_lessons | times: 100 | divided_by: total_lessons %}
+
+{% if active_lang == 'en' %}
+  {% assign published_label = 'Published' %}
+  {% assign planned_label = 'Planned' %}
+  {% assign draft_label = 'Draft' %}
+  {% assign start_label = 'Start with lesson 1' %}
+  {% assign progress_label = 'published' %}
+  {% assign final_project_label = 'What you will ship' %}
+  {% assign references_label = 'Reference baseline' %}
+  {% assign references_intro = 'These sources support the concepts and terminology. The articles use original explanations and Pi implementations.' %}
+{% else %}
+  {% assign published_label = '已发布' %}
+  {% assign planned_label = '计划中' %}
+  {% assign draft_label = '草稿中' %}
+  {% assign start_label = '从第 1 课开始' %}
+  {% assign progress_label = '篇已发布' %}
+  {% assign final_project_label = '最终会做出什么' %}
+  {% assign references_label = '参考基线' %}
+  {% assign references_intro = '这些资料用于支撑概念和术语。文章会使用自己的话解释，并用 Pi 重新实现 demo。' %}
+{% endif %}
+
+<div class="series-roadmap">
+  <header class="series-hero">
+    <div class="series-hero__copy">
+      <span class="series-hero__eyebrow">{{ locale.eyebrow }}</span>
+      <p class="series-hero__description">{{ locale.description }}</p>
+      <p class="series-hero__audience">{{ locale.audience }}</p>
+      {% if first_lesson_path %}
+        <a class="series-primary-action" href="{{ first_lesson_path | relative_url }}">
+          {{ start_label }} <span aria-hidden="true">→</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <aside class="series-hero__progress" aria-label="{% if active_lang == 'en' %}Series progress{% else %}专栏进度{% endif %}">
+      <span class="series-hero__fraction">{{ published_lessons }}<small>/{{ total_lessons }}</small></span>
+      <span>{{ progress_label }}</span>
+      <div class="series-progress" role="progressbar" aria-valuemin="0" aria-valuemax="{{ total_lessons }}" aria-valuenow="{{ published_lessons }}">
+        <span style="width: {{ progress_percent }}%"></span>
+      </div>
+      <dl>
+        <div><dt>{{ series.stages | size }}</dt><dd>{% if active_lang == 'en' %}stages{% else %}个阶段{% endif %}</dd></div>
+        <div><dt>{% if active_lang == 'en' %}Example framework{% else %}示例框架{% endif %}</dt><dd>Pi</dd></div>
+      </dl>
+    </aside>
+  </header>
+
+  <section class="series-outcome">
+    <span>{{ final_project_label }}</span>
+    <p>{{ locale.outcome }}</p>
+  </section>
+
+  <div class="series-stage-list">
+    {% for stage in series.stages %}
+      {% assign stage_locale = stage.locales[active_lang] %}
+      {% assign stage_published = 0 %}
+      {% for lesson in stage.lessons %}
+        {% if lesson.status == 'published' %}
+          {% assign stage_published = stage_published | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+
+      <section class="series-stage" aria-labelledby="stage-{{ stage.id }}">
+        <header class="series-stage__header">
+          <span class="series-stage__number">{{ stage.number }}</span>
+          <div>
+            <h2 id="stage-{{ stage.id }}">{{ stage_locale.title }}</h2>
+            <p>{{ stage_locale.description }}</p>
+          </div>
+          <span class="series-stage__count">{{ stage_published }}/{{ stage.lessons | size }}</span>
+        </header>
+
+        <ol class="series-lessons">
+          {% for lesson in stage.lessons %}
+            {% assign lesson_locale = lesson.locales[active_lang] %}
+            {% if lesson.status == 'published' %}
+              {% assign status_label = published_label %}
+            {% elsif lesson.status == 'draft' %}
+              {% assign status_label = draft_label %}
+            {% else %}
+              {% assign status_label = planned_label %}
+            {% endif %}
+
+            <li class="series-lesson series-lesson--{{ lesson.status }}">
+              {% if lesson.status == 'published' %}
+                <a href="{{ lesson.paths[active_lang] | relative_url }}">
+                  <span class="series-lesson__number">{{ lesson.number }}</span>
+                  <span class="series-lesson__copy">
+                    <strong>{{ lesson_locale.title }}</strong>
+                    <small>{{ lesson_locale.description }}</small>
+                  </span>
+                  <span class="series-lesson__status">{{ status_label }}</span>
+                </a>
+              {% else %}
+                <div>
+                  <span class="series-lesson__number">{{ lesson.number }}</span>
+                  <span class="series-lesson__copy">
+                    <strong>{{ lesson_locale.title }}</strong>
+                    <small>{{ lesson_locale.description }}</small>
+                  </span>
+                  <span class="series-lesson__status">{{ status_label }}</span>
+                </div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ol>
+      </section>
+    {% endfor %}
+  </div>
+
+  <section class="series-references">
+    <header>
+      <h2>{{ references_label }}</h2>
+      <p>{{ references_intro }}</p>
+    </header>
+    <ul>
+      {% for resource in series.resources %}
+        <li>
+          <a href="{{ resource.url }}" target="_blank" rel="noopener noreferrer">
+            <span>{{ resource.kind }}</span>
+            {{ resource.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>

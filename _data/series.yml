@@ -1,0 +1,403 @@
+series:
+  - id: agent-zero-to-one
+    path: /learn/agent-zero-to-one/
+    status: active
+    final_project: evidence-first-research-agent
+    locales:
+      zh-CN:
+        title: 从 0 到 1 学习 Agent
+        eyebrow: Agent 工程入门路线
+        description: 用短课建立 Agent 的正确心智模型，并用 Pi 完成一个可验证、可恢复、有引用的技术研究 Agent。
+        audience: 适合会写基础 TypeScript、但还没有系统搭建过 Agent 的开发者。
+        outcome: 最终项目不是聊天壳，而是一套能规划、检索、核验证据并输出带引用报告的完整 Agent。
+      en:
+        title: Learn Agents from 0 to 1
+        eyebrow: An agent engineering learning path
+        description: Build the right mental model through short lessons, then use Pi to ship an evidence-first technical research agent.
+        audience: For developers who know basic TypeScript but have not built an agent system end to end.
+        outcome: The final project is not a chat wrapper. It plans, researches, verifies evidence, resumes work, and produces cited reports.
+    stages:
+      - id: map
+        number: "00"
+        locales:
+          zh-CN:
+            title: 先看清地图
+            description: 分清 Chat、Workflow、Agent，以及不同 Agent 分类到底在回答什么问题。
+          en:
+            title: See the map first
+            description: Separate Chat, Workflow, and Agent, then understand what each agent taxonomy is actually describing.
+        lessons:
+          - number: "01"
+            page_id: chat-workflow-agent-guide
+            status: published
+            paths:
+              zh-CN: /posts/chat-workflow-agent-guide/
+              en: /posts/chat-workflow-agent-guide/
+            locales:
+              zh-CN:
+                title: Chat、Workflow 还是 Agent？
+                description: 用“谁决定下一步”判断系统应该采用哪种控制方式。
+              en:
+                title: Chat, Workflow, or Agent?
+                description: Choose the right control model by asking who decides the next step.
+          - number: "02"
+            page_id: agent-patterns-with-pi
+            status: published
+            paths:
+              zh-CN: /posts/agent-patterns-with-pi/
+              en: /posts/agent-patterns-with-pi/
+            locales:
+              zh-CN:
+                title: Agent 不只一种：用 Pi 跑起最小 Agent
+                description: 看懂决策权光谱，并运行第一个受约束 Agent Loop。
+              en:
+                title: Agents Come in Different Shapes
+                description: Understand the decision spectrum and run a constrained Agent Loop with Pi.
+          - number: "03"
+            page_id: agent-architecture-map
+            status: planned
+            locales:
+              zh-CN:
+                title: Agent 架构全景图
+                description: 把经典 Agent、LLM Agent 和 Multi-Agent 放回各自的坐标系。
+              en:
+                title: The Agent Architecture Map
+                description: Put classical agents, LLM agents, and multi-agent systems into the right coordinate systems.
+
+      - id: runtime
+        number: "01"
+        locales:
+          zh-CN:
+            title: 理解 LLM Runtime
+            description: 先看懂模型输入输出，再理解 Agent 为什么需要循环。
+          en:
+            title: Understand the LLM runtime
+            description: Understand model input and output before adding an agent loop.
+        lessons:
+          - number: "04"
+            page_id: llm-call-anatomy
+            status: planned
+            locales:
+              zh-CN:
+                title: 一次 LLM 调用究竟发生了什么
+                description: 从请求、采样到响应，建立最小但准确的模型调用心智模型。
+              en:
+                title: What Actually Happens in an LLM Call
+                description: Build a small but accurate model of requests, sampling, and responses.
+          - number: "05"
+            page_id: messages-tokens-context
+            status: planned
+            locales:
+              zh-CN:
+                title: Message、Role、Token 和 Context Window
+                description: 搞清楚 Agent 每一轮真正交给模型的内容。
+              en:
+                title: Messages, Roles, Tokens, and Context Windows
+                description: See what the agent actually sends to the model on every turn.
+          - number: "06"
+            page_id: minimal-pi-agent-loop
+            status: planned
+            locales:
+              zh-CN:
+                title: 用 Pi 实现最小 Agent Loop
+                description: 串起流式输出、结构化结果、状态和停止条件。
+              en:
+                title: Build a Minimal Agent Loop with Pi
+                description: Connect streaming, structured results, state, and stopping conditions.
+
+      - id: tools
+        number: "02"
+        locales:
+          zh-CN:
+            title: 给 Agent 安上手脚
+            description: Tool 是能力边界，也是副作用和安全风险的入口。
+          en:
+            title: Give the agent hands
+            description: Tools define capability boundaries and introduce side effects and risk.
+        lessons:
+          - number: "07"
+            page_id: tool-calling-is-not-agent
+            status: planned
+            locales:
+              zh-CN:
+                title: Tool Calling 不是 Agent
+                description: 区分一次函数调用和能持续观察结果的 Agent Loop。
+              en:
+                title: Tool Calling Is Not an Agent
+                description: Separate a single function call from a loop that keeps observing results.
+          - number: "08"
+            page_id: good-agent-tool-schema
+            status: planned
+            locales:
+              zh-CN:
+                title: 一个好 Tool 的 Schema 应该怎么写
+                description: 用清晰名称、参数边界和结果契约减少模型误用。
+              en:
+                title: How to Design a Good Tool Schema
+                description: Reduce misuse with clear names, parameter boundaries, and result contracts.
+          - number: "09"
+            page_id: tool-errors-retries-timeouts
+            status: planned
+            locales:
+              zh-CN:
+                title: Tool 的错误、重试、超时和结果语义
+                description: 让失败可以被模型理解，也能被程序可靠处理。
+              en:
+                title: Tool Errors, Retries, Timeouts, and Result Semantics
+                description: Make failures understandable to the model and reliable for the program.
+          - number: "10"
+            page_id: tool-side-effects-and-approval
+            status: planned
+            locales:
+              zh-CN:
+                title: 副作用、幂等、审批、并行和取消
+                description: 给真实动作加上明确的工程护栏。
+              en:
+                title: Side Effects, Idempotency, Approval, Parallelism, and Cancellation
+                description: Put explicit engineering guardrails around real actions.
+
+      - id: context
+        number: "03"
+        locales:
+          zh-CN:
+            title: 管理 Context 与 Memory
+            description: Agent 不是记得越多越好，而是每一步拿到恰当的信息。
+          en:
+            title: Manage context and memory
+            description: A good agent does not remember everything; it receives the right information at the right step.
+        lessons:
+          - number: "11"
+            page_id: prompt-vs-context-engineering
+            status: planned
+            locales:
+              zh-CN:
+                title: Prompt Engineering 与 Context Engineering
+                description: Prompt 管规则，Context 管当前任务真正需要的信息。
+              en:
+                title: Prompt Engineering vs. Context Engineering
+                description: Prompts define rules; context supplies what the current task needs.
+          - number: "12"
+            page_id: sessions-history-compaction
+            status: planned
+            locales:
+              zh-CN:
+                title: Session、历史消息和 Context Compaction
+                description: 让长任务可以继续，而不是无限塞满上下文窗口。
+              en:
+                title: Sessions, Message History, and Context Compaction
+                description: Keep long tasks moving without endlessly filling the context window.
+          - number: "13"
+            page_id: rag-tool-or-context
+            status: planned
+            locales:
+              zh-CN:
+                title: RAG 应该是 Tool，还是自动注入 Context
+                description: 根据检索时机、可见性和成本选择接入方式。
+              en:
+                title: Should RAG Be a Tool or Automatic Context?
+                description: Choose based on retrieval timing, visibility, and cost.
+          - number: "14"
+            page_id: agent-memory-types
+            status: planned
+            locales:
+              zh-CN:
+                title: Working、Episodic、Semantic 与 Procedural Memory
+                description: 用写入、检索和遗忘策略区分四类记忆。
+              en:
+                title: Working, Episodic, Semantic, and Procedural Memory
+                description: Separate four memory types through write, retrieval, and forgetting policies.
+
+      - id: patterns
+        number: "04"
+        locales:
+          zh-CN:
+            title: 掌握 Agent Patterns
+            description: 模式不是升级等级，而是针对不同不确定性选择的控制结构。
+          en:
+            title: Learn agent patterns
+            description: Patterns are control structures for different uncertainty, not levels in an upgrade tree.
+        lessons:
+          - number: "15"
+            page_id: react-pattern-with-pi
+            status: planned
+            locales:
+              zh-CN:
+                title: ReAct：边观察边行动
+                description: 在每次真实工具结果之后重新判断下一步。
+              en:
+                title: "ReAct: Observe, Then Act Again"
+                description: Reconsider the next step after every real tool result.
+          - number: "16"
+            page_id: plan-and-execute-with-pi
+            status: planned
+            locales:
+              zh-CN:
+                title: Plan-and-Execute：先规划再执行
+                description: 把任务分解和逐步执行分开，但允许计划被证据修正。
+              en:
+                title: "Plan-and-Execute: Plan Before Acting"
+                description: Separate decomposition from execution while letting evidence revise the plan.
+          - number: "17"
+            page_id: reflection-evaluator-optimizer
+            status: planned
+            locales:
+              zh-CN:
+                title: Reflection 与 Evaluator-Optimizer
+                description: 什么时候自我修正有用，什么时候只是多花一次模型调用。
+              en:
+                title: Reflection and Evaluator-Optimizer
+                description: Know when self-correction helps and when it only adds another model call.
+          - number: "18"
+            page_id: router-parallel-blackboard
+            status: planned
+            locales:
+              zh-CN:
+                title: Router、Parallel 与 Blackboard
+                description: 比较路由、并行处理和共享状态三种组织方式。
+              en:
+                title: Router, Parallel, and Blackboard Patterns
+                description: Compare routing, parallel work, and shared-state coordination.
+          - number: "19"
+            page_id: supervisor-handoff-multi-agent
+            status: planned
+            locales:
+              zh-CN:
+                title: Supervisor、Handoff 与 Multi-Agent
+                description: 只有上下文隔离或真实并行有收益时，才增加 Agent 数量。
+              en:
+                title: Supervisor, Handoff, and Multi-Agent Systems
+                description: Add agents only when context isolation or real parallelism pays off.
+
+      - id: reliability
+        number: "05"
+        locales:
+          zh-CN:
+            title: 从 Demo 到可靠系统
+            description: 协议、安全、观测和评估决定 Agent 能不能真正交付。
+          en:
+            title: Move from demo to reliable system
+            description: Protocols, safety, observability, and evaluation determine whether an agent can ship.
+        lessons:
+          - number: "20"
+            page_id: mcp-for-agent-tools
+            status: planned
+            locales:
+              zh-CN:
+                title: MCP：把外部能力接进 Agent
+                description: 看懂 Tool、Resource、Prompt 和传输层分别解决什么问题。
+              en:
+                title: "MCP: Connect External Capabilities"
+                description: Understand the roles of tools, resources, prompts, and transports.
+          - number: "21"
+            page_id: prompt-and-tool-injection
+            status: planned
+            locales:
+              zh-CN:
+                title: Prompt Injection 与 Tool Injection
+                description: 外部内容为什么不能自动获得指令权和工具权限。
+              en:
+                title: Prompt Injection and Tool Injection
+                description: Why external content must not automatically gain instruction or tool authority.
+          - number: "22"
+            page_id: sandbox-permissions-hitl
+            status: planned
+            locales:
+              zh-CN:
+                title: Sandbox、权限、预算和 Human-in-the-loop
+                description: 用系统边界约束 Agent，而不是只靠 Prompt 劝它小心。
+              en:
+                title: Sandboxes, Permissions, Budgets, and Humans in the Loop
+                description: Constrain the agent with system boundaries instead of polite prompt requests.
+          - number: "23"
+            page_id: agent-tracing-and-evaluation
+            status: planned
+            locales:
+              zh-CN:
+                title: Trace、Observability 与 Agent Evaluation
+                description: 从最终答案反查每一步，建立能持续回归的评估集。
+              en:
+                title: Tracing, Observability, and Agent Evaluation
+                description: Trace every step from the result and build a reusable regression set.
+
+      - id: capstone
+        number: "06"
+        locales:
+          zh-CN:
+            title: 完成完整 Agent 项目
+            description: 把前面所有能力收进一个有验收标准的真实项目。
+          en:
+            title: Ship the complete agent project
+            description: Combine the earlier capabilities into a real project with explicit acceptance criteria.
+        lessons:
+          - number: "24"
+            page_id: research-agent-spec
+            status: planned
+            locales:
+              zh-CN:
+                title: 项目 Spec、架构与验收标准
+                description: 先定义什么叫研究完成，再选择 Agent 结构。
+              en:
+                title: Project Spec, Architecture, and Acceptance Criteria
+                description: Define what complete research means before choosing an agent structure.
+          - number: "25"
+            page_id: research-agent-source-tools
+            status: planned
+            locales:
+              zh-CN:
+                title: 搜索、网页读取、资料标准化与引用工具
+                description: 让每条关键结论都能回到真实来源。
+              en:
+                title: Search, Reading, Normalization, and Citation Tools
+                description: Make every important claim traceable to a real source.
+          - number: "26"
+            page_id: research-agent-planner
+            status: planned
+            locales:
+              zh-CN:
+                title: Planner、Researcher 与任务恢复
+                description: 分解研究问题，并让中断后的任务从证据状态继续。
+              en:
+                title: Planner, Researcher, and Task Recovery
+                description: Decompose research questions and resume interrupted work from evidence state.
+          - number: "27"
+            page_id: research-agent-evaluator
+            status: planned
+            locales:
+              zh-CN:
+                title: Citation、Evaluator、Context 与持久化
+                description: 独立检查来源覆盖、结论一致性和上下文预算。
+              en:
+                title: Citations, Evaluation, Context, and Persistence
+                description: Independently check source coverage, conclusion consistency, and context budgets.
+          - number: "28"
+            page_id: research-agent-release
+            status: planned
+            locales:
+              zh-CN:
+                title: CLI、HTTP/SSE API、评估集与发布门禁
+                description: 把学习项目收口成能运行、能测试、能演示的交付物。
+              en:
+                title: CLI, HTTP/SSE API, Evaluation Set, and Release Gates
+                description: Finish with a runnable, testable, and demonstrable delivery.
+    resources:
+      - title: Hello-Agents
+        url: https://github.com/datawhalechina/Hello-Agents
+        kind: knowledge-map
+      - title: Artificial Intelligence — A Modern Approach
+        url: https://aima.cs.berkeley.edu/
+        kind: theory
+      - title: An Introduction to MultiAgent Systems
+        url: https://www.cs.ox.ac.uk/people/michael.wooldridge/pubs/imas/IMAS2e.html
+        kind: theory
+      - title: Building Effective Agents
+        url: https://www.anthropic.com/research/building-effective-agents
+        kind: engineering
+      - title: Agentic Design Patterns
+        url: https://doi.org/10.1007/978-3-032-01402-3
+        kind: patterns
+      - title: Pi Agent Harness
+        url: https://github.com/earendil-works/pi
+        kind: implementation
+      - title: Model Context Protocol
+        url: https://github.com/modelcontextprotocol/modelcontextprotocol
+        kind: protocol

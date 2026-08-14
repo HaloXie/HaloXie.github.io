@@ -7,7 +7,7 @@ page_id: message
 permalink: /message/
 hidden: true
 comments: true
-order: 5
+order: 6
 ---
 
 Use the discussion below if you would like to talk about an article or share feedback.

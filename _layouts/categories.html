@@ -1,0 +1,74 @@
+---
+layout: page
+---
+
+{% include lang.html %}
+{% assign active_lang = site.active_lang | default: site.lang %}
+
+{% if active_lang == 'en' %}
+  {% assign intro = 'Categories are broad topic shelves. If you want a guided sequence with prerequisites and progress, use the learning paths instead.' %}
+  {% assign posts_label = 'articles' %}
+  {% assign one_post_label = 'article' %}
+  {% assign browse_label = 'Browse category' %}
+  {% assign latest_label = 'Latest' %}
+{% else %}
+  {% assign intro = '分类是按主题浏览的书架，不承担学习顺序。如果你想从基础一路学到完整项目，请进入“学习路线”。' %}
+  {% assign posts_label = '篇文章' %}
+  {% assign one_post_label = '篇文章' %}
+  {% assign browse_label = '浏览分类' %}
+  {% assign latest_label = '最近更新' %}
+{% endif %}
+
+<div class="category-catalog">
+  <header class="category-catalog__intro">
+    <p>{{ intro }}</p>
+    <a href="{{ '/learn/' | relative_url }}">
+      {% if active_lang == 'en' %}Open learning paths{% else %}查看学习路线{% endif %}
+      <span aria-hidden="true">→</span>
+    </a>
+  </header>
+
+  {% for group in site.data.category-catalog.groups %}
+    {% assign group_locale = group.locales[active_lang] %}
+    <section class="category-group" aria-labelledby="category-group-{{ group.id }}">
+      <header class="category-group__header">
+        <h2 id="category-group-{{ group.id }}">{{ group_locale.title }}</h2>
+        <p>{{ group_locale.description }}</p>
+      </header>
+
+      <div class="category-grid">
+        {% for item in group.items %}
+          {% assign item_locale = item.locales[active_lang] %}
+          {% assign category_name = item_locale.name %}
+          {% assign category_posts = site.categories[category_name] %}
+          {% assign category_path = site.data.taxonomies.categories[item.taxonomy_id][active_lang] %}
+          <article class="category-tile">
+            <div class="category-tile__title">
+              <span class="category-tile__icon"><i class="{{ item.icon }}" aria-hidden="true"></i></span>
+              <div>
+                <h3><a href="{{ category_path | relative_url }}">{{ category_name }}</a></h3>
+                <span>{{ category_posts | size }} {% if category_posts.size == 1 %}{{ one_post_label }}{% else %}{{ posts_label }}{% endif %}</span>
+              </div>
+            </div>
+            <p>{{ item_locale.description }}</p>
+
+            {% if category_posts.size > 0 %}
+              <div class="category-tile__latest">
+                <span>{{ latest_label }}</span>
+                <ul>
+                  {% for post in category_posts limit: 2 %}
+                    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <a class="category-tile__link" href="{{ category_path | relative_url }}">
+              {{ browse_label }} <span aria-hidden="true">→</span>
+            </a>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endfor %}
+</div>

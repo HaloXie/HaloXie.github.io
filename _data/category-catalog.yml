@@ -1,0 +1,56 @@
+groups:
+  - id: fields
+    locales:
+      zh-CN:
+        title: 技术领域
+        description: 按长期知识领域浏览，适合不知道具体文章名称时使用。
+      en:
+        title: Fields
+        description: Browse durable knowledge areas when you do not have a specific article in mind.
+    items:
+      - taxonomy_id: ai
+        icon: fas fa-brain
+        locales:
+          zh-CN:
+            name: AI
+            description: Agent、模型、上下文工程与 AI 系统设计。
+          en:
+            name: AI
+            description: Agents, models, context engineering, and AI system design.
+      - taxonomy_id: blockchain
+        icon: fas fa-cubes
+        locales:
+          zh-CN:
+            name: 区块链
+            description: 区块链协议、开发语言与工程生态。
+          en:
+            name: Blockchain
+            description: Blockchain protocols, development languages, and engineering ecosystems.
+
+  - id: topics
+    locales:
+      zh-CN:
+        title: 专题与实践
+        description: 围绕具体产品或工程实践组织的文章集合，不代表学习顺序。
+      en:
+        title: Topics and Practice
+        description: Articles grouped around a product or engineering practice, without a required reading order.
+    items:
+      - taxonomy_id: openclaw
+        icon: fas fa-paw
+        locales:
+          zh-CN:
+            name: OpenClaw
+            description: OpenClaw 的概念、生态、安全与使用实践。
+          en:
+            name: OpenClaw
+            description: OpenClaw concepts, ecosystem, security, and practical use.
+      - taxonomy_id: tools
+        icon: fas fa-screwdriver-wrench
+        locales:
+          zh-CN:
+            name: Tools
+            description: 开发工具、环境管理与可复用工程流程。
+          en:
+            name: Tools
+            description: Developer tools, environment management, and reusable engineering workflows.
