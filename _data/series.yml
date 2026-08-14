@@ -18,7 +18,7 @@ series:
         outcome: The final project is not a chat wrapper. It plans, researches, verifies evidence, resumes work, and produces cited reports.
     stages:
       - id: map
-        number: "00"
+        number: "01"
         locales:
           zh-CN:
             title: 先看清地图
@@ -70,7 +70,7 @@ series:
                 description: Put classical agents, LLM agents, and multi-agent systems into the right coordinate systems.
 
       - id: runtime
-        number: "01"
+        number: "02"
         locales:
           zh-CN:
             title: 理解 LLM Runtime
@@ -111,7 +111,7 @@ series:
                 description: Connect streaming, structured results, state, and stopping conditions.
 
       - id: tools
-        number: "02"
+        number: "03"
         locales:
           zh-CN:
             title: 给 Agent 安上手脚
@@ -162,7 +162,7 @@ series:
                 description: Put explicit engineering guardrails around real actions.
 
       - id: context
-        number: "03"
+        number: "04"
         locales:
           zh-CN:
             title: 管理 Context 与 Memory
@@ -213,7 +213,7 @@ series:
                 description: Separate four memory types through write, retrieval, and forgetting policies.
 
       - id: patterns
-        number: "04"
+        number: "05"
         locales:
           zh-CN:
             title: 掌握 Agent Patterns
@@ -274,7 +274,7 @@ series:
                 description: Add agents only when context isolation or real parallelism pays off.
 
       - id: reliability
-        number: "05"
+        number: "06"
         locales:
           zh-CN:
             title: 从 Demo 到可靠系统
@@ -325,7 +325,7 @@ series:
                 description: Trace every step from the result and build a reusable regression set.
 
       - id: capstone
-        number: "06"
+        number: "07"
         locales:
           zh-CN:
             title: 完成完整 Agent 项目

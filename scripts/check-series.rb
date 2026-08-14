@@ -58,7 +58,7 @@ series_list.each do |series|
   end
 
   stage_numbers = series.fetch("stages").map { |stage| stage["number"] }
-  expected_stage_numbers = (0...stage_numbers.length).map { |number| format("%02d", number) }
+  expected_stage_numbers = (1..stage_numbers.length).map { |number| format("%02d", number) }
   errors << "#{series_id}: stage numbers must be continuous #{expected_stage_numbers.inspect}" unless stage_numbers == expected_stage_numbers
 
   lessons = series.fetch("stages").flat_map do |stage|
