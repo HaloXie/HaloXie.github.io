@@ -52,6 +52,9 @@ series_list.each do |series|
     %w[title eyebrow description audience outcome].each do |field|
       errors << "#{series_id}/#{language}: missing #{field}" if locale[field].to_s.strip.empty?
     end
+    if series["status"] == "planned" && locale["planned_note"].to_s.strip.empty?
+      errors << "#{series_id}/#{language}: planned series missing planned_note"
+    end
   end
 
   stage_numbers = series.fetch("stages").map { |stage| stage["number"] }
@@ -144,10 +147,10 @@ LANGUAGES.each do |language|
   end
 end
 
-expected_tabs = {
-  "learn" => "/learn/",
-  "agent-zero-to-one" => "/learn/agent-zero-to-one/"
-}
+expected_tabs = { "learn" => "/learn/" }
+series_list.reject { |series| series["status"] == "planned" }.each do |series|
+  expected_tabs[series.fetch("id")] = series.fetch("path")
+end
 expected_tabs.each do |page_id, permalink|
   LANGUAGES.each do |language|
     path = ROOT.join("_tabs", language, "#{page_id}.md")

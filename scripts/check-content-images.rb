@@ -12,6 +12,7 @@ ASSETS = ROOT.join("assets", "img")
 EXCEPTIONS_PATH = ROOT.join("scripts", "content-image-exceptions.yml")
 TARGET_DIMENSIONS = [1200, 675].freeze
 MAX_WEBP_BYTES = 150 * 1024
+COVER_ALT_REQUIRED_FROM = Date.new(2026, 8, 14)
 CJK = /[\p{Han}\p{Hiragana}\p{Katakana}\p{Hangul}]/
 WEAK_ALT = /\A(?:image|img|photo|picture|screenshot|illustration|diagram|figure|cover|图|图片|插图|截图|封面)\z/i
 MARKDOWN_IMAGE = /!\[([^\]]*)\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/
@@ -167,6 +168,15 @@ POSTS.glob("**/*.md").sort.each do |path|
 
   image_data = front_matter["image"]
   cover = image_data.is_a?(Hash) ? image_data["path"] : image_data
+  cover_alt = image_data.is_a?(Hash) ? image_data["alt"].to_s.strip : ""
+  published_date = front_matter["date"]&.to_date
+  if published_date && published_date >= COVER_ALT_REQUIRED_FROM
+    if cover_alt.empty? || cover_alt.match?(WEAK_ALT)
+      errors << "#{relative}: front matter image.alt must be descriptive"
+    elsif relative.start_with?("_posts/zh-CN/") && !cover_alt.match?(CJK)
+      errors << "#{relative}: Chinese front matter image.alt must be localized"
+    end
+  end
   references[cover.to_s] << "#{relative}:front matter" unless cover.to_s.empty?
 
   lines.each do |number, line|

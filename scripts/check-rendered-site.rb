@@ -15,6 +15,7 @@ LANGUAGES = { "zh-CN" => "", "en" => "/en" }.freeze
 SLUGS = ROOT.glob("_posts/zh-CN/*.md").map { |path| path.basename(".md").to_s.sub(/^\d{4}-\d{2}-\d{2}-/, "") }.sort.freeze
 SITE_LOCALES = YAML.safe_load(ROOT.join("_data/site-locales.yml").read).freeze
 TAXONOMIES = YAML.safe_load(ROOT.join("_data/taxonomies.yml").read).freeze
+SERIES = YAML.safe_load(ROOT.join("_data/series.yml").read).fetch("series").freeze
 PAGE_DESCRIPTIONS = {
   "/learn/" => {
     "zh-CN" => "按阶段学习完整主题，从基础概念走到可运行、可验证的项目。",
@@ -152,7 +153,9 @@ expected_pages = {}
 LANGUAGES.each do |lang, prefix|
   expected_pages["#{prefix}/"] = lang
   expected_pages["#{prefix}/learn/"] = lang
-  expected_pages["#{prefix}/learn/agent-zero-to-one/"] = lang
+  SERIES.reject { |series| series["status"] == "planned" }.each do |series|
+    expected_pages["#{prefix}#{series.fetch('path')}"] = lang
+  end
   SLUGS.each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
 end
 
@@ -197,19 +200,26 @@ LANGUAGES.each do |lang, prefix|
   learn_url = "#{prefix}/learn/"
   learn_doc = document(site_file(learn_url), errors)
   if learn_doc
-    errors << "#{learn_url}: expected one learning-path card" unless learn_doc.css(".learning-hub .series-card").length == 1
-    expected_series_path = "#{prefix}/learn/agent-zero-to-one/"
+    errors << "#{learn_url}: expected #{SERIES.length} learning-path cards" unless learn_doc.css(".learning-hub .series-card").length == SERIES.length
+    expected_series_paths = SERIES.reject { |series| series["status"] == "planned" }.map { |series| "#{prefix}#{series.fetch('path')}" }
     series_links = learn_doc.css(".series-card__link").map { |node| internal_path(node["href"]) }
-    errors << "#{learn_url}: wrong series link #{series_links.inspect}" unless series_links == [expected_series_path]
+    errors << "#{learn_url}: wrong series links #{series_links.inspect}" unless series_links == expected_series_paths
+    errors << "#{learn_url}: planned series must not expose a link" unless learn_doc.css(".series-card--planned a").empty?
+    errors << "#{learn_url}: expected one planned-series note" unless learn_doc.css(".series-card--planned .series-card__planned-note").length == 1
   end
 
-  series_url = "#{prefix}/learn/agent-zero-to-one/"
-  series_doc = document(site_file(series_url), errors)
-  if series_doc
-    errors << "#{series_url}: expected 7 stages" unless series_doc.css(".series-stage").length == 7
-    errors << "#{series_url}: expected 28 lessons" unless series_doc.css(".series-lesson").length == 28
-    errors << "#{series_url}: expected 2 published lessons" unless series_doc.css(".series-lesson--published a").length == 2
-    errors << "#{series_url}: expected 26 planned lessons" unless series_doc.css(".series-lesson--planned > div").length == 26
+  SERIES.reject { |series| series["status"] == "planned" }.each do |series|
+    series_url = "#{prefix}#{series.fetch('path')}"
+    series_doc = document(site_file(series_url), errors)
+    next unless series_doc
+
+    lessons = series.fetch("stages").flat_map { |stage| stage.fetch("lessons") }
+    published_count = lessons.count { |lesson| lesson["status"] == "published" }
+    planned_count = lessons.count { |lesson| lesson["status"] == "planned" }
+    errors << "#{series_url}: expected #{series.fetch('stages').length} stages" unless series_doc.css(".series-stage").length == series.fetch("stages").length
+    errors << "#{series_url}: expected #{lessons.length} lessons" unless series_doc.css(".series-lesson").length == lessons.length
+    errors << "#{series_url}: expected #{published_count} published lessons" unless series_doc.css(".series-lesson--published a").length == published_count
+    errors << "#{series_url}: expected #{planned_count} planned lessons" unless series_doc.css(".series-lesson--planned > div").length == planned_count
     breadcrumb_parent = series_doc.at_css("#breadcrumb a[href='#{prefix}/learn/']")
     errors << "#{series_url}: missing learning-path breadcrumb" unless breadcrumb_parent
   end

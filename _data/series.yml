@@ -55,7 +55,10 @@ series:
                 description: Understand the decision spectrum and run a constrained Agent Loop with Pi.
           - number: "03"
             page_id: agent-architecture-map
-            status: planned
+            status: published
+            paths:
+              zh-CN: /posts/agent-architecture-map/
+              en: /posts/agent-architecture-map/
             locales:
               zh-CN:
                 title: Agent 架构全景图
@@ -401,3 +404,23 @@ series:
       - title: Model Context Protocol
         url: https://github.com/modelcontextprotocol/modelcontextprotocol
         kind: protocol
+
+  - id: build-pi-agent
+    path: /learn/build-pi-agent/
+    status: planned
+    locales:
+      zh-CN:
+        title: 从 0 到 1 实现 Pi Agent
+        eyebrow: Pi Agent 实现路线
+        description: 从最小运行循环开始，逐步拆解并实现一个可运行、可测试、可扩展的 Pi Agent。
+        audience: 适合完成当前 Agent 入门路线后，想继续理解 Harness 与 Agent Runtime 内部实现的开发者。
+        outcome: 最终会得到一个从控制循环、工具协议到状态恢复都能自己解释和维护的 Pi Agent 项目。
+        planned_note: 当前专栏定稿后展开
+      en:
+        title: Build a Pi Agent from 0 to 1
+        eyebrow: A Pi Agent implementation path
+        description: Start with the smallest runtime loop, then build a runnable, testable, and extensible Pi Agent step by step.
+        audience: For developers who finish the current agent path and want to understand how the harness and runtime work internally.
+        outcome: The final project will be a Pi Agent whose control loop, tool protocol, and recovery model you can explain and maintain.
+        planned_note: Roadmap follows after the current series is finalized
+    stages: []
