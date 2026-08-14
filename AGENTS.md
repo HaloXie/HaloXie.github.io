@@ -1,6 +1,55 @@
-# 博客配图规范
+# 博客项目规范
 
-本文件是 Codex 在本仓库工作的项目级指令。涉及 `_posts/` 文章及其配图时，必须遵守以下约束。
+本文件是 Codex 在本仓库工作的项目级指令。涉及样式、文章、翻译及配图时，必须遵守以下约束。
+
+## CSS 与视觉系统修改规范
+
+### 权威来源与文件职责
+
+- `docs/design/blog-base-style-demo.html` 是已经确认的 Base Style 视觉决策记录和 all-in-one 验收 demo，不参与 Jekyll 运行时编译。修改全局字体、字号层级、行高、行宽、主题色、背景色、圆角、阴影、动效或媒体比例前，必须先以该 demo 为基线；若要改变既有视觉方向，先更新 demo 并取得明昊确认，再修改生产样式。
+- `_sass/custom/_base.scss` 是生产环境全局设计 token 和基础排版的唯一事实源。字体角色、语义色、type scale、spacing、radius、focus、motion、media、Chirpy vendor variable 映射，以及中英文 Base override 都只能在这里定义。
+- `assets/css/jekyll-theme-chirpy.scss` 是主题编译入口和页面/组件样式层。它必须通过 `@use 'custom/base'` 消费 Base；允许处理 sidebar、首页 archive、文章布局、学习路线等组件结构，但不得再定义第二套全局字体栈、色板、字号体系或同义 token。
+- `_includes/head.html` 只负责页面资源加载入口。不得在组件 CSS 中使用 `@import` 临时引入字体，也不得未经确认新增第三方字体 CDN。生产字体方案优先使用仓库自托管、带 hash 的 WOFF2，并按 `lang + layout` 条件加载及构建期 subset。
+- 不修改 Chirpy gem、vendor 文件或 `_site/` 构建产物来实现样式；缺陷必须修在上述仓库 source of truth。
+
+### 修改路由
+
+| 变更类型 | 应修改的位置 | 约束 |
+| --- | --- | --- |
+| 全局字体、颜色、字号、行高、间距、圆角、动效、图片比例 | 先更新 demo；确认后修改 `_sass/custom/_base.scss` | 同一个真值只保留一处，组件只消费语义 token |
+| Light / Dark 主题 | `_sass/custom/_base.scss` | 两个主题必须成对定义；同时检查普通文字对比度 |
+| 中英文排版差异 | `_sass/custom/_base.scss` 的语言 override | Base 角色一致，family、line-height、measure、tracking 可按语言 override |
+| 页面或组件布局 | `assets/css/jekyll-theme-chirpy.scss`，或已有对应 partial | 只处理结构与局部状态，不复制 Base token 真值 |
+| 新字体文件与加载策略 | 先给 payload、license、缓存和 fallback 方案；确认后改资源加载入口 | 不以节省字节为由先降级阅读质量，也不直接把 demo CDN 当生产方案 |
+| 实验性视觉方案 | `docs/design/` 下独立 demo | 未确认前不得写入生产 CSS |
+
+### 禁止事项
+
+- 禁止在页面 selector 或组件 class 中硬编码已经存在语义 token 的颜色、字体、阴影、圆角和动效值；确需新增角色时，先判断是否应进入 Base。
+- 禁止为了压过错误层级而堆叠 `!important`、提高 selector specificity 或新增局部 override；先修正 token 或样式所属层。只有覆盖无法修改的 Chirpy vendor 规则时允许使用，并必须就近写明原因。
+- 禁止把 `blog-base-style-demo.html` 的整段 CSS 直接复制到生产入口。demo 同时展示全部语言和资源，生产实现必须按页面职责拆分。
+- 禁止顺手重排、格式化或重构与本次 goal 无关的样式区域。
+- 禁止把系统字体 fallback 的实际渲染误报为自定义字体已加载；字体改动必须检查真实 font face、字重、fallback 和缺字。
+
+### 多 Session 并发保护
+
+- 修改 CSS 前必须运行 `git status --short`，并检查 `_sass/custom/_base.scss`、`assets/css/jekyll-theme-chirpy.scss`、`_includes/head.html` 和目标组件文件的 staged / unstaged diff。
+- 发现目标文件存在不属于当前任务的未提交改动时，不得覆盖、还原、批量格式化或把它们混入提交。能在不重叠 selector 中安全完成时只做最小改动；存在重叠或归属不明时停止修改，报告冲突并等待 session 交接。
+- 当明昊明确说另一个 session 正在修改生产样式时，本 session 默认只允许做只读审计、方案或 `docs/design/` demo，除非明昊明确移交生产 CSS 修改权。
+- 提交时使用精确 pathspec，只提交本次任务文件；不得夹带其他 session 已 staged 的文件。
+
+### CSS 验收
+
+任何生产 CSS 改动交付前至少完成：
+
+1. `git diff --check`；
+2. `JEKYLL_ENV=production bundle exec jekyll b`；
+3. `bundle exec ruby scripts/check-rendered-site.rb`；
+4. 浏览器检查 Light / Dark，以及 `360 / 768 / 1200px` 下的首页、文章页和直接受影响页面；
+5. 检查正文、表格、代码块、长标题无横向溢出，focus 和 `prefers-reduced-motion` 未退化；
+6. 涉及字体时，额外验证中文、英文、加粗、代码混淆字符的真实加载，并记录冷缓存请求数和 WOFF2 体积。
+
+若因环境原因不能运行某项，最终汇报必须写明未运行项、替代证据和剩余人工验收点。
 
 ## 中文先行、定稿后英译
 
