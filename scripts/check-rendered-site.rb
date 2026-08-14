@@ -51,6 +51,10 @@ PAGE_DESCRIPTIONS = {
     "zh-CN" => "按阶段学习完整主题，从基础概念走到可运行、可验证的项目。",
     "en" => "Follow staged learning paths from first principles to runnable, verifiable projects."
   },
+  "/projects/" => {
+    "zh-CN" => "正在建设的开源基础设施，以及值得保留的成长坐标。",
+    "en" => "Open-source infrastructure in progress, plus a few meaningful waypoints."
+  },
   "/learn/agent-zero-to-one/" => {
     "zh-CN" => "用 28 篇短课建立 Agent 的正确心智模型，并用 Pi 完成一个证据优先的技术研究 Agent。",
     "en" => "Build the right agent engineering mental model in 28 short lessons, then ship an evidence-first research agent with Pi."
@@ -228,6 +232,7 @@ expected_pages = {}
 LANGUAGES.each do |lang, prefix|
   expected_pages["#{prefix}/"] = lang
   expected_pages["#{prefix}/learn/"] = lang
+  expected_pages["#{prefix}/projects/"] = lang
   SERIES.reject { |series| series["status"] == "planned" }.each do |series|
     expected_pages["#{prefix}#{series.fetch('path')}"] = lang
   end
@@ -692,6 +697,7 @@ SITE.glob("**/*.html").each do |path|
   expected_nav_paths = [
     "#{prefix}/",
     "#{prefix}/learn/",
+    "#{prefix}/projects/",
     "#{prefix}/categories/",
     "#{prefix}/tags/",
     "#{prefix}/archives/",

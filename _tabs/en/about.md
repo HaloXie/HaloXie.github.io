@@ -7,4 +7,4 @@ icon: fas fa-info-circle
 order: 5
 ---
 
-Hi, I'm Minghao. This is where I share my thoughts and hands-on work in AI, blockchain, and open source.
+Hi, I'm Minghao. Cognirail is my digital workshop: a place for notes on agent engineering and software systems, alongside the open-source projects that turn those ideas into working code.

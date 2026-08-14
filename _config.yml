@@ -40,10 +40,10 @@ exclude_from_localization:
 timezone: Asia/Shanghai
 
 # jekyll-seo-tag settings
-title: Halo's Blog
-tagline: AI · Blockchain · Open Source
+title: Cognirail
+tagline: Agent Engineering · Systems · Open Source
 description: >-
-  明昊的技术博客，记录 AI、区块链和开源方面的思考与实践。
+  明昊的数字工坊，记录 Agent 工程、软件系统与开源实践。
 
 url: "https://halo.xin"
 

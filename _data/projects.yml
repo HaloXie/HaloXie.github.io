@@ -1,0 +1,64 @@
+- repo: cognirail/swift-lint-config
+  url: https://github.com/cognirail/swift-lint-config
+  group: building
+  language: Shell · Swift
+  status: active
+  locales:
+    zh-CN:
+      summary: 面向 AI 生成 Swift 代码的质量护栏。
+      note: 把命名、结构、安全与逃生口约束做成可机器验证的 SwiftLint + SwiftFormat 基线。
+    en:
+      summary: Quality guardrails for AI-generated Swift code.
+      note: A machine-checkable SwiftLint and SwiftFormat baseline for naming, structure, safety, and escape hatches.
+
+- repo: cognirail/eslint-config
+  url: https://github.com/cognirail/eslint-config
+  group: building
+  language: TypeScript
+  status: active
+  locales:
+    zh-CN:
+      summary: 给 TypeScript 项目的一套严格、可复用的 AI coding guardrails。
+      note: 把类型安全、复杂度、现代 JavaScript 约束和 Prettier 收敛成零样板配置。
+    en:
+      summary: Strict, reusable AI coding guardrails for TypeScript projects.
+      note: Type safety, complexity checks, modern JavaScript rules, and Prettier in one low-friction preset.
+
+- repo: cognirail/from-skills-to-abilities
+  url: https://github.com/cognirail/from-skills-to-abilities
+  group: building
+  language: Research · Reference
+  status: evolving
+  locales:
+    zh-CN:
+      summary: 从 Skill 到 Ability 的认知架构工作模型。
+      note: 这不是标准，而是一份关于如何把判断框架封装进 Agent 的持续演进工程笔记。
+    en:
+      summary: A working cognitive-architecture model from Skills to Abilities.
+      note: Not a standard, but an evolving engineering note on packaging stable judgment for agents.
+
+- repo: HaloXie/HaloXie.github.io
+  url: https://github.com/HaloXie/HaloXie.github.io
+  group: meaningful
+  language: Jekyll · Ruby
+  status: active
+  locales:
+    zh-CN:
+      summary: Cognirail 本身的源代码与内容系统。
+      note: 双语发布、系列学习路线、内容图片门禁和阅读体验都在这里持续迭代。
+    en:
+      summary: The source and publishing system behind Cognirail.
+      note: The bilingual pipeline, learning paths, content-image gates, and reading experience all evolve here.
+
+- repo: HaloXie/go-first
+  url: https://github.com/HaloXie/go-first
+  group: meaningful
+  language: Go
+  status: archive
+  locales:
+    zh-CN:
+      summary: 一枚保留下来的 Go 学习坐标。
+      note: 它不代表现在的工程成熟度，但诚实记录了能力版图向后端与系统语言扩展的起点。
+    en:
+      summary: A preserved waypoint from learning Go.
+      note: It is not a claim about current maturity; it records an early step toward backend and systems programming.
