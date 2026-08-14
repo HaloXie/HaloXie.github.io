@@ -181,6 +181,97 @@ expected_pages.each do |url, lang|
   errors << "#{url}: cross-language post links #{wrong_links.uniq.inspect}" unless wrong_links.empty?
 end
 
+# Reading highlights are an article-only progressive enhancement. The rendered
+# contract protects resource scoping and the accessible bilingual toggle.
+SITE.glob("**/*.html").each do |path|
+  relative = path.relative_path_from(SITE).to_s
+  doc = Nokogiri::HTML(path.read)
+  is_post = relative.match?(%r{(?:\A|/)posts/[^/]+/index\.html\z})
+  bootstraps = doc.css("script[data-reading-highlights-bootstrap]")
+  styles = doc.css('link[rel="stylesheet"][href$="/plugins/reading-highlights/reading-highlights.css"]')
+  scripts = doc.css('script[src$="/plugins/reading-highlights/reading-highlights.js"][defer]')
+  toggles = doc.css("#reading-highlights-toggle[data-reading-highlights-toggle]")
+
+  unless is_post
+    errors << "#{relative}: non-post page contains reading highlights bootstrap" unless bootstraps.empty?
+    errors << "#{relative}: non-post page loads reading highlights stylesheet" unless styles.empty?
+    errors << "#{relative}: non-post page loads reading highlights script" unless scripts.empty?
+    errors << "#{relative}: non-post page exposes reading highlights toggle" unless toggles.empty?
+    next
+  end
+
+  errors << "#{relative}: expected one reading highlights bootstrap, got #{bootstraps.length}" unless bootstraps.length == 1
+  errors << "#{relative}: expected one reading highlights stylesheet, got #{styles.length}" unless styles.length == 1
+  errors << "#{relative}: expected one deferred reading highlights script, got #{scripts.length}" unless scripts.length == 1
+  errors << "#{relative}: expected one reading highlights toggle, got #{toggles.length}" unless toggles.length == 1
+
+  toggle = toggles.first
+  expected_enabled_label = relative.start_with?("en/") ? "Turn off reading highlights" : "关闭重点高亮"
+  expected_disabled_label = relative.start_with?("en/") ? "Turn on reading highlights" : "开启重点高亮"
+  errors << "#{relative}: reading highlights toggle must be a button" unless toggle&.name == "button"
+  errors << "#{relative}: reading highlights toggle must stay hidden before runtime sync" unless toggle&.key?("hidden")
+  errors << "#{relative}: reading highlights toggle exposes stale aria-pressed" if toggle&.key?("aria-pressed")
+  errors << "#{relative}: reading highlights toggle exposes stale aria-label" if toggle&.key?("aria-label")
+  errors << "#{relative}: reading highlights toggle exposes stale title" if toggle&.key?("title")
+  errors << "#{relative}: wrong enabled label contract" unless toggle&.[]("data-enabled-label") == expected_enabled_label
+  errors << "#{relative}: wrong disabled label contract" unless toggle&.[]("data-disabled-label") == expected_disabled_label
+  errors << "#{relative}: reading highlights toggle must stay in sidebar-bottom" unless toggle&.ancestors&.any? { |node| node["class"].to_s.split.include?("sidebar-bottom") }
+
+  bootstrap_source = bootstraps.first&.text.to_s
+  bootstrap_contract = [
+    "localStorage.getItem('halo:reading-highlights')",
+    "['disabled', 'off', 'false', '0']",
+    "enabled = true",
+    "document.documentElement.dataset.readingHighlights = enabled ? 'on' : 'off'"
+  ]
+  missing_bootstrap_contract = bootstrap_contract.reject { |fragment| bootstrap_source.include?(fragment) }
+  errors << "#{relative}: incomplete reading highlights bootstrap #{missing_bootstrap_contract.inspect}" unless missing_bootstrap_contract.empty?
+
+  source = path.read
+  bootstrap_position = source.index("data-reading-highlights-bootstrap")
+  stylesheet_position = source.index("/plugins/reading-highlights/reading-highlights.css")
+  errors << "#{relative}: reading highlights bootstrap must precede stylesheet" unless bootstrap_position && stylesheet_position && bootstrap_position < stylesheet_position
+end
+
+highlights_script = ROOT.join("plugins/reading-highlights/reading-highlights.js").read
+highlights_script_contract = [
+  "const STORAGE_KEY = 'halo:reading-highlights'",
+  "article[data-toc] > .content",
+  "Math.floor(proseBlockCount * DENSITY)",
+  "usedSections.has(item.candidate.section)",
+  "classList.add(HIGHLIGHT_CLASS)",
+  "aria-pressed",
+  "data-reading-highlights-ready",
+  "button.hidden = false",
+  "localStorage"
+]
+missing_highlights_script_contract = highlights_script_contract.reject { |fragment| highlights_script.include?(fragment) }
+errors << "reading highlights runtime contract incomplete #{missing_highlights_script_contract.inspect}" unless missing_highlights_script_contract.empty?
+
+highlights_styles = ROOT.join("plugins/reading-highlights/reading-highlights.css").read
+highlights_style_contract = [
+  "html[data-reading-highlights='on'] .reading-highlight",
+  "box-shadow: inset",
+  "text-decoration-line: underline",
+  "[data-bs-theme='dark']",
+  ":root:not([data-bs-theme='light']):not([data-bs-theme='dark'])",
+  "#reading-highlights-toggle:not([data-reading-highlights-ready])",
+  "prefers-color-scheme: dark",
+  "prefers-reduced-motion: reduce",
+  "forced-colors: active",
+  "focus-visible"
+]
+missing_highlights_style_contract = highlights_style_contract.reject { |fragment| highlights_styles.include?(fragment) }
+errors << "reading highlights style contract incomplete #{missing_highlights_style_contract.inspect}" unless missing_highlights_style_contract.empty?
+
+package_scripts = JSON.parse(ROOT.join("package.json").read).fetch("scripts")
+errors << "default npm test must run reading highlights tests" unless package_scripts["test"] == "npm run test:reading-highlights"
+
+workflow_source = ROOT.join(".github/workflows/pages-deploy.yml").read
+npm_test_position = workflow_source.index("run: npm test")
+build_position = workflow_source.index("run: bundle exec jekyll b")
+errors << "Pages workflow must run npm test before build" unless npm_test_position && build_position && npm_test_position < build_position
+
 # Metadata identity is a site-wide contract, including tabs, archives and 404s.
 SITE.glob("**/*.html").each do |path|
   relative = path.relative_path_from(SITE).to_s
@@ -423,7 +514,7 @@ SLUGS.each do |slug|
 end
 
 if errors.empty?
-  puts "Rendered localization check passed: language-aware metadata, discovery links, Pagefind command search, sitemaps, feeds and shared assets."
+  puts "Rendered localization check passed: language-aware metadata, reading highlights, Pagefind command search, sitemaps, feeds and shared assets."
 else
   warn "Rendered localization check failed with #{errors.length} error(s):"
   errors.each { |error| warn "- #{error}" }

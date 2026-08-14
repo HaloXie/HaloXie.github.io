@@ -146,6 +146,23 @@
   <!-- Theme style -->
   <link rel="stylesheet" {% static_href %}href="{{ '/assets/css/:THEME.css' | replace: ':THEME', site.theme | relative_url }}"{% endstatic_href %}>
 
+  {% if page.layout == 'post' %}
+    <script data-reading-highlights-bootstrap>
+      (() => {
+        let enabled = true;
+        try {
+          const saved = localStorage.getItem('halo:reading-highlights');
+          enabled = !['disabled', 'off', 'false', '0'].includes(String(saved || '').toLowerCase());
+        } catch (_error) {
+          enabled = true;
+        }
+        document.documentElement.dataset.readingHighlights = enabled ? 'on' : 'off';
+      })();
+    </script>
+    <link rel="stylesheet" href="{{ '/plugins/reading-highlights/reading-highlights.css' | relative_url }}">
+    <script defer src="{{ '/plugins/reading-highlights/reading-highlights.js' | relative_url }}"></script>
+  {% endif %}
+
   <!-- Web Font -->
   <link rel="stylesheet" href="{{ site.data.origin[type].webfonts | relative_url }}">
 

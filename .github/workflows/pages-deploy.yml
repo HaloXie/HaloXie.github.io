@@ -54,6 +54,9 @@ jobs:
       - name: Install search indexer
         run: npm ci
 
+      - name: Test JavaScript
+        run: npm test
+
       - name: Verify translation pairs
         run: ruby scripts/check-translations.rb
 

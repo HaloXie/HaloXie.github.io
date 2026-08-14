@@ -1,7 +1,9 @@
 {
   "private": true,
   "scripts": {
-    "index:search": "pagefind --root-selector 'article[data-toc]' --keep-index-url --quiet"
+    "index:search": "pagefind --root-selector 'article[data-toc]' --keep-index-url --quiet",
+    "test": "npm run test:reading-highlights",
+    "test:reading-highlights": "node scripts/test-reading-highlights.js"
   },
   "devDependencies": {
     "pagefind": "1.5.2"
