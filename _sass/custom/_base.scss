@@ -15,7 +15,9 @@
     sans-serif;
   --font-heading-zh: var(--font-display-zh);
   --font-ui-zh: var(--font-display-zh);
-  --font-body-zh: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  /* Georgia supplies better-proportioned Latin glyphs inside Chinese prose;
+     CJK characters fall through to the Chinese serif faces. */
+  --font-body-zh: Georgia, 'Noto Serif SC', 'Songti SC', 'STSong', serif;
   --font-display-en: 'Source Sans 3', 'Source Sans Pro', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading-en: var(--font-display-en);

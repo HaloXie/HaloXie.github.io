@@ -63,6 +63,9 @@ jobs:
       - name: Verify learning paths and category catalog
         run: ruby scripts/check-series.rb
 
+      - name: Verify reference links
+        run: ruby scripts/check-reference-links.rb
+
       - name: Verify source content and images
         run: ruby scripts/check-content-images.rb
 

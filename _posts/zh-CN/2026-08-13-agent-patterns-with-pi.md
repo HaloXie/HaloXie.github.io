@@ -4,7 +4,9 @@ description: "拆解 Agent 的决策权光谱，并使用 Pi CLI、SDK 和 Exten
 date: 2026-08-13 20:10:00 +0800
 lang: zh-CN
 page_id: agent-patterns-with-pi
-permalink: /posts/agent-patterns-with-pi/
+permalink: /learn/agent-zero-to-one/agent-patterns-with-pi/
+redirect_from:
+  - /posts/agent-patterns-with-pi/
 categories: [AI]
 tags: [ai-agent, pi, tool-calling, routing, agent-loop]
 image:
@@ -12,7 +14,7 @@ image:
 toc: true
 ---
 
-上一篇[《Chat、Workflow 还是 Agent？》](/posts/chat-workflow-agent-guide/)用“谁决定下一步”区分了三种系统。这篇继续往 Agent 内部走一步。
+上一篇[《Chat、Workflow 还是 Agent？》](/learn/agent-zero-to-one/chat-workflow-agent-guide/)用“谁决定下一步”区分了三种系统。这篇继续往 Agent 内部走一步。
 
 当人们说“我们做了一个 Agent”，它可能只是根据问题切换 Prompt，也可能会自动选择工具、循环执行，甚至把任务派给其他 Agent。这些形态拥有的决策权并不相同。
 
@@ -307,7 +309,7 @@ Demo
 
 当 Agent 开始写文件、运行命令、发送消息或操作业务数据时，外层 Harness 才是主要工程量。它要保证模型即使判断失误，也不能越过系统边界。
 
-这正是[Harness Engineering](/posts/harness-engineering/)要解决的问题。而当你开始用 Skill 描述流程、又发现流程不足以承载稳定判断时，可以继续读[《Skill 让 AI 会做事，Ability 让 AI 会判断》](/posts/from-skills-to-abilities/)。
+这正是[Harness Engineering](/posts/general/harness-engineering/)要解决的问题。而当你开始用 Skill 描述流程、又发现流程不足以承载稳定判断时，可以继续读[《Skill 让 AI 会做事，Ability 让 AI 会判断》](/posts/general/from-skills-to-abilities/)。
 
 ## 最后：先做一个边界清楚的 Agent
 
@@ -323,11 +325,11 @@ Demo
 
 先让一个小循环可理解、可观察、可停止。只有当单 Agent 的上下文、能力或并行性真的成为瓶颈时，再增加新的路由层和协调者。
 
-如果你还没确定某个业务应该用 Chat、Workflow 还是 Agent，先回到上一篇的[场景选择指南](/posts/chat-workflow-agent-guide/)。架构的第一步不是搭 Agent，而是确认哪里真的存在值得交给模型的不确定性。
+如果你还没确定某个业务应该用 Chat、Workflow 还是 Agent，先回到上一篇的[场景选择指南](/learn/agent-zero-to-one/chat-workflow-agent-guide/)。架构的第一步不是搭 Agent，而是确认哪里真的存在值得交给模型的不确定性。
 
 ## 参考资料
 
-- `earendil-works/pi`, `packages/coding-agent/README.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/sdk.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/extensions.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/security.md`, v0.84.1.
+- [Pi Coding Agent README（v0.84.1）](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/README.md)：CLI、内置工具与运行模式。
+- [Pi SDK 文档（v0.84.1）](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/sdk.md)：`createAgentSession()` 与嵌入式调用方式。
+- [Pi Extension 文档（v0.84.1）](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/extensions.md)：自定义工具和 Extension API。
+- [Pi Security 文档（v0.84.1）](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/security.md)：权限边界与安全注意事项。

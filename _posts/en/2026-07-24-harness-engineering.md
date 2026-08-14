@@ -4,7 +4,9 @@ description: "A systematic breakdown of Harness Engineering's core ideas, six co
 date: 2026-07-24 15:14:59 +0800
 lang: en
 page_id: harness-engineering
-permalink: /posts/harness-engineering/
+permalink: /posts/general/harness-engineering/
+redirect_from:
+  - /posts/harness-engineering/
 categories: [AI]
 tags: [harness-engineering, ai-agent, openai, codex, context-engineering]
 image:
@@ -22,7 +24,7 @@ As large models become the new engines, what companies truly compete on is the "
 
 **Harness Engineering** is an engineering methodology for building a **controllable, verifiable, and observable runtime shell** around AI Agents. The word "harness" comes from horse tack: when an immensely powerful, untamed horse (the AI model) appears, people need to design an entire control system around it—reins, saddle, blinkers, signals, dashboards—not merely "shout instructions at it."
 
-OpenAI's engineering team formally used the term in its February 2026 article, *Harness engineering: leveraging Codex in an agent-first world*, elevating it into a systematic engineering paradigm through an extreme experiment. On February 5, 2026, HashiCorp co-founder Mitchell Hashimoto summarized it as: "**the discipline of systematically building constraints, tools, documentation, and feedback loops that enable AI coding agents to reliably get work done.**"
+OpenAI's engineering team formally used the term in its February 2026 article, *Harness engineering: leveraging Codex in an agent-first world*, elevating it into a systematic engineering paradigm through an extreme experiment. In this article, Harness Engineering means **systematically building constraints, tools, documentation, and feedback loops that enable AI coding agents to reliably get work done**.
 
 > OpenAI engineer Ryan Lopopolo: "**When the primary work of an engineering team is no longer writing code, but designing the environment, specifying intent, and building feedback loops, Harness Engineering is the systematic answer to that problem.**"
 
@@ -80,7 +82,7 @@ From a capability perspective, a production-ready Harness needs at least six cor
 
 - **External API / system integration:** Business systems, databases, SaaS, file systems, and CI/CD pipelines.
 
-**Key challenge:** Tool specifications must be readable and verifiable. In February 2026, Can Duruk found that mainstream general-purpose editing tools had failure rates as high as **50.7%** (when Grok 4 used patch format), primarily because their tool contracts were unfriendly to models. His solution, **Hashline** (line-level content hashes), lets a model edit precisely by referring to hash tags only two or three characters long.
+**Key challenge:** Tool specifications must be readable and verifiable. In February 2026, Can Bölük found that mainstream general-purpose editing tools had failure rates as high as **50.7%** (when Grok 4 used patch format), primarily because their tool contracts were unfriendly to models. His solution, **Hashline** (line-level content hashes), lets a model edit precisely by referring to hash tags only two or three characters long.
 
 ## 2.2 Memory
 
@@ -290,22 +292,20 @@ Competition in 2026 is no longer about "whose Agent is smarter," but "whose Harn
 
 ## References
 
-- OpenAI. *Harness engineering: leveraging Codex in an agent-first world*. 2026-02. https://openai.com/index/harness-engineering/
+- OpenAI. [*Harness engineering: leveraging Codex in an agent-first world*](https://openai.com/index/harness-engineering/). 2026-02.
 
-- Anthropic. *Effective Harnesses for Long-Running Agents*. 2025-11.
+- Anthropic. [*Effective Harnesses for Long-Running Agents*](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents). 2025-11.
 
-- Anthropic. *Harness Design for Long-Running Apps*. 2026-03.
+- Anthropic. [*Harness Design for Long-Running Apps*](https://www.anthropic.com/engineering/harness-design-long-running-apps). 2026-03.
 
-- Martin Fowler. *OpenAI's Harness Engineering Practice*. 2026-04.
+- Martin Fowler. [*Harness Engineering — first thoughts*](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering-memo.html). 2026-04.
 
-- Tony Lee. *How OpenAI Built 1 Million Lines of Code Using Only Agents: 5 Harness Engineering Principles*. 2026. https://tonylee.im/en/blog/openai-harness-engineering-five-principles-codex/
+- Tony Lee. [*How OpenAI Built 1 Million Lines of Code Using Only Agents: 5 Harness Engineering Principles*](https://tonylee.im/en/blog/openai-harness-engineering-five-principles-codex/). 2026.
 
-- Mitchell Hashimoto. *Harness Engineering Definition*. 2026-02-05.
+- Can Bölük. [*I Improved 15 LLMs at Coding in One Afternoon. Only the Harness Changed*](https://x.com/_can1357/article/2021828033640911196). 2026-02.
 
-- Can Duruk. *I Improved 15 LLMs at Coding in One Afternoon (Hashline)*. 2026-02.
+- LangChain. [*Improving Deep Agents with Harness Engineering*](https://blog.langchain.com/improving-deep-agents-with-harness-engineering/). 2026-02.
 
-- LangChain. *Harness-only Optimization on Terminal Bench 2.0*. 2026.
+- Stanford. [*Lost in the Middle: How Language Models Use Long Contexts*](https://arxiv.org/abs/2307.03172).
 
-- Stanford. *Lost in the Middle: How Language Models Use Long Contexts*.
-
-- SemaClaw. *A Step Towards General-Purpose Personal AI Agents through Harness Engineering*. arXiv:2604.11548. 2026-04.
+- SemaClaw. [*A Step Towards General-Purpose Personal AI Agents through Harness Engineering*](https://arxiv.org/abs/2604.11548). arXiv:2604.11548. 2026-04.

@@ -41,11 +41,16 @@ series_data = YAML.safe_load(ROOT.join("_data/series.yml").read)
 series_list = series_data.fetch("series")
 series_ids = series_list.map { |series| series["id"] }
 errors << "duplicate series ids" unless series_ids.uniq.length == series_ids.length
+all_lesson_page_ids = series_list.flat_map do |series|
+  series.fetch("stages").flat_map { |stage| stage.fetch("lessons").map { |lesson| lesson.fetch("page_id") } }
+end
+errors << "lesson page_id must be globally unique across series" unless all_lesson_page_ids.uniq.length == all_lesson_page_ids.length
 
 series_list.each do |series|
   series_id = series.fetch("id")
   errors << "#{series_id}: invalid status #{series['status'].inspect}" unless SERIES_STATUSES.include?(series["status"])
-  errors << "#{series_id}: path must live under /learn/" unless series["path"].to_s.match?(%r{\A/learn/[^/]+/\z})
+  expected_series_path = "/learn/#{series_id}/"
+  errors << "#{series_id}: path must equal #{expected_series_path.inspect}" unless series["path"] == expected_series_path
 
   LANGUAGES.each do |language|
     locale = series.fetch("locales", {}).fetch(language, {})
@@ -96,6 +101,7 @@ series_list.each do |series|
       end
       status = localized_statuses.fetch(language, default_status)
       expected_path = lesson.fetch("paths", {})[language]
+      canonical_lesson_path = "#{series.fetch('path')}#{lesson_id}/"
       if status == "published"
         post = posts.dig(lesson_id, language)
         unless post
@@ -103,6 +109,7 @@ series_list.each do |series|
           next
         end
         errors << "#{series_id}/#{lesson_id}/#{language}: missing published path" if expected_path.to_s.empty?
+        errors << "#{series_id}/#{lesson_id}/#{language}: path must equal #{canonical_lesson_path.inspect}" unless expected_path == canonical_lesson_path
         actual_path = post.fetch("data")["permalink"]
         errors << "#{series_id}/#{lesson_id}/#{language}: path #{expected_path.inspect} != post permalink #{actual_path.inspect}" unless expected_path == actual_path
       elsif !expected_path.to_s.empty?

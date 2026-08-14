@@ -4,7 +4,9 @@ description: "A practical map of Agent patterns, followed by minimal read-only e
 date: 2026-08-13 20:10:00 +0800
 lang: en
 page_id: agent-patterns-with-pi
-permalink: /posts/agent-patterns-with-pi/
+permalink: /learn/agent-zero-to-one/agent-patterns-with-pi/
+redirect_from:
+  - /posts/agent-patterns-with-pi/
 categories: [AI]
 tags: [ai-agent, pi, tool-calling, routing, agent-loop]
 image:
@@ -12,7 +14,7 @@ image:
 toc: true
 ---
 
-The previous article, [Chat, Workflow, or Agent?](/posts/chat-workflow-agent-guide/), used one question to separate the patterns: who decides the next step? This article goes one level deeper into the Agent itself.
+The previous article, [Chat, Workflow, or Agent?](/learn/agent-zero-to-one/chat-workflow-agent-guide/), used one question to separate the patterns: who decides the next step? This article goes one level deeper into the Agent itself.
 
 When a team says, “We built an Agent,” it may mean that a model switches prompts, selects tools, runs an observe–act loop, or delegates work to other Agents. Those systems do not possess the same decision authority.
 
@@ -307,7 +309,7 @@ Usable system
 
 Once an Agent can write files, run commands, send messages, or modify business data, the outer Harness becomes the main engineering effort. Its job is to ensure that even a mistaken model judgment cannot cross the system boundary.
 
-That is the problem addressed by [Harness Engineering](/posts/harness-engineering/). When your Skills begin to accumulate not only procedures but also stable judgment, continue with [Skills Teach AI to Do; Abilities Teach AI to Judge](/posts/from-skills-to-abilities/).
+That is the problem addressed by [Harness Engineering](/posts/general/harness-engineering/). When your Skills begin to accumulate not only procedures but also stable judgment, continue with [Skills Teach AI to Do; Abilities Teach AI to Judge](/posts/general/from-skills-to-abilities/).
 
 ## Finally: begin with one Agent whose boundary is obvious
 
@@ -323,11 +325,11 @@ A reliable starting point is not a Supervisor plus five specialists. It is:
 
 First make one small loop understandable, observable, and stoppable. Add routing layers and coordinators only when context, capability, or parallelism has become a measured bottleneck.
 
-If you have not yet decided whether a business problem needs Chat, Workflow, or Agent, return to the [scenario selection guide](/posts/chat-workflow-agent-guide/). The first architecture decision is not how to build an Agent, but where uncertainty is valuable enough to delegate.
+If you have not yet decided whether a business problem needs Chat, Workflow, or Agent, return to the [scenario selection guide](/learn/agent-zero-to-one/chat-workflow-agent-guide/). The first architecture decision is not how to build an Agent, but where uncertainty is valuable enough to delegate.
 
 ## References
 
-- `earendil-works/pi`, `packages/coding-agent/README.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/sdk.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/extensions.md`, v0.84.1.
-- `earendil-works/pi`, `packages/coding-agent/docs/security.md`, v0.84.1.
+- [Pi Coding Agent README (v0.84.1)](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/README.md): CLI usage, built-in tools, and run modes.
+- [Pi SDK documentation (v0.84.1)](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/sdk.md): `createAgentSession()` and embedded usage.
+- [Pi Extension documentation (v0.84.1)](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/extensions.md): custom tools and the Extension API.
+- [Pi Security documentation (v0.84.1)](https://github.com/earendil-works/pi/blob/v0.84.1/packages/coding-agent/docs/security.md): permission boundaries and security notes.

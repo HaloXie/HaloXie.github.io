@@ -47,10 +47,21 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   --archive-category-text: var(--accent-hover);
 }
 
+/* Home rhythm
+ *
+ * Keep the utility bar intentionally quiet. The archive grid only needs to
+ * sit closer to it; adding a hero or descriptive copy would push the actual
+ * content down and duplicate information already carried by the cards.
+ */
+body:has(#post-list) #topbar-wrapper {
+  border-bottom: 1px solid var(--main-border-color);
+}
+
 #post-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
   gap: 1.5rem;
+  margin-top: clamp(1rem, 1.4vw, 1.4rem);
   padding-right: 0 !important;
   padding-left: 0 !important;
 }
@@ -235,7 +246,7 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
  */
 
 .post-series-kicker {
-  margin-bottom: 1.15rem;
+  margin-bottom: 0;
   padding-bottom: 0.8rem;
   border-bottom: 1px solid var(--main-border-color);
 }
@@ -282,6 +293,18 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   flex: 0 0 auto;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.015em;
+}
+
+article[data-toc] > header > h1 {
+  max-width: var(--post-copy-width);
+  margin: clamp(1.8rem, 3vw, 2.6rem) 0 0.85rem;
+  color: var(--heading-color);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 3vw, 3.2rem);
+  font-weight: var(--font-weight-display);
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  text-wrap: balance;
 }
 
 article > header .post-desc {
@@ -858,12 +881,15 @@ body:has(.category-catalog) {
 
 .series-outcome {
   display: grid;
-  grid-template-columns: minmax(8rem, 0.3fr) minmax(0, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: baseline;
   margin-bottom: 3.25rem;
   padding: 1.15rem 1.35rem;
+  border: 1px solid var(--learning-line);
   border-left: 3px solid var(--learning-accent);
-  background: var(--learning-paper-soft);
+  border-radius: var(--radius-md);
+  background: var(--learning-paper);
 }
 
 .series-outcome span {
@@ -1974,6 +2000,19 @@ body:has(main article[data-toc])
     padding-left: clamp(1.5rem, 3vw, 3.5rem) !important;
   }
 
+  body:has(main article[data-toc]) #topbar {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  body:has(main article[data-toc]) #breadcrumb {
+    min-width: 0;
+    padding-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   body:has(main article[data-toc]) main:has(> article[data-toc]) {
     flex: 0 1 var(--post-copy-width) !important;
     width: 100% !important;
@@ -1998,8 +2037,29 @@ body:has(main article[data-toc])
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper {
-    max-height: calc(100vh - 2rem);
+    top: 50vh;
+    max-height: calc(100vh - 4rem);
+    margin-top: 0;
+    padding-right: 0 !important;
+    overscroll-behavior: contain;
     font-size: 0.8125rem;
+    transform: translateY(-50%);
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper .toc-border-cover {
+    display: none;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper #toc-wrapper .panel-heading {
+    margin: 0 0 0.7rem !important;
+    padding: 0 0 0.75rem 1rem !important;
+    border-bottom: 1px solid var(--main-border-color);
+    color: var(--label-color);
+    font-family: var(--font-ui);
+    font-size: 0.76rem;
+    font-weight: var(--font-weight-label);
+    letter-spacing: 0.08em;
+    line-height: 1.35;
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper::after {
@@ -2046,6 +2106,38 @@ body:has(main article[data-toc])
 /* Centring the prose + TOC group inside the space beside the fixed sidebar
    keeps the prose close to the physical viewport centre. */
 @media (min-width: 1200px) {
+  body:has(main article[data-toc]) #topbar {
+    display: grid !important;
+    grid-template-columns:
+      minmax(0, 1fr)
+      var(--post-layout-gap)
+      var(--post-panel-width);
+    width: 100%;
+    max-width: calc(var(--post-copy-width) + var(--post-layout-gap) + var(--post-panel-width));
+    margin-right: auto;
+    margin-left: auto;
+    align-items: center;
+  }
+
+  body:has(main article[data-toc]) #topbar #breadcrumb {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  body:has(main article[data-toc]) #topbar .language-switcher {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  body:has(main article[data-toc]) #topbar .command-search-trigger {
+    grid-column: 3;
+    grid-row: 1;
+    width: 100%;
+  }
+
   body:has(main article[data-toc])
     #main-wrapper
     > .container
@@ -2071,7 +2163,9 @@ body:has(main article[data-toc])
     display: block;
     grid-column: 3;
     width: 100%;
+    height: 100%;
     max-width: var(--post-panel-width);
+    align-self: stretch;
     padding-left: 0 !important;
   }
 }
@@ -2081,6 +2175,7 @@ body:has(main article[data-toc])
     line-height: var(--leading-prose);
   }
 }
+
 /* Open-source shelf
  *
  * Editorial inventory rather than generic GitHub cards: the numbered section

@@ -4,7 +4,9 @@ description: "面向零基础读者的 OpenClaw（AI Agent）完全入门指南�
 date: 2026-03-25 19:30:04 +0800
 lang: zh-CN
 page_id: openclaw-guide-final
-permalink: /posts/openclaw-guide-final/
+permalink: /posts/general/openclaw-guide-final/
+redirect_from:
+  - /posts/openclaw-guide-final/
 categories: [OpenClaw]
 tags: [ai-agent, openclaw, mcp, open-source]
 image:

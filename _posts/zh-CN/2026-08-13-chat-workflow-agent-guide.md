@@ -4,7 +4,9 @@ description: "从谁决定下一步出发，解释 Chat、Workflow、Router、Ag
 date: 2026-08-13 20:00:00 +0800
 lang: zh-CN
 page_id: chat-workflow-agent-guide
-permalink: /posts/chat-workflow-agent-guide/
+permalink: /learn/agent-zero-to-one/chat-workflow-agent-guide/
+redirect_from:
+  - /posts/chat-workflow-agent-guide/
 categories: [AI]
 tags: [ai-agent, workflow, chat, router, automation]
 image:
@@ -239,6 +241,6 @@ Agent 适合路径难以提前穷举的任务，例如开放式调研、复杂�
 
 如果答案是“人持续判断”，用 Chat。如果路线可以提前定义，用 Workflow。如果中间结果确实会改变行动，而且这部分自由值得它带来的成本和风险，再使用 Agent。
 
-下一篇：[Agent 不只一种：从软路由、工具自动匹配到自主循环，再用 Pi 跑起最小 Agent](/posts/agent-patterns-with-pi/)，会继续拆解 Agent 内部的几种工程形态，并给出一个可运行的最小实践。
+下一篇：[Agent 不只一种：从软路由、工具自动匹配到自主循环，再用 Pi 跑起最小 Agent](/learn/agent-zero-to-one/agent-patterns-with-pi/)，会继续拆解 Agent 内部的几种工程形态，并给出一个可运行的最小实践。
 
-延伸阅读：[OpenClaw 完全入门指南](/posts/openclaw-guide-final/) · [Harness Engineering：AI Agent 时代的新工程范式](/posts/harness-engineering/)
+延伸阅读：[OpenClaw 完全入门指南](/posts/general/openclaw-guide-final/) · [Harness Engineering：AI Agent 时代的新工程范式](/posts/general/harness-engineering/)

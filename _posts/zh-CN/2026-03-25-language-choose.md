@@ -4,7 +4,9 @@ description: "对比 Javascript、C#、C++、Python、Golang、Solidity、Java�
 date: 2026-03-25 19:30:04 +0800
 lang: zh-CN
 page_id: language-choose
-permalink: /posts/language-choose/
+permalink: /posts/general/language-choose/
+redirect_from:
+  - /posts/language-choose/
 categories: [区块链]
 tags: [blockchain, programming-language, javascript, solidity, golang, rust]
 image:

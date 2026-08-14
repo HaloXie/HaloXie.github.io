@@ -31,8 +31,8 @@ series:
             page_id: chat-workflow-agent-guide
             status: published
             paths:
-              zh-CN: /posts/chat-workflow-agent-guide/
-              en: /posts/chat-workflow-agent-guide/
+              zh-CN: /learn/agent-zero-to-one/chat-workflow-agent-guide/
+              en: /learn/agent-zero-to-one/chat-workflow-agent-guide/
             locales:
               zh-CN:
                 title: Chat、Workflow 还是 Agent？
@@ -44,8 +44,8 @@ series:
             page_id: agent-patterns-with-pi
             status: published
             paths:
-              zh-CN: /posts/agent-patterns-with-pi/
-              en: /posts/agent-patterns-with-pi/
+              zh-CN: /learn/agent-zero-to-one/agent-patterns-with-pi/
+              en: /learn/agent-zero-to-one/agent-patterns-with-pi/
             locales:
               zh-CN:
                 title: Agent 不只一种：用 Pi 跑起最小 Agent
@@ -60,7 +60,7 @@ series:
               zh-CN: published
               en: planned
             paths:
-              zh-CN: /posts/agent-architecture-map/
+              zh-CN: /learn/agent-zero-to-one/agent-architecture-map/
             locales:
               zh-CN:
                 title: Agent 架构全景图
@@ -82,6 +82,11 @@ series:
           - number: "04"
             page_id: llm-call-anatomy
             status: planned
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /learn/agent-zero-to-one/llm-call-anatomy/
             locales:
               zh-CN:
                 title: 一次 LLM 调用究竟发生了什么

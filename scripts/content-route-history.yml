@@ -1,0 +1,38 @@
+# 已公开 URL 的迁移台账。只允许追加或修正事实错误，不因当前构建通过而删除。
+redirects:
+  - page_id: chat-workflow-agent-guide
+    from: /posts/chat-workflow-agent-guide/
+    to: /learn/agent-zero-to-one/chat-workflow-agent-guide/
+    languages: [zh-CN, en]
+  - page_id: agent-patterns-with-pi
+    from: /posts/agent-patterns-with-pi/
+    to: /learn/agent-zero-to-one/agent-patterns-with-pi/
+    languages: [zh-CN, en]
+  - page_id: agent-architecture-map
+    from: /posts/agent-architecture-map/
+    to: /learn/agent-zero-to-one/agent-architecture-map/
+    languages: [zh-CN]
+  - page_id: language-choose
+    from: /posts/language-choose/
+    to: /posts/general/language-choose/
+    languages: [zh-CN, en]
+  - page_id: openclaw-guide-final
+    from: /posts/openclaw-guide-final/
+    to: /posts/general/openclaw-guide-final/
+    languages: [zh-CN, en]
+  - page_id: from-skills-to-abilities
+    from: /posts/from-skills-to-abilities/
+    to: /posts/general/from-skills-to-abilities/
+    languages: [zh-CN, en]
+  - page_id: harness-engineering
+    from: /posts/harness-engineering/
+    to: /posts/general/harness-engineering/
+    languages: [zh-CN, en]
+  - page_id: thinking-on-by-default
+    from: /posts/thinking-on-by-default/
+    to: /posts/general/thinking-on-by-default/
+    languages: [zh-CN, en]
+  - page_id: chezmoi-secure-dotfiles-guide
+    from: /posts/chezmoi-secure-dotfiles-guide/
+    to: /posts/general/chezmoi-secure-dotfiles-guide/
+    languages: [zh-CN, en]

@@ -4,7 +4,9 @@ description: "系统拆解 Harness Engineering 的核心理念、六大组件、
 date: 2026-07-24 15:14:59 +0800
 lang: zh-CN
 page_id: harness-engineering
-permalink: /posts/harness-engineering/
+permalink: /posts/general/harness-engineering/
+redirect_from:
+  - /posts/harness-engineering/
 categories: [AI]
 tags: [harness-engineering, ai-agent, openai, codex, context-engineering]
 image:
@@ -22,7 +24,7 @@ toc: true
 
 **Harness Engineering**（驾驭工程）是一套围绕 AI Agent 搭建**可控、可验证、可观测运行外壳**的工程方法论。"Harness"一词源自马具——当一匹爆发力极强的烈马（AI 模型）出现时，人类需要为它设计缰绳、马鞍、护目镜、信号灯、仪表盘等整套驾驭系统，而不仅仅是"对它喊话"。
 
-OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveraging Codex in an agent-first world*》中正式使用了这一概念，并基于一项极限实验将其升格为系统化的工程范式。HashiCorp 联合创始人 Mitchell Hashimoto 在 2026 年 2 月 5 日将其概括为："**系统性地构建约束、工具、文档和反馈循环的学科，使 AI 编码 Agent 能够可靠地完成工作**"。
+OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveraging Codex in an agent-first world*》中正式使用了这一概念，并基于一项极限实验将其升格为系统化的工程范式。本文把 Harness Engineering 定义为：**系统性地构建约束、工具、文档和反馈循环，使 AI 编码 Agent 能够可靠地完成工作**。
 
 > OpenAI 工程师 Ryan Lopopolo："**当工程团队的主要工作不再是写代码，而是设计环境、指定意图、构建反馈循环时，Harness Engineering 就是这个问题的系统性答案。**"
 
@@ -80,7 +82,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 - **外部 API / 系统接入：**业务系统、数据库、SaaS、文件系统、CI/CD 流水线。
 
-**关键挑战：**工具规格的可读性与可校验性。Can Duruk 在 2026 年 2 月发现，主流通用编辑工具的失败率高达 **50.7%**（Grok 4 使用 patch 格式时），核心原因是工具契约对模型不友好。其解决方案 **Hashline**（行级内容哈希）让模型只需引用 2-3 字符的哈希标签即可精确编辑。
+**关键挑战：**工具规格的可读性与可校验性。Can Bölük 在 2026 年 2 月发现，主流通用编辑工具的失败率高达 **50.7%**（Grok 4 使用 patch 格式时），核心原因是工具契约对模型不友好。其解决方案 **Hashline**（行级内容哈希）让模型只需引用 2-3 字符的哈希标签即可精确编辑。
 
 ## 2.2 记忆层（Memory）
 
@@ -290,22 +292,20 @@ LangChain 在 Terminal Bench 2.0 上的对照实验给出了最直白的证据�
 
 ## 参考资料
 
-- OpenAI. *Harness engineering: leveraging Codex in an agent-first world*. 2026-02. https://openai.com/index/harness-engineering/
+- OpenAI. [*Harness engineering: leveraging Codex in an agent-first world*](https://openai.com/index/harness-engineering/). 2026-02.
 
-- Anthropic. *Effective Harnesses for Long-Running Agents*. 2025-11.
+- Anthropic. [*Effective Harnesses for Long-Running Agents*](https://www.anthropic.com/engineering/effective-harnesses-for-long-running-agents). 2025-11.
 
-- Anthropic. *Harness Design for Long-Running Apps*. 2026-03.
+- Anthropic. [*Harness Design for Long-Running Apps*](https://www.anthropic.com/engineering/harness-design-long-running-apps). 2026-03.
 
-- Martin Fowler. *OpenAI's Harness Engineering Practice*. 2026-04.
+- Martin Fowler. [*Harness Engineering — first thoughts*](https://martinfowler.com/articles/exploring-gen-ai/harness-engineering-memo.html). 2026-04.
 
-- Tony Lee. *How OpenAI Built 1 Million Lines of Code Using Only Agents: 5 Harness Engineering Principles*. 2026. https://tonylee.im/en/blog/openai-harness-engineering-five-principles-codex/
+- Tony Lee. [*How OpenAI Built 1 Million Lines of Code Using Only Agents: 5 Harness Engineering Principles*](https://tonylee.im/en/blog/openai-harness-engineering-five-principles-codex/). 2026.
 
-- Mitchell Hashimoto. *Harness Engineering Definition*. 2026-02-05.
+- Can Bölük. [*I Improved 15 LLMs at Coding in One Afternoon. Only the Harness Changed*](https://x.com/_can1357/article/2021828033640911196). 2026-02.
 
-- Can Duruk. *I Improved 15 LLMs at Coding in One Afternoon (Hashline)*. 2026-02.
+- LangChain. [*Improving Deep Agents with Harness Engineering*](https://blog.langchain.com/improving-deep-agents-with-harness-engineering/). 2026-02.
 
-- LangChain. *Harness-only Optimization on Terminal Bench 2.0*. 2026.
+- Stanford. [*Lost in the Middle: How Language Models Use Long Contexts*](https://arxiv.org/abs/2307.03172).
 
-- Stanford. *Lost in the Middle: How Language Models Use Long Contexts*.
-
-- SemaClaw. *A Step Towards General-Purpose Personal AI Agents through Harness Engineering*. arXiv:2604.11548. 2026-04.
+- SemaClaw. [*A Step Towards General-Purpose Personal AI Agents through Harness Engineering*](https://arxiv.org/abs/2604.11548). arXiv:2604.11548. 2026-04.

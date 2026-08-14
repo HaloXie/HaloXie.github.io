@@ -4,7 +4,9 @@ description: "A complete OpenClaw (AI Agent) guide for absolute beginners, cover
 date: 2026-03-25 19:30:04 +0800
 lang: en
 page_id: openclaw-guide-final
-permalink: /posts/openclaw-guide-final/
+permalink: /posts/general/openclaw-guide-final/
+redirect_from:
+  - /posts/openclaw-guide-final/
 categories: [OpenClaw]
 tags: [ai-agent, openclaw, mcp, open-source]
 image:

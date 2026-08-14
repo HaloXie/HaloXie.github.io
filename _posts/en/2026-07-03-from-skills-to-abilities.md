@@ -4,7 +4,9 @@ description: "The engineering evolution from Skill to Ability: how to help AI co
 date: 2026-07-03 18:53:55 +0800
 lang: en
 page_id: from-skills-to-abilities
-permalink: /posts/from-skills-to-abilities/
+permalink: /posts/general/from-skills-to-abilities/
+redirect_from:
+  - /posts/from-skills-to-abilities/
 categories: [AI]
 tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
 image:

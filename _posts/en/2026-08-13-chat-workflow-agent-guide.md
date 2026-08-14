@@ -4,7 +4,9 @@ description: "A practical guide to Chat, Workflows, Routers, Agents, and Hybrid 
 date: 2026-08-13 20:00:00 +0800
 lang: en
 page_id: chat-workflow-agent-guide
-permalink: /posts/chat-workflow-agent-guide/
+permalink: /learn/agent-zero-to-one/chat-workflow-agent-guide/
+redirect_from:
+  - /posts/chat-workflow-agent-guide/
 categories: [AI]
 tags: [ai-agent, workflow, chat, router, automation]
 image:
@@ -239,6 +241,6 @@ Begin with: where is the uncertainty, who should choose the next action, and who
 
 If a person should keep judging, use Chat. If the path can be specified, use a Workflow. Use an Agent only when observations genuinely need to change the plan and that freedom is worth its cost and risk.
 
-Next: [Agents Are a Spectrum: From Soft Routing and Tool Selection to an Autonomous Loop with Pi](/posts/agent-patterns-with-pi/) explains several internal Agent patterns and builds a minimal working example.
+Next: [Agents Are a Spectrum: From Soft Routing and Tool Selection to an Autonomous Loop with Pi](/learn/agent-zero-to-one/agent-patterns-with-pi/) explains several internal Agent patterns and builds a minimal working example.
 
-Further reading: [The Complete Beginner's Guide to OpenClaw](/posts/openclaw-guide-final/) · [Harness Engineering: A New Engineering Paradigm for the AI Agent Era](/posts/harness-engineering/)
+Further reading: [The Complete Beginner's Guide to OpenClaw](/posts/general/openclaw-guide-final/) · [Harness Engineering: A New Engineering Paradigm for the AI Agent Era](/posts/general/harness-engineering/)

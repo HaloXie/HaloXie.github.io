@@ -32,7 +32,7 @@
         --font-display-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --font-heading-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --font-ui-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-body-zh: "Noto Serif SC", "Songti SC", "STSong", serif;
+        --font-body-zh: Georgia, "Noto Serif SC", "Songti SC", "STSong", serif;
         --font-body-en: "Source Serif 4", Georgia, serif;
         --font-mono: "GitLab Mono", Consolas, monospace;
 
@@ -619,7 +619,7 @@
             </div>
             <div class="language-type-pair" aria-label="中英文正文最终字体">
               <article class="language-type language-type--zh" lang="zh-CN">
-                <header><strong>中文正文 · Noto Serif SC</strong><code>18px / 1.80 / 38em</code></header>
+                <header><strong>中文正文 · Georgia Latin + 中文宋体</strong><code>18px / 1.80 / 38em</code></header>
                 <p>中文长文需要稳定的字面、足够的行间留白和不过长的行宽。这里选择宋体风格是技术编辑气质与覆盖质量的决定，不宣称衬线天然比黑体更易读。</p>
               </article>
               <article class="language-type language-type--en" lang="en">
@@ -633,7 +633,7 @@
               <tbody>
                 <tr><td>H1 / Display</td><td>Noto Sans SC 750–800</td><td>Source Sans 3 750–800</td><td>按语言与实际字符 subset；不因标题短而降级 family</td></tr>
                 <tr><td>H2–H3 / Heading</td><td>Noto Sans SC 650–700</td><td>Source Sans 3 650–700</td><td>与 Display 共用 variable artifact，不新增 family</td></tr>
-                <tr><td>正文 / Body</td><td>Noto Serif SC 400，强调 600；18px / 1.80 / 38em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>只在对应语言文章页加载；中文 Google shards 实测约 0.25–1.30 MiB</td></tr>
+                <tr><td>正文 / Body</td><td>Georgia 负责拉丁字形，Noto Serif SC / 系统宋体负责中文；18px / 1.80 / 38em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>中文技术正文使用按字符回退的混排栈，避免短英文术语明显下沉；不为此新增网络字体请求</td></tr>
                 <tr><td>Meta / UI</td><td>Noto Sans SC 400–700</td><td>Source Sans 3 400–700</td><td>与标题共用 artifact；fallback 为平台 sans</td></tr>
                 <tr><td>Code / Kbd</td><td>GitLab Mono 400</td><td>GitLab Mono 400</td><td>约 77 KiB；ligature 默认关闭；CJK fallback</td></tr>
               </tbody>

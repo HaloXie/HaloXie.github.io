@@ -29,6 +29,7 @@ exclude_from_localization:
   - assets/img/from-skills-to-abilities
   - assets/img/harness-engineering
   - assets/img/language-choose
+  - assets/img/llm-call-anatomy
   - assets/img/openclaw-guide
   - assets/img/thinking-on-by-default
   - assets/img/favicons/apple-touch-icon
@@ -112,7 +113,7 @@ defaults:
       layout: post
       comments: true
       toc: true
-      permalink: /posts/:title/
+      permalink: /posts/general/:title/
   - scope:
       path: _drafts
     values:

@@ -4,7 +4,9 @@ description: "2026 年 7 月模型发布潮后，哪些 harness prompt 从有用
 date: 2026-07-25 00:00:00 +0800
 lang: zh-CN
 page_id: thinking-on-by-default
-permalink: /posts/thinking-on-by-default/
+permalink: /posts/general/thinking-on-by-default/
+redirect_from:
+  - /posts/thinking-on-by-default/
 categories: [AI]
 tags: [harness-engineering, prompt-engineering, thinking, reasoning, ai-agent]
 image:
@@ -211,13 +213,13 @@ shallow / normal / deep / max
 
 ## 参考资料
 
-- Anthropic. *What's new in Claude Opus 5*. 2026-07. https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5
-- Anthropic. *Model deprecations*. https://platform.claude.com/docs/en/about-claude/model-deprecations
-- xAI. *Introducing Grok 4.5*. 2026-07. https://x.ai/news/grok-4-5
-- Qwen Team. *Qwen3.6*. https://github.com/QwenLM/Qwen3.6
-- Zhipu AI. *GLM-5: from Vibe Coding to Agentic Engineering*. arXiv:2602.15763
-- Simon Willison. *Kimi K3, and what we can still learn from the pelican benchmark*. 2026-07-16. https://simonwillison.net/2026/Jul/16/kimi-k3/
-- ThursdAI. *July 2026 AI Releases*. https://thursdai.news/releases/2026-07
-- Stanford. *Lost in the Middle: How Language Models Use Long Contexts*.
+- Anthropic. [*What's new in Claude Opus 5*](https://platform.claude.com/docs/en/about-claude/models/whats-new-opus-5). 2026-07.
+- Anthropic. [*Model deprecations*](https://platform.claude.com/docs/en/about-claude/model-deprecations).
+- xAI. [*Introducing Grok 4.5*](https://x.ai/news/grok-4-5). 2026-07.
+- Qwen Team. [*Qwen3.6*](https://github.com/QwenLM/Qwen3.6).
+- Zhipu AI. [*GLM-5: from Vibe Coding to Agentic Engineering*](https://arxiv.org/abs/2602.15763). arXiv:2602.15763.
+- Simon Willison. [*Kimi K3, and what we can still learn from the pelican benchmark*](https://simonwillison.net/2026/Jul/16/kimi-k3/). 2026-07-16.
+- ThursdAI. [*July 2026 AI Releases*](https://thursdai.news/releases/2026-07).
+- Stanford. [*Lost in the Middle: How Language Models Use Long Contexts*](https://arxiv.org/abs/2307.03172).
 
-延伸阅读：[Harness Engineering：AI Agent 时代的新工程范式](/posts/harness-engineering/) · [Skill 让 AI 会做事，Ability 让 AI 会判断](/posts/from-skills-to-abilities/)
+延伸阅读：[Harness Engineering：AI Agent 时代的新工程范式](/posts/general/harness-engineering/) · [Skill 让 AI 会做事，Ability 让 AI 会判断](/posts/general/from-skills-to-abilities/)

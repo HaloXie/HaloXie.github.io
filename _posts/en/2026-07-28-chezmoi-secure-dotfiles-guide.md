@@ -4,7 +4,9 @@ description: "Build cross-device configuration sync with chezmoi, a private GitH
 date: 2026-07-28 12:00:00 +0800
 lang: en
 page_id: chezmoi-secure-dotfiles-guide
-permalink: /posts/chezmoi-secure-dotfiles-guide/
+permalink: /posts/general/chezmoi-secure-dotfiles-guide/
+redirect_from:
+  - /posts/chezmoi-secure-dotfiles-guide/
 categories: [Tools]
 tags: [chezmoi, dotfiles, macos, github, age, gitleaks, security]
 image:

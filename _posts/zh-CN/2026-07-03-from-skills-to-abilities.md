@@ -4,7 +4,9 @@ description: "从 Skill 到 Ability 的工程演进：如何让 AI 稳定继承�
 date: 2026-07-03 18:53:55 +0800
 lang: zh-CN
 page_id: from-skills-to-abilities
-permalink: /posts/from-skills-to-abilities/
+permalink: /posts/general/from-skills-to-abilities/
+redirect_from:
+  - /posts/from-skills-to-abilities/
 categories: [AI]
 tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
 image:

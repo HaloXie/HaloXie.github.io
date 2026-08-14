@@ -5,18 +5,57 @@ require "date"
 require "json"
 require "nokogiri"
 require "pathname"
+require "set"
 require "uri"
 require "yaml"
+require "zlib"
 
 ROOT = Pathname.new(__dir__).parent
 SITE = ROOT.join("_site")
 ORIGIN = "https://halo.xin"
 LANGUAGES = { "zh-CN" => "", "en" => "/en" }.freeze
-POST_SLUGS_BY_LANG = LANGUAGES.keys.to_h do |language|
-  slugs = ROOT.glob("_posts/#{language}/*.md").map { |path| path.basename(".md").to_s.sub(/^\d{4}-\d{2}-\d{2}-/, "") }.sort
-  [language, slugs]
+
+def source_front_matter(path)
+  source = path.read
+  match = source.match(/\A---\s*\n(.*?)\n---\s*\n/m)
+  raise "#{path}: missing front matter" unless match
+
+  YAML.safe_load(match[1], permitted_classes: [Date, Time], aliases: true) || {}
+end
+
+POSTS_BY_LANG = LANGUAGES.to_h do |language, _prefix|
+  posts = ROOT.glob("_posts/#{language}/*.md").sort.map do |path|
+    data = source_front_matter(path)
+    {
+      "page_id" => data.fetch("page_id"),
+      "permalink" => data.fetch("permalink"),
+      "redirect_from" => Array(data["redirect_from"])
+    }
+  end
+  [language, posts]
 end.freeze
-PAIRED_POST_SLUGS = POST_SLUGS_BY_LANG.values.reduce(:&).freeze
+PAIRED_POST_IDS = POSTS_BY_LANG.values.map { |posts| posts.map { |post| post.fetch("page_id") } }.reduce(:&).freeze
+POST_PATHS_BY_LANG = LANGUAGES.to_h do |language, prefix|
+  paths = POSTS_BY_LANG.fetch(language).map { |post| "#{prefix}#{post.fetch('permalink')}" }.to_set
+  [language, paths]
+end.freeze
+POSTS_BY_RENDERED_PATH = LANGUAGES.each_with_object({}) do |(language, prefix), result|
+  POSTS_BY_LANG.fetch(language).each do |post|
+    result["#{prefix}#{post.fetch('permalink')}"] = post.merge("language" => language)
+  end
+end.freeze
+CURRENT_POST_PATHS = POSTS_BY_RENDERED_PATH.keys.to_set.freeze
+ROUTE_HISTORY = YAML.safe_load(ROOT.join("scripts/content-route-history.yml").read).fetch("redirects").freeze
+LEGACY_REDIRECTS_BY_LANG = LANGUAGES.to_h do |language, prefix|
+  redirects = ROUTE_HISTORY.each_with_object({}) do |entry, result|
+    next unless Array(entry.fetch("languages")).include?(language)
+
+    result["#{prefix}#{entry.fetch('from')}"] = "#{prefix}#{entry.fetch('to')}"
+  end
+  [language, redirects.freeze]
+end.freeze
+LEGACY_REDIRECTS = LEGACY_REDIRECTS_BY_LANG.values.reduce({}, :merge).freeze
+LEGACY_REDIRECT_PATHS = LEGACY_REDIRECTS.keys.to_set.freeze
 SITE_LOCALES = YAML.safe_load(ROOT.join("_data/site-locales.yml").read).freeze
 TAXONOMIES = YAML.safe_load(ROOT.join("_data/taxonomies.yml").read).freeze
 SERIES = YAML.safe_load(ROOT.join("_data/series.yml").read).fetch("series").freeze
@@ -124,10 +163,10 @@ def site_file(url)
 end
 
 def content_post_links(doc)
-  doc.css('a[href*="/posts/"]')
+  doc.css("a[href]")
     .reject { |node| node.ancestors.any? { |ancestor| ancestor["class"].to_s.split.include?("language-switcher") } }
     .map { |node| internal_path(node["href"]) }
-    .select { |href| href.start_with?("/") }
+    .select { |href| CURRENT_POST_PATHS.include?(href) || LEGACY_REDIRECT_PATHS.include?(href) }
 end
 
 def assert_metadata(doc, url, errors, expected_description = nil)
@@ -236,7 +275,7 @@ LANGUAGES.each do |lang, prefix|
   SERIES.reject { |series| series["status"] == "planned" }.each do |series|
     expected_pages["#{prefix}#{series.fetch('path')}"] = lang
   end
-  POST_SLUGS_BY_LANG.fetch(lang).each { |slug| expected_pages["#{prefix}/posts/#{slug}/"] = lang }
+  POST_PATHS_BY_LANG.fetch(lang).each { |path| expected_pages[path] = lang }
 end
 
 # The public message page is localized but intentionally absent from the primary tabs.
@@ -269,8 +308,8 @@ expected_pages.each do |url, lang|
   assert_metadata(doc, url, errors, PAGE_DESCRIPTIONS.dig(base_path, lang))
   errors << "#{url}: html lang must be #{lang}" unless doc.at("html")&.[]("lang") == lang
 
-  post_slug = base_path[%r{\A/posts/([^/]+)/\z}, 1]
-  if post_slug && !PAIRED_POST_SLUGS.include?(post_slug)
+  post = POSTS_BY_RENDERED_PATH[url]
+  if post && !PAIRED_POST_IDS.include?(post.fetch("page_id"))
     rendered_alternates = doc.css('link[rel="alternate"][hreflang]').to_h { |node| [node["hreflang"], node["href"]] }
     expected_single_language_alternates = {
       "zh-CN" => "#{ORIGIN}#{base_path}",
@@ -283,7 +322,7 @@ expected_pages.each do |url, lang|
   end
 
   post_links = content_post_links(doc)
-  wrong_links = post_links.reject { |href| href.start_with?("#{prefix}/posts/") }
+  wrong_links = post_links.reject { |href| POST_PATHS_BY_LANG.fetch(lang).include?(href) }
   errors << "#{url}: cross-language post links #{wrong_links.uniq.inspect}" unless wrong_links.empty?
 end
 
@@ -327,8 +366,11 @@ end
 # contract protects resource scoping and the accessible bilingual toggle.
 SITE.glob("**/*.html").each do |path|
   relative = path.relative_path_from(SITE).to_s
+  rendered_url = "/#{relative.sub(%r{index\.html\z}, '')}"
+  next if LEGACY_REDIRECT_PATHS.include?(rendered_url)
+
   doc = Nokogiri::HTML(path.read)
-  is_post = relative.match?(%r{(?:\A|/)posts/[^/]+/index\.html\z})
+  is_post = CURRENT_POST_PATHS.include?(rendered_url)
   bootstraps = doc.css("script[data-reading-highlights-bootstrap]")
   styles = doc.css('link[rel="stylesheet"][href$="/plugins/reading-highlights/reading-highlights.css"]')
   scripts = doc.css('script[src$="/plugins/reading-highlights/reading-highlights.js"][defer]')
@@ -342,7 +384,7 @@ SITE.glob("**/*.html").each do |path|
     next
   end
 
-  post_url = "/#{relative.sub(%r{index\.html\z}, '')}"
+  post_url = rendered_url
   series_contract = SERIES_POSTS[post_url]
   series_kickers = doc.css("article > header .post-series-kicker")
   series_returns = doc.css(".post-tail-wrapper .post-series-return")
@@ -454,10 +496,12 @@ SITE.glob("**/*.html").each do |path|
   relative = path.relative_path_from(SITE).to_s
   url = "/#{relative.sub(%r{index\.html\z}, '')}"
   url = URI::DEFAULT_PARSER.escape(url)
+  next if LEGACY_REDIRECT_PATHS.include?(url)
+
   language = url.start_with?("/en/") ? "en" : "zh-CN"
   base_path = url.sub(%r{\A/en}, "")
   expected_description = PAGE_DESCRIPTIONS.dig(base_path, language)
-  expected_description ||= SITE_LOCALES.fetch(language).fetch("description") unless url.include?("/posts/") || url.end_with?("/message/")
+  expected_description ||= SITE_LOCALES.fetch(language).fetch("description") unless CURRENT_POST_PATHS.include?(url) || url.end_with?("/message/")
   assert_metadata(Nokogiri::HTML(path.read), url, errors, expected_description)
 end
 
@@ -465,6 +509,9 @@ end
 SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE).to_s
+  rendered_url = "/#{relative.sub(%r{index\.html\z}, '')}"
+  next if LEGACY_REDIRECT_PATHS.include?(rendered_url)
+
   doc = Nokogiri::HTML(source)
   dialogs = doc.css("dialog#command-search-dialog")
   errors << "#{relative}: expected one command search dialog, got #{dialogs.length}" unless dialogs.length == 1
@@ -530,6 +577,23 @@ else
   actual_page_counts = pagefind_entry.fetch("languages").transform_values { |language| language.fetch("page_count") }
   errors << "Pagefind language indexes drifted: #{actual_page_counts.inspect}" unless actual_page_counts == expected_page_counts
   errors << "Pagefind version must be 1.5.2" unless pagefind_entry["version"] == "1.5.2"
+
+  pagefind_languages = { "zh-CN" => "zh-cn", "en" => "en" }
+  pagefind_languages.each do |language, pagefind_language|
+    actual_urls = SITE.glob("pagefind/fragment/#{pagefind_language}_*.pf_fragment").map do |fragment_path|
+      payload = Zlib::GzipReader.open(fragment_path, &:read)
+      unless payload.start_with?("pagefind_dcd")
+        errors << "#{fragment_path.relative_path_from(SITE)}: unknown Pagefind fragment header"
+        next
+      end
+      JSON.parse(payload.delete_prefix("pagefind_dcd")).fetch("url")
+    rescue JSON::ParserError, Zlib::GzipFile::Error => e
+      errors << "#{fragment_path.relative_path_from(SITE)}: invalid Pagefind fragment: #{e.message}"
+      nil
+    end.compact.to_set
+    expected_urls = POST_PATHS_BY_LANG.fetch(language).map { |path| "#{path}index.html" }.to_set
+    errors << "Pagefind #{pagefind_language} URL set drifted: #{actual_urls.inspect}" unless actual_urls == expected_urls
+  end
 end
 
 errors << "legacy root search.json must not exist" if SITE.join("search.json").exist?
@@ -544,7 +608,7 @@ LANGUAGES.each do |lang, prefix|
     doc = document(site_file(url), errors)
     next unless doc
     links = content_post_links(doc)
-    wrong = links.reject { |href| href.start_with?("#{prefix}/posts/") }
+    wrong = links.reject { |href| POST_PATHS_BY_LANG.fetch(lang).include?(href) }
     errors << "#{url}: cross-language post links #{wrong.uniq.inspect}" unless wrong.empty?
   end
 end
@@ -628,10 +692,13 @@ LANGUAGES.each do |lang, prefix|
     wrong = locations.select { |location| location.start_with?("#{ORIGIN}/en/") }
   end
   errors << "#{prefix}/sitemap.xml: cross-language loc entries #{wrong.inspect}" unless wrong.empty?
-  POST_SLUGS_BY_LANG.fetch(lang).each do |slug|
-    expected = "#{ORIGIN}#{prefix}/posts/#{slug}/"
+  POST_PATHS_BY_LANG.fetch(lang).each do |post_path|
+    expected = "#{ORIGIN}#{post_path}"
     errors << "#{prefix}/sitemap.xml: missing #{expected}" unless locations.include?(expected)
   end
+  legacy_locations = LEGACY_REDIRECTS_BY_LANG.fetch(lang).keys.map { |path| "#{ORIGIN}#{path}" }
+  leaked_legacy_locations = locations & legacy_locations
+  errors << "#{prefix}/sitemap.xml: legacy redirects must not be indexed #{leaked_legacy_locations.inspect}" unless leaked_legacy_locations.empty?
 rescue Nokogiri::XML::SyntaxError => e
   errors << "#{prefix}/sitemap.xml: invalid XML: #{e.message}"
 end
@@ -648,12 +715,13 @@ LANGUAGES.each do |lang, prefix|
   errors << "#{prefix}/feed.xml: wrong id" unless feed.at_xpath("/a:feed/a:id", namespace)&.text == home_url
   expected_subtitle = SITE_LOCALES.fetch(lang).fetch("description")
   errors << "#{prefix}/feed.xml: wrong subtitle" unless feed.at_xpath("/a:feed/a:subtitle", namespace)&.text == expected_subtitle
+  expected_entry_urls = POST_PATHS_BY_LANG.fetch(lang).map { |path| "#{ORIGIN}#{path}" }.to_set
   feed.xpath("//a:entry", namespace).each do |entry|
     id = entry.at_xpath("a:id", namespace)&.text
     content_src = entry.at_xpath("a:content", namespace)&.[]("src")
     link_href = entry.at_xpath("a:link[@rel='alternate']", namespace)&.[]("href")
     [id, content_src, link_href].each do |url|
-      errors << "#{prefix}/feed.xml: entry URL has wrong language identity #{url.inspect}" unless url&.start_with?("#{ORIGIN}#{prefix}/posts/")
+      errors << "#{prefix}/feed.xml: entry URL is not a current #{lang} post #{url.inspect}" unless expected_entry_urls.include?(url)
     end
   end
 rescue Nokogiri::XML::SyntaxError => e
@@ -664,6 +732,9 @@ errors << "localized assets directory must not exist" if SITE.join("en/assets").
 SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE)
+  rendered_url = "/#{relative.to_s.sub(%r{index\.html\z}, '')}"
+  next if LEGACY_REDIRECT_PATHS.include?(rendered_url)
+
   doc = Nokogiri::HTML(source)
 
   errors << "#{relative}: sidebar must not contain a language switcher" unless doc.css("#sidebar .language-switcher").empty?
@@ -717,8 +788,21 @@ errors << "AGENTS.md must not be published under /en" if SITE.join("en/AGENTS.md
 cname_files = SITE.glob("**/CNAME").map { |path| path.relative_path_from(SITE).to_s }
 errors << "expected only root CNAME, got #{cname_files.inspect}" unless cname_files == ["CNAME"]
 
-POST_SLUGS_BY_LANG.fetch("zh-CN").each do |slug|
-  errors << "original Chinese URL missing: /posts/#{slug}/" unless SITE.join("posts", slug, "index.html").file?
+LEGACY_REDIRECTS.each do |legacy_path, target_path|
+  redirect_file = site_file(legacy_path)
+  unless redirect_file.file?
+    errors << "legacy redirect missing: #{legacy_path}"
+    next
+  end
+
+  doc = Nokogiri::HTML(redirect_file.read)
+  expected_target = "#{ORIGIN}#{target_path}"
+  errors << "#{legacy_path}: wrong redirect canonical" unless doc.at_css('link[rel="canonical"]')&.[]("href") == expected_target
+  errors << "#{legacy_path}: redirect must be noindex" unless doc.at_css('meta[name="robots"]')&.[]("content").to_s.split(",").include?("noindex")
+  refresh = doc.at_css('meta[http-equiv="refresh"]')&.[]("content")
+  errors << "#{legacy_path}: wrong meta refresh #{refresh.inspect}" unless refresh == "0; url=#{expected_target}"
+  errors << "#{legacy_path}: redirect fallback link missing" unless doc.at_css("a[href='#{expected_target}']")
+  errors << "#{legacy_path}: redirect target does not exist #{target_path}" unless site_file(target_path).file?
 end
 
 if errors.empty?

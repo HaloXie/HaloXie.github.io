@@ -4,7 +4,9 @@ description: "A comparison of the strengths, weaknesses, and blockchain use case
 date: 2026-03-25 19:30:04 +0800
 lang: en
 page_id: language-choose
-permalink: /posts/language-choose/
+permalink: /posts/general/language-choose/
+redirect_from:
+  - /posts/language-choose/
 categories: [Blockchain]
 tags: [blockchain, programming-language, javascript, solidity, golang, rust]
 image:

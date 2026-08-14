@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">一次 LLM 调用的四段流程</title>
+  <desc id="desc">结构化请求进入模型运行时，经过候选 token 采样后形成带内容、停止原因和用量信息的结构化响应。</desc>
+  <defs>
+    <filter id="wobble" x="-5%" y="-8%" width="110%" height="116%">
+      <feTurbulence baseFrequency="0.012" numOctaves="1" seed="37" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#292929"/>
+    </marker>
+    <style>
+      .ink{stroke:#292929;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+      .thin{stroke:#292929;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="1200" height="675" fill="#f6f0df"/>
+  <path d="M68 105 C290 74 518 93 720 79 C900 67 1032 83 1134 107" fill="none" class="thin" opacity=".82"/>
+  <path d="M72 574 C300 598 484 574 691 590 C874 604 1020 591 1129 568" fill="none" class="thin" opacity=".35"/>
+
+  <g filter="url(#wobble)">
+    <rect x="70" y="195" width="225" height="285" rx="22" fill="#fffdf7" class="ink"/>
+    <rect x="95" y="225" width="175" height="48" rx="12" fill="#90c7dc" class="thin"/>
+    <path d="M116 313 H249 M116 347 H229 M116 381 H247" fill="none" class="thin"/>
+    <rect x="105" y="414" width="52" height="28" rx="8" fill="#ffd36a" class="thin"/>
+    <rect x="170" y="414" width="76" height="28" rx="8" fill="#dcebc1" class="thin"/>
+
+    <path d="M305 337 H385" fill="none" class="ink" marker-end="url(#arrow)"/>
+
+    <rect x="405" y="170" width="265" height="335" rx="28" fill="#fffdf7" class="ink"/>
+    <rect x="441" y="212" width="193" height="70" rx="16" fill="#f4b66e" class="thin"/>
+    <circle cx="482" cy="247" r="13" fill="#fff2aa" class="thin"/>
+    <circle cx="538" cy="247" r="13" fill="#90c7dc" class="thin"/>
+    <circle cx="594" cy="247" r="13" fill="#dcebc1" class="thin"/>
+    <path d="M472 327 H602 M472 365 H602 M472 403 H602" fill="none" class="thin"/>
+    <path d="M455 327 H444 M455 365 H444 M455 403 H444 M620 327 H631 M620 365 H631 M620 403 H631" fill="none" class="thin"/>
+    <path d="M474 454 H603" fill="none" class="thin"/>
+
+    <path d="M680 337 H740" fill="none" class="ink" marker-end="url(#arrow)"/>
+
+    <path d="M770 335 C790 269 828 240 876 230" fill="none" class="thin"/>
+    <path d="M770 335 C807 320 845 318 884 329" fill="none" class="thin"/>
+    <path d="M770 335 C793 397 832 426 879 441" fill="none" class="thin"/>
+    <rect x="862" y="201" width="92" height="52" rx="14" fill="#90c7dc" class="ink"/>
+    <rect x="879" y="303" width="92" height="52" rx="14" fill="#ffd36a" class="ink"/>
+    <rect x="864" y="418" width="92" height="52" rx="14" fill="#dcebc1" class="ink"/>
+    <circle cx="770" cy="335" r="24" fill="#f4b66e" class="ink"/>
+    <path d="M978 329 H1014" fill="none" class="ink" marker-end="url(#arrow)"/>
+
+    <rect x="1030" y="195" width="115" height="285" rx="22" fill="#fffdf7" class="ink"/>
+    <rect x="1052" y="222" width="70" height="42" rx="11" fill="#dcebc1" class="thin"/>
+    <path d="M1053 305 H1121 M1053 338 H1111 M1053 371 H1121" fill="none" class="thin"/>
+    <path d="M1054 430 H1120" fill="none" class="thin"/>
+    <circle cx="1062" cy="430" r="8" fill="#90c7dc" class="thin"/>
+    <circle cx="1087" cy="430" r="8" fill="#ffd36a" class="thin"/>
+    <circle cx="1112" cy="430" r="8" fill="#f4b66e" class="thin"/>
+  </g>
+</svg>
