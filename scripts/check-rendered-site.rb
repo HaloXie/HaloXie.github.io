@@ -20,6 +20,32 @@ PAIRED_POST_SLUGS = POST_SLUGS_BY_LANG.values.reduce(:&).freeze
 SITE_LOCALES = YAML.safe_load(ROOT.join("_data/site-locales.yml").read).freeze
 TAXONOMIES = YAML.safe_load(ROOT.join("_data/taxonomies.yml").read).freeze
 SERIES = YAML.safe_load(ROOT.join("_data/series.yml").read).fetch("series").freeze
+SERIES_POSTS = LANGUAGES.each_with_object({}) do |(language, prefix), posts|
+  SERIES.reject { |series| series["status"] == "planned" }.each do |series|
+    lessons = series.fetch("stages").flat_map { |stage| stage.fetch("lessons") }
+    published_count = lessons.count do |lesson|
+      status = lesson.fetch("statuses", {}).fetch(language, lesson.fetch("status"))
+      status == "published"
+    end
+
+    lessons.each do |lesson|
+      lesson_status = lesson.fetch("statuses", {}).fetch(language, lesson.fetch("status"))
+      next unless lesson_status == "published"
+
+      lesson_path = lesson.fetch("paths", {})[language]
+      next unless lesson_path
+
+      posts["#{prefix}#{lesson_path}"] = {
+        "series_path" => "#{prefix}#{series.fetch('path')}",
+        "series_title" => series.fetch("locales").fetch(language).fetch("title"),
+        "lesson_number" => lesson.fetch("number"),
+        "published_count" => published_count,
+        "total_count" => lessons.length,
+        "language" => language
+      }
+    end
+  end
+end.freeze
 PAGE_DESCRIPTIONS = {
   "/learn/" => {
     "zh-CN" => "按阶段学习完整主题，从基础概念走到可运行、可验证的项目。",
@@ -31,6 +57,47 @@ PAGE_DESCRIPTIONS = {
   }
 }.freeze
 errors = []
+
+# The design system has one source of truth. Page-level Sass may consume or
+# alias semantic tokens, but must not grow another palette beside Base.
+style_entry = ROOT.join("assets/css/jekyll-theme-chirpy.scss").read
+base_style = ROOT.join("_sass/custom/_base.scss").read
+reading_highlights_style = ROOT.join("plugins/reading-highlights/reading-highlights.css").read
+post_layout = ROOT.join("_layouts/post.html").read
+required_base_tokens = %w[
+  --font-display
+  --font-heading
+  --font-ui
+  --font-prose
+  --font-mono
+  --canvas
+  --surface
+  --ink
+  --border
+  --accent
+  --highlight
+  --highlight-soft
+  --radius-md
+  --motion-fast
+  --media-aspect
+]
+
+errors << "style entry must load custom/base" unless style_entry.include?("@use 'custom/base';")
+required_base_tokens.each do |token|
+  errors << "base style missing #{token}" unless base_style.include?(token)
+end
+override_styles = {
+  "page override Sass" => style_entry,
+  "reading highlights component CSS" => reading_highlights_style
+}
+override_styles.each do |label, source|
+  if source.match?(/#[0-9a-f]{3,8}\b|rgba?\(/i)
+    errors << "#{label} contains raw color values; move them to custom/base"
+  end
+end
+unless post_layout.include?('w="1200" h="675"')
+  errors << "post cover dimensions must follow the Base 1200x675 media contract"
+end
 
 def document(path, errors)
   unless path.file?
@@ -270,6 +337,40 @@ SITE.glob("**/*.html").each do |path|
     next
   end
 
+  post_url = "/#{relative.sub(%r{index\.html\z}, '')}"
+  series_contract = SERIES_POSTS[post_url]
+  series_kickers = doc.css("article > header .post-series-kicker")
+  series_returns = doc.css(".post-tail-wrapper .post-series-return")
+
+  if series_contract
+    errors << "#{relative}: expected one series header link" unless series_kickers.length == 1
+    errors << "#{relative}: expected one series return link" unless series_returns.length == 1
+
+    expected_series_path = series_contract.fetch("series_path")
+    expected_series_title = series_contract.fetch("series_title")
+    expected_lesson_label = if series_contract.fetch("language") == "en"
+                              "Lesson #{series_contract.fetch('lesson_number')}"
+                            else
+                              "第 #{series_contract.fetch('lesson_number')} 课"
+                            end
+    expected_progress = "#{series_contract.fetch('published_count')}/#{series_contract.fetch('total_count')}"
+    header_link = series_kickers.at_css("a.post-series-link")
+    return_link = series_returns.first
+
+    errors << "#{relative}: wrong series header target" unless internal_path(header_link&.[]("href")) == expected_series_path
+    errors << "#{relative}: wrong series return target" unless internal_path(return_link&.[]("href")) == expected_series_path
+    errors << "#{relative}: missing series title" unless header_link&.text&.include?(expected_series_title)
+    errors << "#{relative}: missing lesson label" unless header_link&.text&.include?(expected_lesson_label)
+    errors << "#{relative}: missing series progress" unless header_link&.text&.include?(expected_progress)
+  else
+    errors << "#{relative}: ordinary post contains a series header" unless series_kickers.empty?
+    errors << "#{relative}: ordinary post contains a series return link" unless series_returns.empty?
+  end
+
+  errors << "#{relative}: expected header taxonomy navigation" unless doc.css("article > header .post-taxonomy").length == 1
+  errors << "#{relative}: category links remain in the post tail" unless doc.css('.post-tail-wrapper a[href*="/categories/"]').empty?
+  errors << "#{relative}: tag links remain in the post tail" unless doc.css('.post-tail-wrapper a[href*="/tags/"]').empty?
+
   errors << "#{relative}: expected one reading highlights bootstrap, got #{bootstraps.length}" unless bootstraps.length == 1
   errors << "#{relative}: expected one reading highlights stylesheet, got #{styles.length}" unless styles.length == 1
   errors << "#{relative}: expected one deferred reading highlights script, got #{scripts.length}" unless scripts.length == 1
@@ -321,12 +422,13 @@ errors << "reading highlights runtime contract incomplete #{missing_highlights_s
 highlights_styles = ROOT.join("plugins/reading-highlights/reading-highlights.css").read
 highlights_style_contract = [
   "html[data-reading-highlights='on'] .reading-highlight",
+  "--reading-highlight-bg: var(--highlight-soft)",
+  "--reading-highlight-mark: var(--highlight)",
   "box-shadow: inset",
   "text-decoration-line: underline",
-  "[data-bs-theme='dark']",
-  ":root:not([data-bs-theme='light']):not([data-bs-theme='dark'])",
   "#reading-highlights-toggle:not([data-reading-highlights-ready])",
-  "prefers-color-scheme: dark",
+  "var(--motion-fast)",
+  "var(--focus-width)",
   "prefers-reduced-motion: reduce",
   "forced-colors: active",
   "focus-visible"

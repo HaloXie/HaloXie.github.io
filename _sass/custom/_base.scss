@@ -1,0 +1,268 @@
+/*
+ * Halo blog base style
+ *
+ * Single source of truth for typography, semantic colors, spacing, geometry,
+ * focus, motion and media. Page-specific Sass may alias these roles or
+ * override layout, but must not introduce a second palette or type scale.
+ * Source: docs/design/blog-base-style-demo.html
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Typography roles */
+  --font-display-zh: 'Noto Sans SC', 'PingFang SC', 'Microsoft Yahei',
+    sans-serif;
+  --font-heading-zh: var(--font-display-zh);
+  --font-ui-zh: var(--font-display-zh);
+  --font-body-zh: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-display-en: 'Source Sans 3', 'Source Sans Pro', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-heading-en: var(--font-display-en);
+  --font-ui-en: var(--font-display-en);
+  --font-body-en: 'Source Serif 4', Georgia, serif;
+  --font-mono: 'GitLab Mono', SFMono-Regular, Consolas, 'Liberation Mono',
+    monospace;
+
+  --font-display: var(--font-display-zh);
+  --font-heading: var(--font-heading-zh);
+  --font-ui: var(--font-ui-zh);
+  --font-prose: var(--font-body-zh);
+  --font-number: var(--font-display);
+  --font-weight-display: 750;
+  --font-weight-heading: 650;
+  --font-weight-label: 700;
+  --tracking-display: 0;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-body: 1.125rem;
+  --text-lead: clamp(1.125rem, 1.6vw, 1.25rem);
+  --text-h3: clamp(1.25rem, 1.7vw, 1.5rem);
+  --text-h2: clamp(1.55rem, 2.4vw, 2rem);
+  --text-h1: clamp(2.15rem, 5vw, 3.5rem);
+  --leading-tight: 1.2;
+  --leading-heading: 1.3;
+  --leading-body: 1.75;
+  --leading-prose: 1.8;
+  --leading-ui: 1.45;
+  --measure-prose: 38em;
+
+  /* Geometry and interaction */
+  --measure-copy: 55rem;
+  --measure-readable: 44rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.45rem;
+  --radius-lg: 0.75rem;
+  --radius-pill: 999px;
+  --radius-round: 50%;
+  --focus-width: 2px;
+  --focus-offset: 3px;
+  --focus-offset-compact: 2px;
+  --focus-offset-inset: -2px;
+  --motion-fast: 160ms ease;
+  --motion-standard: 180ms ease;
+  --media-aspect: 16 / 9;
+
+  /* Project layout roles */
+  --desktop-sidebar-width: clamp(16.25rem, 15vw, 18.75rem);
+  --post-copy-width: var(--measure-copy);
+  --post-panel-width: 15rem;
+  --post-layout-gap: 2.5rem;
+  --home-canvas-width: 100rem;
+  --home-panel-width: clamp(14rem, 15vw, 16rem);
+  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
+}
+
+html:lang(en) {
+  --font-display: var(--font-display-en);
+  --font-heading: var(--font-heading-en);
+  --font-ui: var(--font-ui-en);
+  --font-prose: var(--font-body-en);
+  --font-number: var(--font-display-en);
+  --leading-prose: 1.72;
+  --measure-prose: 68ch;
+  --tracking-display: -0.035em;
+}
+
+:root[data-bs-theme='light'] {
+  color-scheme: light;
+  --canvas: #f7f5f1;
+  --surface: #fffdfa;
+  --surface-soft: #f1ede7;
+  --surface-accent: #f2e7e1;
+  --ink: #37332f;
+  --ink-strong: #27231f;
+  --ink-muted: #716a63;
+  --ink-label: #5f5851;
+  --border: #e2dcd3;
+  --border-strong: #d2c8bd;
+  --accent: #9f4e3c;
+  --accent-hover: #8f4434;
+  --accent-soft: #d9b8ae;
+  --accent-contrast: #fffaf5;
+  --success: #3f6c53;
+  --success-soft: #deebe2;
+  --warning: #7b4b13;
+  --warning-soft: #f6ead0;
+  --highlight: #b56a25;
+  --highlight-soft: rgb(225 172 72 / 14%);
+  --code-bg: #292725;
+  --code-ink: #f7efe5;
+  --shadow-raised: 0 0.85rem 2.2rem rgb(67 48 39 / 9%);
+  --shadow-dialog: 0 1.5rem 4rem rgb(67 48 39 / 18%);
+  --shadow-menu: 0 0.5rem 1.5rem rgb(67 48 39 / 10%);
+  --overlay: rgb(39 35 31 / 34%);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
+
+  /* Chirpy consumes these vendor variables; Base owns their values. */
+  --main-bg: var(--canvas);
+  --main-border-color: var(--border);
+  --text-color: var(--ink);
+  --text-muted-color: var(--ink-muted);
+  --heading-color: var(--ink-strong);
+  --label-color: var(--ink-label);
+  --link-color: var(--accent);
+  --link-underline-color: var(--accent-soft);
+  --button-bg: var(--surface-soft);
+  --btn-border-color: var(--border-strong);
+  --sidebar-bg: color-mix(in srgb, var(--surface-soft) 88%, transparent);
+  --sidebar-border-color: var(--border);
+  --sidebar-active-color: var(--accent-hover);
+  --sidebar-hover-bg: color-mix(in srgb, var(--accent) 9%, transparent);
+  --sidebar-btn-bg: color-mix(in srgb, var(--surface) 72%, var(--canvas));
+  --topbar-bg: color-mix(in srgb, var(--canvas) 88%, transparent);
+  --topbar-text-color: var(--ink-label);
+  --search-border-color: var(--border-strong);
+  --card-bg: var(--surface);
+  --card-hover-bg: transparent;
+  --card-shadow: none;
+  --toc-highlight: var(--accent);
+}
+
+:root[data-bs-theme='dark'] {
+  color-scheme: dark;
+  --canvas: #191817;
+  --surface: #211f1d;
+  --surface-soft: #292623;
+  --surface-accent: #3a2b27;
+  --ink: #d8d1ca;
+  --ink-strong: #f2ece6;
+  --ink-muted: #aaa19a;
+  --ink-label: #c2b8af;
+  --border: #3d3935;
+  --border-strong: #514b45;
+  --accent: #d99a87;
+  --accent-hover: #e4ad9c;
+  --accent-soft: #744b40;
+  --accent-contrast: #211f1d;
+  --success: #9fc9ad;
+  --success-soft: #283b30;
+  --warning: #e0ad63;
+  --warning-soft: #463923;
+  --highlight: #d9a456;
+  --highlight-soft: rgb(228 178 86 / 13%);
+  --code-bg: #11100f;
+  --code-ink: #eee8e0;
+  --shadow-raised: 0 0.85rem 2.2rem rgb(0 0 0 / 26%);
+  --shadow-dialog: 0 1.5rem 4rem rgb(0 0 0 / 30%);
+  --shadow-menu: 0 0.5rem 1.5rem rgb(0 0 0 / 18%);
+  --overlay: rgb(15 18 22 / 42%);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent);
+
+  --main-bg: var(--canvas);
+  --main-border-color: var(--border);
+  --text-color: var(--ink);
+  --text-muted-color: var(--ink-muted);
+  --heading-color: var(--ink-strong);
+  --label-color: var(--ink-label);
+  --link-color: var(--accent);
+  --link-underline-color: var(--accent-soft);
+  --button-bg: var(--surface-soft);
+  --btn-border-color: var(--border-strong);
+  --sidebar-bg: color-mix(in srgb, var(--surface-soft) 88%, transparent);
+  --sidebar-border-color: var(--border);
+  --sidebar-active-color: var(--accent-hover);
+  --sidebar-hover-bg: color-mix(in srgb, var(--accent) 12%, transparent);
+  --sidebar-btn-bg: color-mix(in srgb, var(--surface) 72%, var(--canvas));
+  --topbar-bg: color-mix(in srgb, var(--canvas) 88%, transparent);
+  --topbar-text-color: var(--ink-label);
+  --search-border-color: var(--border-strong);
+  --card-bg: var(--surface);
+  --card-hover-bg: transparent;
+  --card-shadow: none;
+  --toc-highlight: var(--accent);
+}
+
+body {
+  background-color: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(h1, h2, h3, h4, h5, h6) {
+  color: var(--ink-strong);
+  font-family: var(--font-heading);
+}
+
+h1 {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+}
+
+:where(a, button, [role='button'], input, select, textarea):focus-visible {
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+:where(code, kbd, pre) {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0, 'calt' 0;
+}
+
+article[data-toc] > .content {
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
+  line-height: var(--leading-prose);
+}
+
+article[data-toc] > .content :where(h2, h3, h4, h5, h6, code, kbd, pre, table) {
+  font-family: var(--font-heading);
+}
+
+article[data-toc] > .content :where(code, kbd, pre) {
+  font-family: var(--font-mono);
+}
+
+article[data-toc] > .content > :where(p, ul, ol) {
+  max-width: var(--measure-prose);
+}
+
+@media (max-width: 575.98px) {
+  :root {
+    --text-body: 1.0625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

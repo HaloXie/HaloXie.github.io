@@ -1,0 +1,230 @@
+---
+layout: default
+panel_includes:
+  - toc
+tail_includes:
+  - related-posts
+  - post-nav
+script_includes:
+  - comment
+---
+
+{% include lang.html %}
+
+{% include toc-status.html %}
+
+{% assign post_series = nil %}
+{% assign post_series_lesson = nil %}
+{% assign post_series_total = 0 %}
+{% assign post_series_published = 0 %}
+
+{% if page.page_id %}
+  {% for candidate_series in site.data.series.series %}
+    {% for stage in candidate_series.stages %}
+      {% for candidate_lesson in stage.lessons %}
+        {% if candidate_lesson.page_id == page.page_id %}
+          {% assign post_series = candidate_series %}
+          {% assign post_series_lesson = candidate_lesson %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+
+{% if post_series %}
+  {% assign post_series_locale = post_series.locales[lang] %}
+  {% assign post_series_path = post_series.path %}
+  {% if lang == 'en' %}
+    {% assign post_series_path = '/en' | append: post_series.path %}
+  {% endif %}
+
+  {% for stage in post_series.stages %}
+    {% assign stage_lesson_count = stage.lessons | size %}
+    {% assign post_series_total = post_series_total | plus: stage_lesson_count %}
+    {% for lesson in stage.lessons %}
+      {% assign lesson_status = lesson.status %}
+      {% if lesson.statuses and lesson.statuses[lang] %}
+        {% assign lesson_status = lesson.statuses[lang] %}
+      {% endif %}
+      {% if lesson_status == 'published' %}
+        {% assign post_series_published = post_series_published | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endif %}
+
+<article class="px-1" data-toc="{{ enable_toc }}">
+  <header>
+    {% if post_series %}
+      <nav class="post-series-kicker" aria-label="{% if lang == 'en' %}Learning path{% else %}学习路线{% endif %}">
+        <a class="post-series-link" href="{{ post_series_path | relative_url }}">
+          <span class="post-series-title">
+            <span class="post-series-eyebrow">{% if lang == 'en' %}Learning path{% else %}学习路线{% endif %}</span>
+            {{ post_series_locale.title }}
+          </span>
+          <span class="post-series-progress">
+            {% if lang == 'en' %}Lesson {{ post_series_lesson.number }}{% else %}第 {{ post_series_lesson.number }} 课{% endif %}
+            <span aria-hidden="true">·</span>
+            {% if lang == 'en' %}{{ post_series_published }}/{{ post_series_total }} published{% else %}已发布 {{ post_series_published }}/{{ post_series_total }}{% endif %}
+          </span>
+        </a>
+      </nav>
+    {% endif %}
+
+    <h1 data-toc-skip>{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="post-desc">{{ page.description }}</p>
+    {% endif %}
+
+    {% if page.categories.size > 0 or page.tags.size > 0 %}
+      <nav class="post-taxonomy" aria-label="{% if lang == 'en' %}Article categories and topics{% else %}文章分类与主题{% endif %}">
+        {% if page.categories.size > 0 %}
+          <div class="post-taxonomy__group">
+            <span class="post-taxonomy__label">{% if lang == 'en' %}Category{% else %}分类{% endif %}</span>
+            {% for category in page.categories %}
+              <a class="post-taxonomy__link" href="{{ site.baseurl }}/categories/{{ category | slugify | url_encode }}/">{{ category }}</a>
+              {%- unless forloop.last -%}<span class="post-taxonomy__separator" aria-hidden="true">·</span>{%- endunless -%}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if page.tags.size > 0 %}
+          <div class="post-taxonomy__group">
+            <span class="post-taxonomy__label">{% if lang == 'en' %}Topics{% else %}主题{% endif %}</span>
+            {% for tag in page.tags %}
+              <a class="post-taxonomy__link" href="{{ site.baseurl }}/tags/{{ tag | slugify | url_encode }}/">#{{ tag }}</a>
+              {%- unless forloop.last -%}<span class="post-taxonomy__separator" aria-hidden="true">·</span>{%- endunless -%}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </nav>
+    {% endif %}
+
+    <div class="post-meta text-muted">
+      <span>
+        {{ site.data.locales[lang].post.posted }}
+        {% include datetime.html date=page.date tooltip=true lang=lang %}
+      </span>
+
+      {% if page.last_modified_at and page.last_modified_at != page.date %}
+        <span>
+          {{ site.data.locales[lang].post.updated }}
+          {% include datetime.html date=page.last_modified_at tooltip=true lang=lang %}
+        </span>
+      {% endif %}
+
+      {% if page.image %}
+        {% capture src %}src="{{ page.image.path | default: page.image }}"{% endcapture %}
+        {% capture class %}class="preview-img{% if page.image.no_bg %}{{ ' no-bg' }}{% endif %}"{% endcapture %}
+        {% capture alt %}alt="{{ page.image.alt | xml_escape | default: "Preview Image" }}"{% endcapture %}
+
+        {% if page.image.lqip %}
+          {%- capture lqip -%}lqip="{{ page.image.lqip }}"{%- endcapture -%}
+        {% endif %}
+
+        <div class="mt-3 mb-3">
+          <img {{ src }} {{ class }} {{ alt }} w="1200" h="675" {{ lqip }}>
+          {%- if page.image.alt -%}
+            <figcaption class="text-center pt-2 pb-2">{{ page.image.alt }}</figcaption>
+          {%- endif -%}
+        </div>
+      {% endif %}
+
+      <div class="d-flex justify-content-between">
+        <span>
+          {% if page.author %}
+            {% assign authors = page.author %}
+          {% elsif page.authors %}
+            {% assign authors = page.authors %}
+          {% endif %}
+
+          {{ site.data.locales[lang].post.written_by }}
+
+          <em>
+            {% if authors %}
+              {% for author in authors %}
+                {% if site.data.authors[author].url -%}
+                  <a href="{{ site.data.authors[author].url }}">{{ site.data.authors[author].name }}</a>
+                {%- else -%}
+                  {{ site.data.authors[author].name }}
+                {%- endif %}
+                {% unless forloop.last %}{{ '</em>, <em>' }}{% endunless %}
+              {% endfor %}
+            {% else %}
+              <a href="{{ site.social.links[0] }}">{{ site.social.name }}</a>
+            {% endif %}
+          </em>
+        </span>
+
+        <div>
+          {% if site.pageviews.provider and site.analytics[site.pageviews.provider].id %}
+            <span>
+              <em id="pageviews"><i class="fas fa-spinner fa-spin small"></i></em>
+              {{ site.data.locales[lang].post.pageview_measure }}
+            </span>
+          {% endif %}
+
+          {% include read-time.html content=content prompt=true lang=lang %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {% if enable_toc %}
+    <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
+      <span class="label text-truncate">{{ page.title }}</span>
+      <button type="button" class="toc-trigger btn me-1">
+        <i class="fa-solid fa-list-ul fa-fw"></i>
+      </button>
+    </div>
+
+    <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
+      <span class="label ps-2 pe-1">{{- site.data.locales[lang].panel.toc -}}</span>
+      <i class="fa-solid fa-angle-right fa-fw"></i>
+    </button>
+
+    <dialog id="toc-popup" class="p-0">
+      <div class="header d-flex flex-row align-items-center justify-content-between">
+        <div class="label text-truncate py-2 ms-4">{{- page.title -}}</div>
+        <button type="button" id="toc-popup-close" class="btn-close btn-sm mx-3" aria-label="Close"></button>
+      </div>
+      <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
+    </dialog>
+  {% endif %}
+
+  <div class="content">
+    {{ content }}
+  </div>
+
+  <div class="post-tail-wrapper text-muted">
+    <div class="d-flex justify-content-end mb-3">
+      {% include post-edit.html lang=lang %}
+    </div>
+
+    {% if post_series %}
+      <a class="post-series-return" href="{{ post_series_path | relative_url }}">
+        <span>
+          <small>{% if lang == 'en' %}Back to learning path{% else %}返回完整学习路线{% endif %}</small>
+          <strong>{{ post_series_locale.title }}</strong>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+    {% endif %}
+
+    <div class="post-tail-bottom d-flex justify-content-between align-items-center mt-5 pb-2">
+      <div class="license-wrapper">
+        {% if site.data.locales[lang].copyright.license.template %}
+          {% capture _replacement %}
+        <a href="{{ site.data.locales[lang].copyright.license.link }}">
+          {{ site.data.locales[lang].copyright.license.name }}
+        </a>
+        {% endcapture %}
+
+          {{ site.data.locales[lang].copyright.license.template | replace: ':LICENSE_NAME', _replacement }}
+        {% endif %}
+      </div>
+
+      {% include post-sharing.html lang=lang %}
+    </div>
+  </div>
+</article>
