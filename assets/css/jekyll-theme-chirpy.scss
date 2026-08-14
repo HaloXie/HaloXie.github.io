@@ -1875,6 +1875,16 @@ article[data-toc] > .content :is(p, li) {
   text-wrap: pretty;
 }
 
+/* TODO(reading-measure): The Base proposal keeps Chinese prose at 38em, but
+   the current article layout uses a 55rem code/table column. Temporarily let
+   direct prose blocks follow that article column so wrapping and component
+   edges stay visually consistent. Re-evaluate after the Chinese series has
+   been read end to end; this is deliberately an article override, not a Base
+   typography decision. */
+article[data-toc] > .content > :where(p, ul, ol) {
+  max-width: var(--post-copy-width);
+}
+
 /* Prose media follows the same measure as the text. Wide tables and code
    scroll inside their own wrapper instead of widening the page. */
 body:has(main article[data-toc])
