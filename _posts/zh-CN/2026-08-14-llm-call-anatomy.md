@@ -113,8 +113,8 @@ Agent 最重要的工程边界是 ____
 
 ```bash
 npm pkg set type=module
-npm install @earendil-works/pi-ai@0.84.2
-npm install -D tsx
+pnpm add @earendil-works/pi-ai@0.84.2
+pnpm add -D tsx
 ```
 
 Pi 当前发布包使用 ESM，因此示例先把项目声明为 `type: module`。如果你的项目已经是 ESM，不需要重复执行第一条命令。

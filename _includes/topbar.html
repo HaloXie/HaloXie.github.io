@@ -73,24 +73,47 @@
       {% endif %}
     </div>
 
-    {% include language-switcher.html %}
+    <div id="topbar-actions" class="d-flex align-items-center">
+      {% if page.layout == 'post' %}
+        {% if include.lang == 'en' %}
+          {% assign highlights_enabled_label = 'Turn off reading highlights' %}
+          {% assign highlights_disabled_label = 'Turn on reading highlights' %}
+        {% else %}
+          {% assign highlights_enabled_label = '关闭重点高亮' %}
+          {% assign highlights_disabled_label = '开启重点高亮' %}
+        {% endif %}
+        <button
+          type="button"
+          class="btn btn-link topbar-reading-highlights-toggle"
+          id="reading-highlights-toggle"
+          data-reading-highlights-toggle
+          data-enabled-label="{{ highlights_enabled_label }}"
+          data-disabled-label="{{ highlights_disabled_label }}"
+          hidden
+        >
+          <i class="fas fa-highlighter" aria-hidden="true"></i>
+        </button>
+      {% endif %}
 
-    <button
-      type="button"
-      id="search-trigger"
-      class="btn btn-link command-search-trigger"
-      aria-label="{{ site.data.locales[include.lang].search.hint | capitalize }}"
-      aria-haspopup="dialog"
-      aria-controls="command-search-dialog"
-      aria-keyshortcuts="Meta+K Control+K"
-    >
-      <i class="fas fa-search fa-fw"></i>
-      <span class="command-search-placeholder">
-        {{- site.data.locales[include.lang].search.hint | capitalize -}}
-      </span>
-      <kbd class="command-search-shortcut" aria-hidden="true">
-        <span class="command-search-shortcut-mac">⌘</span><span class="command-search-shortcut-other">Ctrl</span>K
-      </kbd>
-    </button>
+      {% include language-switcher.html %}
+
+      <button
+        type="button"
+        id="search-trigger"
+        class="btn btn-link command-search-trigger"
+        aria-label="{{ site.data.locales[include.lang].search.hint | capitalize }}"
+        aria-haspopup="dialog"
+        aria-controls="command-search-dialog"
+        aria-keyshortcuts="Meta+K Control+K"
+      >
+        <i class="fas fa-search fa-fw"></i>
+        <span class="command-search-placeholder">
+          {{- site.data.locales[include.lang].search.hint | capitalize -}}
+        </span>
+        <kbd class="command-search-shortcut" aria-hidden="true">
+          <span class="command-search-shortcut-mac">⌘</span><span class="command-search-shortcut-other">Ctrl</span>K
+        </kbd>
+      </button>
+    </div>
   </div>
 </header>

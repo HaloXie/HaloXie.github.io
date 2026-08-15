@@ -316,7 +316,13 @@ expected_pages.each do |url, lang|
       "x-default" => "#{ORIGIN}#{base_path}"
     }
     errors << "#{url}: wrong pending-translation hreflang set #{rendered_alternates.inspect}" unless rendered_alternates == expected_single_language_alternates
-    errors << "#{url}: pending-translation post must not expose a language switcher" unless doc.css("#topbar nav.language-switcher").empty?
+    switcher_navs = doc.css("#topbar-actions nav.language-switcher")
+    errors << "#{url}: pending-translation post must expose one topbar language switcher" unless switcher_navs.length == 1
+    switch_links = switcher_navs.css("a.language-link")
+    errors << "#{url}: pending-translation switcher must contain only the current language" unless switch_links.length == 1
+    current_link = switch_links.first
+    errors << "#{url}: pending-translation switcher points away from the current post" unless internal_path(current_link&.[]("href")) == base_path
+    errors << "#{url}: pending-translation switcher must mark the current language" unless current_link&.[]("aria-current") == "page"
   else
     assert_discovery_links(doc, url, expected_alternates(base_path), [base_path, "/en#{base_path}"], errors)
   end
@@ -433,7 +439,7 @@ SITE.glob("**/*.html").each do |path|
   errors << "#{relative}: reading highlights toggle exposes stale title" if toggle&.key?("title")
   errors << "#{relative}: wrong enabled label contract" unless toggle&.[]("data-enabled-label") == expected_enabled_label
   errors << "#{relative}: wrong disabled label contract" unless toggle&.[]("data-disabled-label") == expected_disabled_label
-  errors << "#{relative}: reading highlights toggle must stay in sidebar-bottom" unless toggle&.ancestors&.any? { |node| node["class"].to_s.split.include?("sidebar-bottom") }
+  errors << "#{relative}: reading highlights toggle must stay in topbar-actions" unless toggle&.ancestors&.any? { |node| node["id"] == "topbar-actions" }
 
   bootstrap_source = bootstraps.first&.text.to_s
   bootstrap_contract = [

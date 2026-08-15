@@ -2,6 +2,12 @@
 
 本文件是 Codex 在本仓库工作的项目级指令。涉及样式、文章、翻译及配图时，必须遵守以下约束。
 
+## 文章命令与包管理器
+
+- Node.js / TypeScript 文章中的依赖安装命令统一使用 pnpm：普通依赖使用 `pnpm add <package>`，开发依赖使用 `pnpm add -D <package>`，全局工具使用 `pnpm add -g <package>`。
+- 禁止在新增或修改的文章示例中写入 `npm install` 或 `npm i`。只有文章明确讲解 npm 自身行为、逐字引用外部原始输出，或目标项目已确认只能使用 npm 时例外，并必须就近说明原因。
+- 修改文章后必须扫描 `_posts/` 中的 `npm install` 和 `npm i`；无明确例外的命中必须在交付前改为等价 pnpm 命令。
+
 ## CSS 与视觉系统修改规范
 
 ### 权威来源与文件职责
@@ -30,6 +36,24 @@
 - 禁止把 `blog-base-style-demo.html` 的整段 CSS 直接复制到生产入口。demo 同时展示全部语言和资源，生产实现必须按页面职责拆分。
 - 禁止顺手重排、格式化或重构与本次 goal 无关的样式区域。
 - 禁止把系统字体 fallback 的实际渲染误报为自定义字体已加载；字体改动必须检查真实 font face、字重、fallback 和缺字。
+
+### 文章页已确认视觉契约
+
+- 文章正文容器最大宽度为 `55rem`，普通中文段落保持约 `48em`（约 48 字/行）、英文段落保持 `68ch`；只有代码块、表格、图片等宽内容可以占满正文容器。禁止绕过 Base 直接把普通段落硬编码为 `55rem`。
+- 中文正文继承 Base 的 `Noto Serif SC`，英文正文继承 `Source Serif 4`。禁止在文章 selector 中把 `Georgia` 或其他局部字体插到 Base family 前面；字体方向变化必须先更新 demo 和 Base。
+- 文章与页面排版层级统一由 Base 提供：H1 / 文章主标题 `clamp(1.875rem, 2.2vw, 2.5rem)`；H2 `clamp(1.5rem, 2.2vw, 1.875rem)`；H3 `clamp(1.25rem, 1.7vw, 1.5rem)`；H4–H6 依次为 `clamp(1.125rem, 1.35vw, 1.25rem)`、`1.125rem`、`1rem`；正文桌面 `1.125rem / 1.80`，英文 `1.125rem / 1.72`，移动端 `1.0625rem`。展示型页面也不得另行放大 H1；组件 selector 不得重新硬编码另一套字号或弱化标题字重。
+- 桌面文章目录首屏位于文章顶部；文章 header 离开顶部的一小段滚动区间内，目录应连续缓动到垂直居中的阅读状态。禁止把 `top: 50vh` 作为目录初始状态，也禁止只用二态 class 切换制造跳变。
+- 文章页 Breadcrumb 左边界必须与正文及学习路线入口左边界一致；覆盖 Chirpy vendor 间距时必须检查 selector 是否真正命中，不能只凭声明存在判断已生效。
+- 文章页右上角使用 `#topbar-actions` 作为唯一工具组，顺序为重点高亮、语言切换、搜索。重点高亮不得回到 sidebar；待译文章仍显示语言菜单，但只能链接当前已发布语言，禁止生成空英文页或死链接。
+- 新增或改变 Org 徽章、阅读高亮、语言菜单、topbar 工具等可见组件时，必须在同一次变更中同步 `docs/design/blog-base-style-demo.html`；生产已有而 demo 缺失、或 demo 已变而生产未同步，都视为未完成。
+
+### 视觉回归防复发门禁
+
+- 修改文章页字体、measure、Breadcrumb、TOC、topbar 或 sidebar 前，必须先检查相关 selector 的 `git log -p`，区分 Base 决策、临时 override 和 vendor 默认值；不得把历史存在等同于当前权威设计。
+- 禁止用 `TODO`、`temporary`、`follow-up` 注释为偏离已确认 demo 的生产视觉放行。需要试验时只允许放在 `docs/design/` 独立 demo，确认后再一次性进入生产。
+- 视觉改动必须同时核对三层：demo 决策、`_sass/custom/_base.scss` token、生产组件 selector。三层不一致时先判定权威来源和根因，不得继续叠加 override。
+- `scripts/check-rendered-site.rb` 等门禁必须验证当前已确认视觉契约。只有明昊明确改变设计方向时才允许同步修改预期；不得为了让构建通过而弱化或删除检查。
+- 交付前必须从最终页面反查：旧入口是否仍存在、组件是否出现在正确区域、单语/双语文章状态是否正确、Light/Dark 与窄屏是否保持同一信息层级。只看 CSS diff 或 build 成功不算视觉验收。
 
 ### 多 Session 并发保护
 

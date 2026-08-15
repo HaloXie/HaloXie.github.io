@@ -70,28 +70,6 @@
   </nav>
 
   <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
-    {% if page.layout == 'post' %}
-      {% if active_lang == 'en' %}
-        {% assign highlights_enabled_label = 'Turn off reading highlights' %}
-        {% assign highlights_disabled_label = 'Turn on reading highlights' %}
-      {% else %}
-        {% assign highlights_enabled_label = '关闭重点高亮' %}
-        {% assign highlights_disabled_label = '开启重点高亮' %}
-      {% endif %}
-      <button
-        type="button"
-        class="btn btn-link nav-link"
-        id="reading-highlights-toggle"
-        data-reading-highlights-toggle
-        data-enabled-label="{{ highlights_enabled_label }}"
-        data-disabled-label="{{ highlights_disabled_label }}"
-        hidden
-      >
-        <i class="fas fa-highlighter" aria-hidden="true"></i>
-      </button>
-      <span class="icon-border"></span>
-    {% endif %}
-
     {% unless site.theme_mode == 'light' or site.theme_mode == 'dark' %}
       {%- capture icon_system -%}
         <i class="fa-solid fa-display" data-theme-mode="system"></i>

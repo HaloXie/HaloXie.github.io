@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="light" data-reading-highlights="on">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -41,7 +41,7 @@
         --font-ui: var(--font-ui-zh);
         --font-prose: var(--font-body-zh);
         --leading-prose: 1.8;
-        --measure-prose: 38em;
+        --measure-prose: 48em;
         --tracking-display: 0;
 
         --text-xs: 0.75rem;
@@ -49,9 +49,13 @@
         --text-base: 1rem;
         --text-body: 1.125rem;
         --text-lead: clamp(1.125rem, 1.6vw, 1.25rem);
+        --text-h6: 1rem;
+        --text-h5: 1.125rem;
+        --text-h4: clamp(1.125rem, 1.35vw, 1.25rem);
         --text-h3: clamp(1.25rem, 1.7vw, 1.5rem);
-        --text-h2: clamp(1.55rem, 2.4vw, 2rem);
-        --text-h1: clamp(2.15rem, 5vw, 3.5rem);
+        --text-h2: clamp(1.5rem, 2.2vw, 1.875rem);
+        --text-h1: clamp(1.875rem, 2.2vw, 2.5rem);
+        --text-post-title: var(--text-h1);
 
         --leading-tight: 1.2;
         --leading-heading: 1.3;
@@ -77,6 +81,8 @@
         --success-soft: #deebe2;
         --warning: #7b4b13;
         --warning-soft: #f6ead0;
+        --highlight: #b56a25;
+        --highlight-soft: rgb(225 172 72 / 14%);
         --code-bg: #292725;
         --code-ink: #f7efe5;
 
@@ -95,8 +101,13 @@
         --radius-md: 0.45rem;
         --radius-lg: 0.75rem;
         --shadow-raised: 0 0.85rem 2.2rem rgb(67 48 39 / 9%);
+        --shadow-menu: 0 0.5rem 1.5rem rgb(67 48 39 / 10%);
         --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent) 24%, transparent);
+        --focus-width: 2px;
+        --focus-offset: 3px;
+        --focus-offset-compact: 2px;
         --motion-fast: 160ms ease;
+        --motion-standard: 180ms ease;
       }
 
       html[data-theme="dark"] {
@@ -119,9 +130,12 @@
         --success-soft: #283b30;
         --warning: #e0ad63;
         --warning-soft: #463923;
+        --highlight: #d9a456;
+        --highlight-soft: rgb(228 178 86 / 13%);
         --code-bg: #11100f;
         --code-ink: #eee8e0;
         --shadow-raised: 0 0.85rem 2.2rem rgb(0 0 0 / 26%);
+        --shadow-menu: 0 0.5rem 1.5rem rgb(0 0 0 / 18%);
       }
 
       *, *::before, *::after { box-sizing: border-box; }
@@ -329,11 +343,15 @@
       .type-row:first-child { padding-top: 0; }
       .type-row:last-child { padding-bottom: 0; border-bottom: 0; }
       .type-meta { color: var(--ink-muted); font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.5; }
-      .sample-h1, .sample-h2, .sample-h3 { margin: 0; color: var(--ink-strong); }
-      .sample-h1 { font-size: var(--text-h1); font-weight: 750; letter-spacing: var(--tracking-display); line-height: 1.08; }
+      .sample-h1, .sample-h2, .sample-h3, .sample-h4, .sample-h5, .sample-h6 { margin: 0; color: var(--ink-strong); }
+      .sample-h1 { font-size: var(--text-h1); font-weight: 750; letter-spacing: var(--tracking-display); line-height: 1.2; }
       .sample-h1 { font-family: var(--font-display); }
-      .sample-h2 { font-family: var(--font-heading); font-size: var(--text-h2); font-weight: 700; letter-spacing: -0.025em; line-height: 1.25; }
-      .sample-h3 { font-family: var(--font-heading); font-size: var(--text-h3); font-weight: 650; line-height: 1.35; }
+      .sample-h2, .sample-h3, .sample-h4, .sample-h5, .sample-h6 { font-family: var(--font-heading); font-weight: 650; letter-spacing: -0.02em; line-height: 1.3; }
+      .sample-h2 { font-size: var(--text-h2); }
+      .sample-h3 { font-size: var(--text-h3); }
+      .sample-h4 { font-size: var(--text-h4); }
+      .sample-h5 { font-size: var(--text-h5); }
+      .sample-h6 { font-size: var(--text-h6); }
       .sample-body { margin: 0; font-size: 1.125rem; }
       .sample-body--zh { font-family: var(--font-body-zh); line-height: 1.8; }
       .sample-body--en { font-family: var(--font-body-en); font-optical-sizing: auto; line-height: 1.72; }
@@ -369,9 +387,12 @@
         background: var(--surface);
       }
       .article-meta { color: var(--ink-muted); font-size: var(--text-sm); }
-      .article-demo h2, .article-demo h3 { color: var(--ink-strong); font-family: var(--font-heading); }
-      .article-demo h2 { margin: 2.75rem 0 1rem; font-size: var(--text-h2); line-height: 1.25; }
-      .article-demo h3 { margin: 2rem 0 0.75rem; font-size: var(--text-h3); line-height: 1.35; }
+      .article-demo :is(h2, h3, h4, h5, h6) { margin-bottom: 0.75em; color: var(--ink-strong); font-family: var(--font-heading); font-weight: 650; letter-spacing: -0.02em; line-height: var(--leading-heading); }
+      .article-demo h2 { margin-top: 2.75rem; font-size: var(--text-h2); }
+      .article-demo h3 { margin-top: 2rem; font-size: var(--text-h3); }
+      .article-demo h4 { margin-top: 1.5rem; font-size: var(--text-h4); }
+      .article-demo h5 { margin-top: 1.25rem; font-size: var(--text-h5); }
+      .article-demo h6 { margin-top: 1rem; font-size: var(--text-h6); }
       .article-demo p, .article-demo li {
         font-family: var(--font-prose);
         font-size: 1.125rem;
@@ -500,6 +521,143 @@
       .language-demo span { display: flex; justify-content: space-between; gap: var(--space-6); padding: 0.35rem 0.55rem; border-radius: var(--radius-sm); color: var(--ink); font-size: var(--text-sm); }
       .language-demo .active { background: var(--surface-soft); color: var(--accent); }
 
+      .identity-demo {
+        display: flex;
+        gap: 0.9rem;
+        margin-top: var(--space-4);
+        align-items: flex-start;
+      }
+      .identity-demo__badge {
+        display: inline-flex;
+        width: 2.65rem;
+        align-items: center;
+        flex-direction: column;
+        color: var(--ink-muted);
+        text-align: center;
+        text-decoration: none;
+      }
+      .identity-demo__badge:hover { color: var(--accent-hover); }
+      .identity-demo__badge:focus-visible {
+        border-radius: var(--radius-sm);
+        outline: var(--focus-width) solid var(--accent);
+        outline-offset: var(--focus-offset);
+      }
+      .identity-demo__medal {
+        position: relative;
+        z-index: 0;
+        display: grid;
+        width: 2.65rem;
+        height: 2.65rem;
+        place-items: center;
+        border: 1px solid color-mix(in srgb, var(--warning) 52%, var(--border-strong));
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--warning-soft) 72%, var(--surface));
+        box-shadow: inset 0 0 0 0.2rem var(--surface), var(--shadow-menu);
+        transition:
+          border-color var(--motion-standard),
+          box-shadow var(--motion-standard),
+          transform var(--motion-standard);
+      }
+      .identity-demo__medal::after {
+        position: absolute;
+        z-index: -1;
+        bottom: -0.38rem;
+        width: 0.85rem;
+        height: 0.85rem;
+        background: color-mix(in srgb, var(--warning) 58%, var(--accent));
+        clip-path: polygon(0 0, 100% 0, 78% 100%, 50% 72%, 22% 100%);
+        content: "";
+      }
+      .identity-demo__medal img { width: 2rem; height: 2rem; border-radius: 50%; object-fit: cover; }
+      .identity-demo__badge:hover .identity-demo__medal {
+        border-color: var(--warning);
+        box-shadow: inset 0 0 0 0.2rem var(--surface), var(--shadow-raised);
+        transform: translateY(-0.15rem) rotate(-2deg);
+      }
+
+      .reading-highlight-demo {
+        display: grid;
+        gap: var(--space-4);
+        margin-top: var(--space-4);
+      }
+      html[data-reading-highlights="on"] .reading-highlight {
+        margin: 0 -0.35rem 0 -0.85rem;
+        padding-inline: 0.85rem 0.35rem;
+        border-radius: var(--radius-sm);
+        background: linear-gradient(90deg, var(--highlight-soft), transparent 88%);
+        box-shadow: inset 0.18rem 0 var(--highlight);
+        text-decoration-line: underline;
+        text-decoration-color: color-mix(in srgb, var(--highlight) 55%, transparent);
+        text-decoration-thickness: 0.06em;
+        text-underline-offset: 0.18em;
+        transition: background-color var(--motion-fast), box-shadow var(--motion-fast);
+      }
+      .reading-highlight-toggle {
+        display: inline-grid;
+        width: 1.75rem;
+        height: 1.75rem;
+        place-items: center;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        background: var(--surface);
+        color: var(--accent-hover);
+        font-size: var(--text-sm);
+      }
+      .topbar-tools-demo {
+        display: inline-flex;
+        gap: 0.35rem;
+        width: fit-content;
+        align-items: center;
+      }
+      .topbar-tools-demo .reading-highlight-toggle {
+        width: 2.25rem;
+        height: 2.25rem;
+        border-color: transparent;
+      }
+      .topbar-tools-demo .reading-highlight-toggle.active {
+        border-color: var(--border);
+        background: var(--surface-soft);
+      }
+      .toc-motion-demo {
+        display: grid;
+        gap: var(--space-3);
+        margin-top: var(--space-4);
+      }
+      .toc-motion-demo__track {
+        position: relative;
+        height: 8rem;
+        border-left: 1px solid var(--border-strong);
+        background: linear-gradient(90deg, transparent 49.8%, var(--border) 50%, transparent 50.2%);
+      }
+      .toc-motion-demo__label {
+        position: absolute;
+        left: 0.75rem;
+        padding: 0.35rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--surface-soft);
+        color: var(--ink-label);
+        font-size: var(--text-xs);
+      }
+      .toc-motion-demo__label--top { top: 0; }
+      .toc-motion-demo__label--center { top: 50%; transform: translateY(-50%); }
+      .toc-motion-demo__caption { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
+      .reading-highlight-toggle:focus-visible {
+        outline: var(--focus-width) solid var(--accent);
+        outline-offset: var(--focus-offset-compact);
+      }
+      @media (forced-colors: active) {
+        html[data-reading-highlights="on"] .reading-highlight {
+          background: transparent;
+          box-shadow: inset 0.18rem 0 Highlight;
+          text-decoration-color: Highlight;
+          forced-color-adjust: auto;
+        }
+        .reading-highlight-toggle {
+          outline: 1px solid Highlight;
+        }
+      }
+
       .callout {
         display: grid;
         grid-template-columns: auto 1fr;
@@ -613,17 +771,20 @@
               <p>先按 Display、Heading、Body、UI、Code 分角色，再按中文与英文分别选择字体。论文约束可读性参数，具体 family 由字形质量、语言覆盖和真实页面共同决定。</p>
             </div>
             <div class="type-specimen">
-              <div class="type-row"><div class="type-meta">ZH H1<br>34–56px<br>750 / 1.08</div><p class="sample-h1">Agent 架构不是组件清单</p></div>
-              <div class="type-row" lang="en"><div class="type-meta">EN H1<br>34–56px<br>750 / 1.08</div><p class="sample-h1">Architecture Is a Chain of Decisions</p></div>
-              <div class="type-row"><div class="type-meta">ZH H2<br>25–32px<br>700 / 1.25</div><p class="sample-h2">先明确控制权，再选择框架</p></div>
-              <div class="type-row" lang="en"><div class="type-meta">EN H3<br>20–24px<br>650 / 1.35</div><p class="sample-h3">Workflow, Agent, and Harness</p></div>
+              <div class="type-row"><div class="type-meta">ZH H1<br>30–40px<br>750 / 1.20</div><p class="sample-h1">Agent 架构不是组件清单</p></div>
+              <div class="type-row" lang="en"><div class="type-meta">EN H1<br>30–40px<br>750 / 1.20</div><p class="sample-h1">Architecture Is a Chain of Decisions</p></div>
+              <div class="type-row"><div class="type-meta">ZH H2<br>24–30px<br>650 / 1.3</div><p class="sample-h2">先明确控制权，再选择框架</p></div>
+              <div class="type-row" lang="en"><div class="type-meta">EN H3<br>20–24px<br>650 / 1.3</div><p class="sample-h3">Workflow, Agent, and Harness</p></div>
+              <div class="type-row"><div class="type-meta">H4<br>18–20px<br>650 / 1.3</div><p class="sample-h4">局部机制与实现边界</p></div>
+              <div class="type-row"><div class="type-meta">H5<br>18px<br>650 / 1.3</div><p class="sample-h5">补充说明</p></div>
+              <div class="type-row"><div class="type-meta">H6<br>16px<br>650 / 1.3</div><p class="sample-h6">最小层级标签</p></div>
               <div class="type-row"><div class="type-meta">ZH BODY<br>18px<br>400 / 1.80</div><p class="sample-body sample-body--zh">真正决定系统上限的，不是工具数量，而是模型在多长的反馈链中拥有多少判断权，以及这些判断如何被验证、恢复和审计。</p></div>
               <div class="type-row"><div class="type-meta">EN BODY<br>18px<br>400 / 1.72</div><p class="sample-body sample-body--en" lang="en">The system's ceiling is determined not by the number of tools, but by how much judgment the model holds across a feedback loop—and how reliably that judgment can be verified, recovered, and audited.</p></div>
               <div class="type-row"><div class="type-meta">META<br>14px<br>400 / 1.45</div><p class="sample-small">发布于 2026-08-14 · 预计阅读 12 分钟 · AI Engineering</p></div>
             </div>
             <div class="language-type-pair" aria-label="中英文正文最终字体">
               <article class="language-type language-type--zh" lang="zh-CN">
-                <header><strong>中文正文 · Noto Serif SC</strong><code>18px / 1.80 / 38em</code></header>
+                <header><strong>中文正文 · Noto Serif SC</strong><code>18px / 1.80 / 48em</code></header>
                 <p>中文长文需要稳定的字面、足够的行间留白和不过长的行宽。这里选择宋体风格是技术编辑气质与覆盖质量的决定，不宣称衬线天然比黑体更易读。</p>
               </article>
               <article class="language-type language-type--en" lang="en">
@@ -637,7 +798,7 @@
               <tbody>
                 <tr><td>H1 / Display</td><td>Noto Sans SC 750–800</td><td>Source Sans 3 750–800</td><td>按语言与实际字符 subset；不因标题短而降级 family</td></tr>
                 <tr><td>H2–H3 / Heading</td><td>Noto Sans SC 650–700</td><td>Source Sans 3 650–700</td><td>与 Display 共用 variable artifact，不新增 family</td></tr>
-                <tr><td>正文 / Body</td><td>Noto Serif SC 400，强调 600；18px / 1.80 / 38em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>只在对应语言文章页加载；中文 Google shards 实测约 0.25–1.30 MiB</td></tr>
+                <tr><td>正文 / Body</td><td>Noto Serif SC 400，强调 600；18px / 1.80 / 48em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>只在对应语言文章页加载；中文 Google shards 实测约 0.25–1.30 MiB</td></tr>
                 <tr><td>Meta / UI</td><td>Noto Sans SC 400–700</td><td>Source Sans 3 400–700</td><td>与标题共用 artifact；fallback 为平台 sans</td></tr>
                 <tr><td>Code / Kbd</td><td>GitLab Mono 400</td><td>GitLab Mono 400</td><td>约 77 KiB；ligature 默认关闭；CJK fallback</td></tr>
               </tbody>
@@ -653,8 +814,8 @@
                 <tr><td><a href="https://doi.org/10.1093/iwc/iwab020" target="_blank" rel="noreferrer">Zhu, Su &amp; Dong, 2021</a></td><td>115 人简中手机实验中，字号和行距影响阅读时间、难度与视觉疲劳；固定 pt 不能直接换算成跨设备 CSS px。</td><td>18px 作为可缩放基线，移动端不低于 17px；行距与字号一起验收。</td><td class="evidence-level">中高</td></tr>
                 <tr><td><a href="https://doi.org/10.1080/0144929042000267073" target="_blank" rel="noreferrer">Chan &amp; Lee, 2005</a></td><td>繁中显示器实验中，字体、字号、行距和极性影响速度；但比较的是 Ming 与 Li，不能推出宋体普遍胜黑体。</td><td>支持中文需要独立排版参数；不把旧设备结果外推成 Noto Serif SC 排名。</td><td class="evidence-level">中</td></tr>
                 <tr><td><a href="https://doi.org/10.3390/asi1030024" target="_blank" rel="noreferrer">Huang, Li &amp; Tung, 2018</a></td><td>繁体中文手机阅读中，过大的行距会增加滚动并降低速度；较大行距的主观舒适度可能更高。</td><td>中文正文取 1.80，而不是继续无上限放大；段落间距负责分块。</td><td class="evidence-level">中低</td></tr>
-                <tr><td><a href="https://www.w3.org/TR/clreq/#h_composition_of_the_type_area" target="_blank" rel="noreferrer">W3C CLReq</a></td><td>现代中文专家规范建议横排通常不超过 48 字/行、line-height 常在 1.5–2.0，正文原则上密排。</td><td>中文段落约 38 字/行、line-height 1.80、letter-spacing normal；这是规范性 guidance，不是因果实验。</td><td class="evidence-level">专家规范</td></tr>
-                <tr><td><a href="https://doi.org/10.1080/01449290410001715714" target="_blank" rel="noreferrer">Dyson, 2004</a></td><td>每行字符数是屏幕阅读的重要变量，但研究不足以推出唯一最佳行宽。</td><td>英文 68ch、中文约 38 字作为稳健默认区间，不声称是唯一科学值。</td><td class="evidence-level">中高综述</td></tr>
+                <tr><td><a href="https://www.w3.org/TR/clreq/#h_composition_of_the_type_area" target="_blank" rel="noreferrer">W3C CLReq</a></td><td>现代中文专家规范建议横排通常不超过 48 字/行、line-height 常在 1.5–2.0，正文原则上密排。</td><td>中文段落约 48 字/行、line-height 1.80、letter-spacing normal；这是规范性 guidance，不是因果实验。</td><td class="evidence-level">专家规范</td></tr>
+                <tr><td><a href="https://doi.org/10.1080/01449290410001715714" target="_blank" rel="noreferrer">Dyson, 2004</a></td><td>每行字符数是屏幕阅读的重要变量，但研究不足以推出唯一最佳行宽。</td><td>英文 68ch、中文约 48 字作为当前阅读基线，不声称是唯一科学值。</td><td class="evidence-level">中高综述</td></tr>
                 <tr><td><a href="https://doi.org/10.1167/11.5.8" target="_blank" rel="noreferrer">Legge &amp; Bigelow, 2011</a></td><td>流畅阅读更接近由视觉角度与实际 x-height 决定，而不是固定 CSS px。</td><td>18px 是产品基线；不阻止缩放，并用实际字体页面而非字号标签判断大小。</td><td class="evidence-level">高综述</td></tr>
               </tbody>
             </table>
@@ -664,7 +825,7 @@
           <section id="article">
             <div class="section-head">
               <h2>03 · Article prose</h2>
-              <p>正文容器最大 55rem；中文段落约 38 字，英文段落约 68ch。代码、表格和 16:9 图片可占满正文容器。</p>
+              <p>正文容器最大 55rem；中文段落约 48 字，英文段落约 68ch。代码、表格和 16:9 图片可占满正文容器。</p>
             </div>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
@@ -729,6 +890,9 @@
               <article class="card"><span class="status">已发布 6/8</span><h3>从 Skills 到 Abilities</h3><p>学习路线保留专属结构，颜色改为 core semantic token alias。</p><a class="button" href="#extraction">查看路线 →</a></article>
               <article class="card"><span class="eyebrow">COMMAND SEARCH</span><h3>搜索文章</h3><div class="search-demo"><div class="search-field">⌕ agent architecture</div><div class="search-result"><strong>Agent 架构地图</strong><small>从控制权与反馈链理解系统边界</small></div></div></article>
               <article class="card"><span class="eyebrow">LANGUAGE MENU</span><h3>语言切换</h3><p>菜单使用同一 focus、surface、radius 与 active accent。</p><div class="language-demo"><span class="active">简体中文 <b>✓</b></span><span>English</span></div></article>
+              <article class="card"><span class="eyebrow">ORG IDENTITY</span><h3>开源组织徽章</h3><p>徽章复用 warning、surface、border 与 motion token，在侧栏中提供紧凑的第二身份层。</p><div class="identity-demo" aria-label="开源组织徽章"><a class="identity-demo__badge" href="https://github.com/Justin-Anamnesis" aria-label="Justin-Anamnesis"><span class="identity-demo__medal"><img src="../../assets/img/identity/justin-anamnesis-cats-avatar.png" alt=""></span></a><a class="identity-demo__badge" href="https://github.com/cognirail" aria-label="Cognirail"><span class="identity-demo__medal"><img src="../../assets/img/identity/cognirail.png" alt=""></span></a></div></article>
+              <article class="card"><span class="eyebrow">POST TOPBAR TOOLS</span><h3>语言与重点高亮</h3><p>文章页右上角将语言切换和高亮开关并排放置，搜索保持紧凑图标形态。</p><div class="reading-highlight-demo"><p class="reading-highlight"><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。</p><div class="topbar-tools-demo" aria-label="文章页右上工具"><span class="reading-highlight-toggle" aria-label="语言切换">文</span><span class="reading-highlight-toggle active" aria-label="重点高亮已开启">▰</span></div></div></article>
+              <article class="card"><span class="eyebrow">TOC READING MODE</span><h3>目录平滑进入阅读状态</h3><p>首屏目录停在文章顶部；文章头部滚出后，目录在一小段滚动区间内使用 smoothstep 连续移动到垂直居中，禁止二态跳变。</p><div class="toc-motion-demo"><div class="toc-motion-demo__track" aria-label="目录从顶部缓动到垂直居中"><span class="toc-motion-demo__label toc-motion-demo__label--top">首屏：顶部</span><span class="toc-motion-demo__label toc-motion-demo__label--center">阅读中：垂直居中</span></div><p class="toc-motion-demo__caption">桌面端启用；prefers-reduced-motion 时跳过移动。</p></div></article>
             </div>
           </section>
 

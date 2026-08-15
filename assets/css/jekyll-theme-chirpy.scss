@@ -413,10 +413,10 @@ article[data-toc] > header > h1 {
   margin: clamp(1.8rem, 3vw, 2.6rem) 0 0.85rem;
   color: var(--heading-color);
   font-family: var(--font-display);
-  font-size: clamp(2.25rem, 3vw, 3.2rem);
+  font-size: var(--text-post-title);
   font-weight: var(--font-weight-display);
   letter-spacing: -0.025em;
-  line-height: 1.18;
+  line-height: var(--leading-heading);
   text-wrap: balance;
 }
 
@@ -853,23 +853,26 @@ body:has(.category-catalog) {
 
 .series-card__link,
 .series-primary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   width: fit-content;
-  color: var(--learning-accent);
+  padding: 0.72rem 1rem;
+  border: 1px solid var(--learning-accent);
+  border-radius: var(--radius-md);
+  background: var(--learning-accent);
+  color: var(--accent-contrast);
   font-family: var(--font-ui);
   font-size: 0.88rem;
   font-weight: var(--font-weight-label);
   text-decoration: none;
 }
 
-.series-card__link {
-  padding: 0.3rem 0.45rem;
-  border-radius: var(--radius-md);
-}
-
 .series-card__link:hover,
-.series-card__link:focus-visible {
-  background: var(--learning-accent-soft);
-  color: var(--learning-accent) !important;
+.series-card__link:focus-visible,
+.series-primary-action:hover,
+.series-primary-action:focus-visible {
+  color: var(--accent-contrast) !important;
 }
 
 .series-card__link span,
@@ -914,21 +917,6 @@ body:has(.category-catalog) {
   margin: 0 0 1.5rem;
   color: var(--learning-muted);
   line-height: 1.7;
-}
-
-.series-primary-action {
-  display: inline-flex;
-  gap: 0.6rem;
-  align-items: center;
-  padding: 0.72rem 1rem;
-  border: 1px solid var(--learning-accent);
-  border-radius: var(--radius-md);
-  background: var(--learning-accent);
-  color: var(--accent-contrast);
-}
-
-.series-primary-action:hover {
-  color: var(--accent-contrast);
 }
 
 .series-hero__progress {
@@ -1515,10 +1503,46 @@ body:has(.category-catalog) {
   position: relative;
 }
 
-#topbar .language-switcher {
-  flex: 0 0 2.25rem;
+#topbar-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin-left: auto;
-  margin-right: 0.5rem;
+}
+
+#topbar-actions .language-switcher {
+  flex: 0 0 2.25rem;
+  margin: 0;
+}
+
+#topbar .topbar-reading-highlights-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-round);
+  color: var(--text-muted-color);
+  transition:
+    color var(--motion-fast),
+    background-color var(--motion-fast),
+    border-color var(--motion-fast);
+}
+
+#topbar .topbar-reading-highlights-toggle:hover,
+#topbar .topbar-reading-highlights-toggle[aria-pressed='true'] {
+  color: var(--topbar-text-color);
+  border-color: var(--main-border-color);
+  background: var(--button-bg);
+}
+
+#topbar .topbar-reading-highlights-toggle:focus-visible {
+  color: var(--topbar-text-color);
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset-compact);
+  box-shadow: none;
 }
 
 /*
@@ -1541,6 +1565,23 @@ body:has(.category-catalog) {
 
 .command-search-placeholder,
 .command-search-shortcut {
+  display: none;
+}
+
+body:has(main article[data-toc]) #topbar-title {
+  display: none;
+}
+
+body:has(main article[data-toc]) #topbar .command-search-trigger {
+  justify-content: center;
+  gap: 0;
+  width: 2.25rem;
+  padding: 0;
+  border: 1px solid transparent;
+  background: transparent;
+}
+
+body:has(main article[data-toc]) #topbar :is(.command-search-placeholder, .command-search-shortcut) {
   display: none;
 }
 
@@ -1948,14 +1989,15 @@ body:has(.category-catalog) {
 }
 
 @media (max-width: 991.98px) {
-  #topbar .language-switcher {
+  #topbar-actions {
     position: absolute;
-    right: 2.75rem;
+    right: 0.5rem;
     margin: 0;
   }
 
-  #topbar .language-switcher:has(~ #search.d-flex) {
-    display: none;
+  body:has(main article[data-toc]) #topbar #breadcrumb {
+    flex: 1 1 auto;
+    padding-right: 7.5rem;
   }
 }
 
@@ -1992,7 +2034,7 @@ html[data-platform='other'] .command-search-shortcut-other {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  #topbar .language-trigger {
+  #topbar :is(.language-trigger, .topbar-reading-highlights-toggle) {
     transition: none;
   }
 
@@ -2010,24 +2052,8 @@ article[data-toc] > .content {
   line-height: var(--leading-prose);
 }
 
-/* Chinese technical articles contain frequent Latin terms. Keep the Base
-   Chinese prose family unchanged, and add Georgia only within post content. */
-html:lang(zh-CN) article[data-toc] {
-  --font-prose: Georgia, var(--font-body-zh);
-}
-
 article[data-toc] > .content :is(p, li) {
   text-wrap: pretty;
-}
-
-/* TODO(reading-measure): The Base proposal keeps Chinese prose at 38em, but
-   the current article layout uses a 55rem code/table column. Temporarily let
-   direct prose blocks follow that article column so wrapping and component
-   edges stay visually consistent. Re-evaluate after the Chinese series has
-   been read end to end; this is deliberately an article override, not a Base
-   typography decision. */
-article[data-toc] > .content > :where(p, ul, ol) {
-  max-width: var(--post-copy-width);
 }
 
 /* Prose media follows the same measure as the text. Wide tables and code
@@ -2124,7 +2150,7 @@ body:has(main article[data-toc])
     padding-left: 0 !important;
   }
 
-  body:has(main article[data-toc]) #breadcrumb {
+  body:has(main article[data-toc]) #topbar #breadcrumb {
     min-width: 0;
     padding-left: 0;
     overflow: hidden;
@@ -2156,13 +2182,14 @@ body:has(main article[data-toc])
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper {
-    top: 50vh;
+    top: calc(3rem + var(--toc-offset, 0px));
     max-height: calc(100vh - 4rem);
     margin-top: 0;
     padding-right: 0 !important;
     overscroll-behavior: contain;
     font-size: 0.8125rem;
-    transform: translateY(-50%);
+    transform: translateY(var(--toc-shift, 0%));
+    will-change: top, transform;
   }
 
   body:has(main article[data-toc]) #panel-wrapper .toc-border-cover {
@@ -2229,7 +2256,6 @@ body:has(main article[data-toc])
     display: grid !important;
     grid-template-columns:
       minmax(0, 1fr)
-      var(--post-layout-gap)
       var(--post-panel-width);
     width: 100%;
     max-width: calc(var(--post-copy-width) + var(--post-layout-gap) + var(--post-panel-width));
@@ -2243,18 +2269,11 @@ body:has(main article[data-toc])
     width: 100%;
   }
 
-  body:has(main article[data-toc]) #topbar .language-switcher {
+  body:has(main article[data-toc]) #topbar-actions {
     grid-column: 2;
     grid-row: 1;
-    justify-self: center;
-    margin-right: 0;
+    justify-self: end;
     margin-left: 0;
-  }
-
-  body:has(main article[data-toc]) #topbar .command-search-trigger {
-    grid-column: 3;
-    grid-row: 1;
-    width: 100%;
   }
 
   body:has(main article[data-toc])

@@ -186,7 +186,7 @@ One security fact is essential: **Pi is not a complete operating-system permissi
 Install the pinned version used by this article:
 
 ```bash
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.84.1
+pnpm add -g --ignore-scripts @earendil-works/pi-coding-agent@0.84.1
 ```
 
 After configuring model credentials, run this inside a project you want to inspect:

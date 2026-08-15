@@ -186,7 +186,7 @@ Pi 适合教学，是因为它把最小组成暴露得很清楚：
 先安装：
 
 ```bash
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent@0.84.1
+pnpm add -g --ignore-scripts @earendil-works/pi-coding-agent@0.84.1
 ```
 
 配置模型凭据后，在一个准备分析的项目目录运行：

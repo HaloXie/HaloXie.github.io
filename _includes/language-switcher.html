@@ -28,7 +28,7 @@
 {% endif %}
 
 {% assign show_language_switcher = false %}
-{% if available_languages.size > 1 or page.layout == 'home' or taxonomy_paths %}
+{% if available_languages.size > 1 or page.layout == 'home' or page.layout == 'post' or taxonomy_paths %}
   {% assign show_language_switcher = true %}
 {% elsif page.layout == 'tag' and tag_has_counterpart %}
   {% assign show_language_switcher = true %}
@@ -44,6 +44,9 @@
       {% assign translation_path = page.url %}
     {% else %}
       {% assign translation_path = page.permalink_lang[language] %}
+      {% if page.layout == 'post' and language == active_language and translation_path == nil %}
+        {% assign translation_path = page.url %}
+      {% endif %}
     {% endif %}
     {% if translation_path %}
       {%- capture language_href -%}
@@ -56,6 +59,9 @@
       {% else %}
         {% assign en_language_href = language_href %}
       {% endif %}
+      {% if language == active_language %}
+        {% assign active_language_href = language_href %}
+      {% endif %}
     {% endif %}
   {% endfor %}
 
@@ -63,6 +69,9 @@
     {% assign counterpart_href = en_language_href %}
   {% else %}
     {% assign counterpart_href = zh_language_href %}
+  {% endif %}
+  {% if counterpart_href == nil or counterpart_href == empty %}
+    {% assign counterpart_href = active_language_href %}
   {% endif %}
 
   <nav class="language-switcher dropdown" aria-label="{% if active_language == 'zh-CN' %}选择语言{% else %}Select language{% endif %}">
