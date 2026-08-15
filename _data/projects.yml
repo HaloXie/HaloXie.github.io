@@ -44,10 +44,10 @@
   status: active
   locales:
     zh-CN:
-      summary: Cognirail 本身的源代码与内容系统。
+      summary: 这个个人博客的源代码与内容系统。
       note: 双语发布、系列学习路线、内容图片门禁和阅读体验都在这里持续迭代。
     en:
-      summary: The source and publishing system behind Cognirail.
+      summary: The source and publishing system behind this personal blog.
       note: The bilingual pipeline, learning paths, content-image gates, and reading experience all evolve here.
 
 - repo: HaloXie/go-first

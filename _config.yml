@@ -28,6 +28,7 @@ exclude_from_localization:
   - assets/img/chat-workflow-agent-guide
   - assets/img/from-skills-to-abilities
   - assets/img/harness-engineering
+  - assets/img/identity
   - assets/img/language-choose
   - assets/img/llm-call-anatomy
   - assets/img/openclaw-guide
@@ -41,10 +42,10 @@ exclude_from_localization:
 timezone: Asia/Shanghai
 
 # jekyll-seo-tag settings
-title: Cognirail
-tagline: Agent Engineering · Systems · Open Source
+title: Halo Xie
+tagline: Coding · Open Source
 description: >-
-  明昊的数字工坊，记录 Agent 工程、软件系统与开源实践。
+  Halo Xie 的个人技术博客，记录 Agent 工程、软件系统与开源实践。
 
 url: "https://halo.xin"
 
@@ -54,6 +55,8 @@ github:
 social:
   name: Halo Xie
   links:
+    - https://github.com/HaloXie
+    - https://github.com/Justin-Anamnesis
     - https://github.com/cognirail
 
 # Web Analytics Settings

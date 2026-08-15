@@ -15,6 +15,30 @@
 
     <a class="site-title d-block" href="{{ '/' | relative_url }}">{{ site.title }}</a>
     <p class="site-subtitle fst-italic mb-0">{{ site.tagline }}</p>
+
+    {% if site.data.identity-badges %}
+      <div
+        class="identity-badges"
+        role="list"
+        aria-label="{% if active_lang == 'en' %}Profiles and organizations{% else %}个人与组织身份{% endif %}"
+      >
+        {% for badge in site.data.identity-badges %}
+          <a
+            class="identity-badge"
+            href="{{ badge.url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="listitem"
+            aria-label="{{ badge.name }} · {{ badge.kind[active_lang] }}"
+            title="{{ badge.name }} · {{ badge.kind[active_lang] }}"
+          >
+            <span class="identity-badge__medal" aria-hidden="true">
+              <img src="{{ badge.icon | relative_url }}" width="40" height="40" alt="">
+            </span>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
   </header>
   <!-- .profile-wrapper -->
 

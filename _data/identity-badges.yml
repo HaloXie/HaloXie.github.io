@@ -1,0 +1,13 @@
+- name: Justin-Anamnesis
+  kind:
+    zh-CN: 开源组织
+    en: Open-source organization
+  url: https://github.com/Justin-Anamnesis
+  icon: /assets/img/identity/justin-anamnesis-cats-avatar.png
+
+- name: Cognirail
+  kind:
+    zh-CN: 开源组织
+    en: Open-source organization
+  url: https://github.com/cognirail
+  icon: /assets/img/identity/cognirail.png

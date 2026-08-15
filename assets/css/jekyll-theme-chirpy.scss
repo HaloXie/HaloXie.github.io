@@ -33,6 +33,107 @@ body:has(main article[data-toc]) {
   --post-layout-gap: 2.5rem;
 }
 
+/* Identity medals
+ *
+ * Compact enamel-like badges keep the sidebar personal while giving the
+ * projects and organizations a visible, secondary identity layer.
+ */
+
+#sidebar .profile-wrapper {
+  margin-bottom: 1.35rem;
+}
+
+#sidebar .site-title {
+  letter-spacing: -0.025em;
+}
+
+#sidebar .site-subtitle {
+  height: auto;
+  min-height: 0;
+  font-family: var(--font-ui);
+  font-style: normal !important;
+  line-height: 1.55;
+  white-space: nowrap;
+}
+
+.identity-badges {
+  display: flex;
+  gap: 0.9rem;
+  margin-top: 1rem;
+  align-items: flex-start;
+}
+
+.identity-badge {
+  display: inline-flex;
+  width: 2.65rem;
+  align-items: center;
+  flex-direction: column;
+  color: var(--text-muted-color);
+  text-align: center;
+  text-decoration: none;
+}
+
+.identity-badge:hover {
+  color: var(--accent-hover);
+}
+
+.identity-badge:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: var(--focus-width) solid var(--accent);
+  outline-offset: var(--focus-offset);
+}
+
+.identity-badge__medal {
+  position: relative;
+  z-index: 0;
+  display: grid;
+  width: 2.65rem;
+  height: 2.65rem;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--warning) 52%, var(--border-strong));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--warning-soft) 72%, var(--surface));
+  box-shadow:
+    inset 0 0 0 0.2rem var(--surface),
+    var(--shadow-menu);
+  transition:
+    border-color var(--motion-standard),
+    box-shadow var(--motion-standard),
+    transform var(--motion-standard);
+}
+
+.identity-badge__medal::after {
+  position: absolute;
+  z-index: -1;
+  bottom: -0.38rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  background: color-mix(in srgb, var(--warning) 58%, var(--accent));
+  clip-path: polygon(0 0, 100% 0, 78% 100%, 50% 72%, 22% 100%);
+  content: '';
+}
+
+.identity-badge__medal img {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.identity-badge:hover .identity-badge__medal {
+  border-color: var(--warning);
+  box-shadow:
+    inset 0 0 0 0.2rem var(--surface),
+    var(--shadow-raised);
+  transform: translateY(-0.15rem) rotate(-2deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .identity-badge__medal {
+    transition: none;
+  }
+}
+
 /*
  * Post reading mode
  *

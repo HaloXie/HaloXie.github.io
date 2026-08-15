@@ -779,7 +779,7 @@ SITE.glob("**/*.html").each do |path|
   errors << "#{relative}: hidden series detail appears in primary tabs" if nav_paths.include?(hidden_series_path)
 
   github_targets = doc.css('#sidebar a[aria-label="github"]').map { |node| node["href"] }
-  errors << "#{relative}: wrong GitHub contact link #{github_targets.inspect}" unless github_targets == ["https://github.com/cognirail"]
+  errors << "#{relative}: wrong GitHub contact link #{github_targets.inspect}" unless github_targets == ["https://github.com/HaloXie"]
   errors << "#{relative}: public mailto link found" if source.match?(/mailto:/i)
   errors << "#{relative}: private email address found" if source.match?(/minghao\.xie@ddit\.ai/i)
 end
