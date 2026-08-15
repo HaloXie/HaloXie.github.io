@@ -370,7 +370,8 @@ body:has(#post-list) #topbar-wrapper {
   justify-content: space-between;
   gap: 1.5rem;
   color: var(--text-muted-color);
-  font-size: 0.82rem;
+  font-size: var(--text-base);
+  line-height: var(--leading-ui);
   text-decoration: none;
 }
 
@@ -397,9 +398,9 @@ body:has(#post-list) #topbar-wrapper {
 .post-series-eyebrow {
   margin-right: 0.65rem;
   color: var(--link-color);
-  font-size: 0.68rem;
-  font-weight: 750;
-  letter-spacing: 0.12em;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-label);
+  letter-spacing: 0.04em;
 }
 
 .post-series-progress {
@@ -2198,14 +2199,15 @@ body:has(main article[data-toc])
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper .panel-heading {
     margin: 0 0 0.7rem !important;
-    padding: 0 0 0.75rem 1rem !important;
+    padding: 0 0 0.8rem 1rem !important;
     border-bottom: 1px solid var(--main-border-color);
+    border-left: 0 !important;
     color: var(--label-color);
     font-family: var(--font-ui);
-    font-size: 0.76rem;
+    font-size: var(--text-base);
     font-weight: var(--font-weight-label);
-    letter-spacing: 0.08em;
-    line-height: 1.35;
+    letter-spacing: 0.04em;
+    line-height: var(--leading-ui);
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper::after {
