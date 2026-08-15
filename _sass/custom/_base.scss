@@ -15,9 +15,7 @@
     sans-serif;
   --font-heading-zh: var(--font-display-zh);
   --font-ui-zh: var(--font-display-zh);
-  /* Georgia supplies better-proportioned Latin glyphs inside Chinese prose;
-     CJK characters fall through to the Chinese serif faces. */
-  --font-body-zh: Georgia, 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-body-zh: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
   --font-display-en: 'Source Sans 3', 'Source Sans Pro', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading-en: var(--font-display-en);
@@ -75,14 +73,8 @@
   --motion-standard: 180ms ease;
   --media-aspect: 16 / 9;
 
-  /* Project layout roles */
+  /* Global shell role */
   --desktop-sidebar-width: clamp(16.25rem, 15vw, 18.75rem);
-  --post-copy-width: var(--measure-copy);
-  --post-panel-width: 15rem;
-  --post-layout-gap: 2.5rem;
-  --home-canvas-width: 100rem;
-  --home-panel-width: clamp(14rem, 15vw, 16rem);
-  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
 }
 
 html:lang(en) {

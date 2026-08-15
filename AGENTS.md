@@ -7,8 +7,8 @@
 ### 权威来源与文件职责
 
 - `docs/design/blog-base-style-demo.html` 是已经确认的 Base Style 视觉决策记录和 all-in-one 验收 demo，不参与 Jekyll 运行时编译。修改全局字体、字号层级、行高、行宽、主题色、背景色、圆角、阴影、动效或媒体比例前，必须先以该 demo 为基线；若要改变既有视觉方向，先更新 demo 并取得明昊确认，再修改生产样式。
-- `_sass/custom/_base.scss` 是生产环境全局设计 token 和基础排版的唯一事实源。字体角色、语义色、type scale、spacing、radius、focus、motion、media、Chirpy vendor variable 映射，以及中英文 Base override 都只能在这里定义。
-- `assets/css/jekyll-theme-chirpy.scss` 是主题编译入口和页面/组件样式层。它必须通过 `@use 'custom/base'` 消费 Base；允许处理 sidebar、首页 archive、文章布局、学习路线等组件结构，但不得再定义第二套全局字体栈、色板、字号体系或同义 token。
+- `_sass/custom/_base.scss` 是生产环境全局设计 token 和基础排版默认值的唯一事实源。字体角色、语义色、type scale、spacing、radius、focus、motion、media、Chirpy vendor variable 映射，以及中英文 Base 默认值都只能在这里定义。Base 是供页面和组件继承的稳定基线，不能为了满足某个局部页面或组件的视觉需求而反向修改。
+- `assets/css/jekyll-theme-chirpy.scss` 是主题编译入口和页面/组件样式层。它必须通过 `@use 'custom/base'` 消费 Base；允许处理 sidebar、首页 archive、文章布局、学习路线等组件结构，也允许在明确限定的页面或组件 selector 内 override Base token。局部 override 不得污染 `:root`、复制整套全局体系，或反向修改 `_sass/custom/_base.scss` 来满足局部需求。
 - `_includes/head.html` 只负责页面资源加载入口。不得在组件 CSS 中使用 `@import` 临时引入字体，也不得未经确认新增第三方字体 CDN。生产字体方案优先使用仓库自托管、带 hash 的 WOFF2，并按 `lang + layout` 条件加载及构建期 subset。
 - 不修改 Chirpy gem、vendor 文件或 `_site/` 构建产物来实现样式；缺陷必须修在上述仓库 source of truth。
 
@@ -18,15 +18,15 @@
 | --- | --- | --- |
 | 全局字体、颜色、字号、行高、间距、圆角、动效、图片比例 | 先更新 demo；确认后修改 `_sass/custom/_base.scss` | 同一个真值只保留一处，组件只消费语义 token |
 | Light / Dark 主题 | `_sass/custom/_base.scss` | 两个主题必须成对定义；同时检查普通文字对比度 |
-| 中英文排版差异 | `_sass/custom/_base.scss` 的语言 override | Base 角色一致，family、line-height、measure、tracking 可按语言 override |
-| 页面或组件布局 | `assets/css/jekyll-theme-chirpy.scss`，或已有对应 partial | 只处理结构与局部状态，不复制 Base token 真值 |
+| 全站中英文排版默认差异 | `_sass/custom/_base.scss` 的语言 override | Base 角色一致，family、line-height、measure、tracking 可按语言设置默认值 |
+| 页面或组件的排版与布局差异 | `assets/css/jekyll-theme-chirpy.scss`，或已有对应 partial | 在最小作用域 selector 内 override Base token；不得为局部需求修改 Base 默认值，不复制整套 token 真值 |
 | 新字体文件与加载策略 | 先给 payload、license、缓存和 fallback 方案；确认后改资源加载入口 | 不以节省字节为由先降级阅读质量，也不直接把 demo CDN 当生产方案 |
 | 实验性视觉方案 | `docs/design/` 下独立 demo | 未确认前不得写入生产 CSS |
 
 ### 禁止事项
 
 - 禁止在页面 selector 或组件 class 中硬编码已经存在语义 token 的颜色、字体、阴影、圆角和动效值；确需新增角色时，先判断是否应进入 Base。
-- 禁止为了压过错误层级而堆叠 `!important`、提高 selector specificity 或新增局部 override；先修正 token 或样式所属层。只有覆盖无法修改的 Chirpy vendor 规则时允许使用，并必须就近写明原因。
+- 禁止为了压过错误层级而堆叠 `!important` 或无边界提高 selector specificity。页面/组件确有不同视觉需求时，应在最小作用域 selector 内 override 对应 Base token；不得通过修改 Base 默认值影响其他页面。只有覆盖无法修改的 Chirpy vendor 规则时允许使用 `!important`，并必须就近写明原因。
 - 禁止把 `blog-base-style-demo.html` 的整段 CSS 直接复制到生产入口。demo 同时展示全部语言和资源，生产实现必须按页面职责拆分。
 - 禁止顺手重排、格式化或重构与本次 goal 无关的样式区域。
 - 禁止把系统字体 fallback 的实际渲染误报为自定义字体已加载；字体改动必须检查真实 font face、字重、fallback 和缺字。

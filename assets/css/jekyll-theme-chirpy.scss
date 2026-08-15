@@ -21,6 +21,18 @@ body:not(:has(main article[data-toc])) .col-xl-11 {
   width: 95%;
 }
 
+body:has(#post-list) {
+  --home-canvas-width: 100rem;
+  --home-panel-width: clamp(14rem, 15vw, 16rem);
+  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
+}
+
+body:has(main article[data-toc]) {
+  --post-copy-width: var(--measure-copy);
+  --post-panel-width: 15rem;
+  --post-layout-gap: 2.5rem;
+}
+
 /*
  * Post reading mode
  *
@@ -1895,6 +1907,12 @@ html[data-platform='other'] .command-search-shortcut-other {
 article[data-toc] > .content {
   font-size: var(--text-body);
   line-height: var(--leading-prose);
+}
+
+/* Chinese technical articles contain frequent Latin terms. Keep the Base
+   Chinese prose family unchanged, and add Georgia only within post content. */
+html:lang(zh-CN) article[data-toc] {
+  --font-prose: Georgia, var(--font-body-zh);
 }
 
 article[data-toc] > .content :is(p, li) {
