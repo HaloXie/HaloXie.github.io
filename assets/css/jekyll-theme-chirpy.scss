@@ -398,9 +398,9 @@ body:has(#post-list) #topbar-wrapper {
 .post-series-eyebrow {
   margin-right: 0.65rem;
   color: var(--link-color);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   font-weight: var(--font-weight-label);
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
 }
 
 .post-series-progress {
