@@ -2182,14 +2182,13 @@ body:has(main article[data-toc])
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper {
-    top: calc(3rem + var(--toc-offset, 0px));
+    top: 3rem;
     max-height: calc(100vh - 4rem);
     margin-top: 0;
     padding-right: 0 !important;
     overscroll-behavior: contain;
     font-size: 0.8125rem;
-    transform: translateY(var(--toc-shift, 0%));
-    will-change: top, transform;
+    transform: none;
   }
 
   body:has(main article[data-toc]) #panel-wrapper .toc-border-cover {

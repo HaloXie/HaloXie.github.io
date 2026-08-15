@@ -640,7 +640,7 @@
         font-size: var(--text-xs);
       }
       .toc-motion-demo__label--top { top: 0; }
-      .toc-motion-demo__label--center { top: 50%; transform: translateY(-50%); }
+      .toc-motion-demo__label--sticky { top: 0; margin-top: 3rem; }
       .toc-motion-demo__caption { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: var(--leading-ui); }
       .reading-highlight-toggle:focus-visible {
         outline: var(--focus-width) solid var(--accent);
@@ -892,7 +892,7 @@
               <article class="card"><span class="eyebrow">LANGUAGE MENU</span><h3>语言切换</h3><p>菜单使用同一 focus、surface、radius 与 active accent。</p><div class="language-demo"><span class="active">简体中文 <b>✓</b></span><span>English</span></div></article>
               <article class="card"><span class="eyebrow">ORG IDENTITY</span><h3>开源组织徽章</h3><p>徽章复用 warning、surface、border 与 motion token，在侧栏中提供紧凑的第二身份层。</p><div class="identity-demo" aria-label="开源组织徽章"><a class="identity-demo__badge" href="https://github.com/Justin-Anamnesis" aria-label="Justin-Anamnesis"><span class="identity-demo__medal"><img src="../../assets/img/identity/justin-anamnesis-cats-avatar.png" alt=""></span></a><a class="identity-demo__badge" href="https://github.com/cognirail" aria-label="Cognirail"><span class="identity-demo__medal"><img src="../../assets/img/identity/cognirail.png" alt=""></span></a></div></article>
               <article class="card"><span class="eyebrow">POST TOPBAR TOOLS</span><h3>语言与重点高亮</h3><p>文章页右上角将语言切换和高亮开关并排放置，搜索保持紧凑图标形态。</p><div class="reading-highlight-demo"><p class="reading-highlight"><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。</p><div class="topbar-tools-demo" aria-label="文章页右上工具"><span class="reading-highlight-toggle" aria-label="语言切换">文</span><span class="reading-highlight-toggle active" aria-label="重点高亮已开启">▰</span></div></div></article>
-              <article class="card"><span class="eyebrow">TOC READING MODE</span><h3>目录平滑进入阅读状态</h3><p>首屏目录停在文章顶部；文章头部滚出后，目录在一小段滚动区间内使用 smoothstep 连续移动到垂直居中，禁止二态跳变。</p><div class="toc-motion-demo"><div class="toc-motion-demo__track" aria-label="目录从顶部缓动到垂直居中"><span class="toc-motion-demo__label toc-motion-demo__label--top">首屏：顶部</span><span class="toc-motion-demo__label toc-motion-demo__label--center">阅读中：垂直居中</span></div><p class="toc-motion-demo__caption">桌面端启用；prefers-reduced-motion 时跳过移动。</p></div></article>
+              <article class="card"><span class="eyebrow">TOC READING MODE</span><h3>目录滚动吸顶</h3><p>首屏目录停在文章顶部；文章头部滚出后，目录通过 sticky 固定在顶部安全距离，保持首次吸顶位置，不再垂直移动。</p><div class="toc-motion-demo"><div class="toc-motion-demo__track" aria-label="目录从首屏位置进入顶部吸顶"><span class="toc-motion-demo__label toc-motion-demo__label--top">首屏：原位</span><span class="toc-motion-demo__label toc-motion-demo__label--sticky">滚动后：顶部吸顶</span></div><p class="toc-motion-demo__caption">桌面端启用；移动端不显示固定目录。</p></div></article>
             </div>
           </section>
 
