@@ -42,7 +42,7 @@
 - 文章正文容器最大宽度为 `55rem`，普通中文段落保持约 `48em`（约 48 字/行）、英文段落保持 `68ch`；只有代码块、表格、图片等宽内容可以占满正文容器。禁止绕过 Base 直接把普通段落硬编码为 `55rem`。
 - 中文正文继承 Base 的 `Noto Serif SC`，英文正文继承 `Source Serif 4`。禁止在文章 selector 中把 `Georgia` 或其他局部字体插到 Base family 前面；字体方向变化必须先更新 demo 和 Base。
 - 文章与页面排版层级统一由 Base 提供：H1 / 文章主标题 `clamp(1.875rem, 2.2vw, 2.5rem)`；H2 `clamp(1.5rem, 2.2vw, 1.875rem)`；H3 `clamp(1.25rem, 1.7vw, 1.5rem)`；H4–H6 依次为 `clamp(1.125rem, 1.35vw, 1.25rem)`、`1.125rem`、`1rem`；正文桌面 `1.125rem / 1.80`，英文 `1.125rem / 1.72`，移动端 `1.0625rem`。展示型页面也不得另行放大 H1；组件 selector 不得重新硬编码另一套字号或弱化标题字重。
-- 桌面文章目录首屏位于文章顶部；文章 header 滚出后，目录通过 `position: sticky` 固定在顶部安全距离（`3rem`），保持首次吸顶位置不再垂直移动。禁止把目录切换到 `50vh` 或垂直居中。
+- 桌面文章目录首屏位于文章顶部，标题从 sticky 容器顶边开始，不保留 Chirpy 的 `#toc-wrapper::before` 渐变遮罩占位；文章 header 滚出后，目录通过 `position: sticky` 固定在顶部安全距离（`3rem`），保持首次吸顶位置不再垂直移动。禁止把目录切换到 `50vh` 或垂直居中。
 - 文章页 Breadcrumb 左边界必须与正文及学习路线入口左边界一致；覆盖 Chirpy vendor 间距时必须检查 selector 是否真正命中，不能只凭声明存在判断已生效。
 - 文章页右上角使用 `#topbar-actions` 作为唯一工具组，顺序为重点高亮、语言切换、搜索。重点高亮不得回到 sidebar；待译文章仍显示语言菜单，但只能链接当前已发布语言，禁止生成空英文页或死链接。
 - 新增或改变 Org 徽章、阅读高亮、语言菜单、topbar 工具等可见组件时，必须在同一次变更中同步 `docs/design/blog-base-style-demo.html`；生产已有而 demo 缺失、或 demo 已变而生产未同步，都视为未完成。

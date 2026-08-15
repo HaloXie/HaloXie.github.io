@@ -2191,7 +2191,8 @@ body:has(main article[data-toc])
     transform: none;
   }
 
-  body:has(main article[data-toc]) #panel-wrapper .toc-border-cover {
+  body:has(main article[data-toc]) #panel-wrapper .toc-border-cover,
+  body:has(main article[data-toc]) #panel-wrapper #toc-wrapper::before {
     display: none;
   }
 
