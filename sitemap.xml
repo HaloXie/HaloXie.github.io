@@ -16,7 +16,7 @@ permalink: /sitemap.xml
       </url>
     {% endfor %}
   {% endfor %}
-  {% assign pages = site.html_pages | where_exp: 'item', 'item.sitemap != false' | where_exp: 'item', 'item.url != "/404.html"' %}
+  {% assign pages = site.html_pages | where_exp: 'item', 'item.sitemap != false' | where_exp: 'item', 'item.url != "/404.html"' | uniq: 'url' %}
   {% for item in pages %}
     {% capture localized_url %}{{ site.url }}{{ site.baseurl }}{{ language_prefix }}{{ item.url | replace: '/index.html', '/' }}{% endcapture %}
     <url>
