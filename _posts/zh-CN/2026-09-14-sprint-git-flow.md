@@ -13,7 +13,6 @@ image:
   path: /assets/img/sprint-git-flow/cover.webp
   alt: 开发分支汇入 Sprint 集成测试环境后再合并到主干的流程图
 toc: true
-mermaid: true
 ---
 
 > 这套 Git 协作流程是我在团队中实践和完善的，取得了良好的实践效果。本文分享它的设计思路、具体做法与适用边界，供面临类似协作问题的团队参考。
@@ -44,23 +43,65 @@ mermaid: true
 
 **集成环境的验证结果，不能自动替代目标发布组合的验证结果。** 应在 MR 上验证当前目标主干与本次改动的合并结果；存在依赖时，先合并并验证依赖，或者明确组成同一发布批次。做不到这一步，就不能把“develop 测过”当作独立上线的充分条件。
 
+## 与四种主流 Git 分支模型对比
+
+选分支模型，先看代码从哪里出发、在哪里验证、最后由谁回到主干。同样叫 `develop`，在经典 GitFlow 中是长期开发线，在这套 Sprint Flow 中却是可重建的测试沙箱。
+
+| 模型 | 开发分支起点 | 集成与验证位置 | 进入生产主干的路径 | 生命周期 |
+|---|---|---|---|---|
+| Trunk-Based | 主干，也可直接在主干小步开发 | 合并前检查与主干持续验证 | 小改动高频集成主干 | 开发分支短命，避免长期分叉 |
+| GitHub Flow | 主干 | PR 检查、审查，可配预览环境 | 功能分支经 PR 合入主干 | 围绕一次改动创建与删除 |
+| 经典 GitFlow | `develop` | 长期 develop 集成，release 稳定版本 | release / hotfix 进入生产主干，修复回补开发线 | 主干与 develop 长期保留 |
+| AoneFlow | 主干 | 按需组合功能到 release，验证发布组合 | 正式发布后 release 合回主干 | 由发布组合和环境决定 |
+| **这套 Sprint Flow** | **master/main** | **本 Sprint 功能进入共享 develop 测试** | **原功能分支分别 MR 回主干** | **develop 每个 Sprint 协调重建** |
+
+**最容易混淆的是 AoneFlow：它把发布组合所在的 release 合回主干；这里的 develop 不整体合回主干。** 因此，这套流程需要额外确认“单个功能 + 当前主干”的发布组合，而不能只依赖共享环境的测试结果。
+
+### Trunk-Based Development：尽快消除分支间的距离
+
+Trunk-Based Development（主干开发）强调小批量、高频率地把变更集成到共同主干。它可以使用短命开发分支和 PR，并不要求所有人直接推送主干，也不排斥测试环境。未完成但需要提前集成的功能可以用 Feature Flag 隔离，不过开关本身也需要管理和清理。
+
+它把难点放在“如何持续保持主干可用”：快速自动化验证、可拆分的小改动，以及快速恢复机制。我们采用这套流程时仍较依赖人工验证，自动化安全网不足，因此选择先在共享沙箱中组合测试。这是当时的取舍，不代表 Trunk-Based 不允许手工测试；随着反馈能力改善，也应重新评估是否还需要该沙箱。
+
+### GitHub Flow：围绕一次 PR 完成协作
+
+GitHub Flow 的典型路径是创建分支、提交、发起 PR、讨论与检查、合并、删除分支。GitHub 官方文档明确包含合并前的自动检查；团队也可以给 PR 部署预览环境，或先部署验证再合并。**GitHub Flow 并不禁止独立测试环境，合并也不天然等于部署。**
+
+所以，“需要测试”不足以解释为什么不用 GitHub Flow。本文额外引入 `develop`，是为了集中验证多个未合并功能的组合。这只有在共享组合验证确有价值时，才值得支付维护分支的成本。
+
+### 经典 GitFlow：显式管理开发、发布准备和维护
+
+Vincent Driessen 提出的经典 GitFlow 有长期的 `master` 和 `develop`：feature 从 `develop` 分出并回到 `develop`；准备发布时切出 release，稳定后合入 `master` 并把必要修复回补 `develop`；hotfix 从生产主干出发，完成后也需要回补开发线。
+
+这里的 `develop` 是持久开发线，与本文会重建的测试沙箱同名却不同义。经典 GitFlow 适合需要明确版本发布与维护边界的情况，但增加了合并和回补成本。原作者在 2020 年补充说明：持续交付的 Web 应用可以选择更简单的工作流，不应把 GitFlow 当成通用教条。
+
+### AoneFlow：按发布组合组织集成分支
+
+AoneFlow 从主干创建功能分支，也从主干创建发布分支，再将选定功能合入发布分支进行验证。按阿里云效原始介绍，正式部署成功后，将发布分支合回主干并打标签。本文则是功能分支分别 MR 回主干，再打标签构建部署；临时 `develop` 不整体回主干。这才是两者关键的结构差别。
+
+发布分支可以按迭代聚合全部功能，也可以按需挑选，因此“全量还是挑选”并非两者的绝对分界。AoneFlow 让发布分支承载一个明确的组合，代价是管理组合、环境和修复回补。本文只是借鉴了分离开发基线与集成环境的思路，并不是 AoneFlow 的完整实现。
+
+在 AoneFlow 中，发布成功后合回主干的是发布分支：
+
+![AoneFlow 将功能组合到发布分支，正式部署成功后由发布分支合回主干](/assets/img/sprint-git-flow/aoneflow-release.webp)
+
+| 模型 | 集成方式 | 更适合什么条件 | 这份实践为何没有直接采用 |
+|---|---|---|---|
+| Trunk-Based | 小改动频繁集成主干，可用短命分支 | 快速反馈、可拆分改动、稳定 CI | 采用时人工验证较多，自动化安全网不足 |
+| GitHub Flow | PR 审查、检查后合入主干，可有预览环境 | 单条主线、轻量协作 | 本文另设跨 PR 的共享组合测试沙箱 |
+| GitFlow | `feature → develop → release → master`，修复需回补 | 明确的发布准备阶段和生产维护需求 | 没有采用长期 develop 与 release 层级 |
+| AoneFlow | 功能组合到 release，发布成功后 release 回主干 | 需要管理明确的发布组合和环境 | 本文 develop 不回主干，功能分别 MR，需补验发布组合 |
+| 本文 Flow | Sprint 内全量进入临时 `develop`，再分别回 `main` | 小团队、单迭代节奏、测试环境独立 | 这是场景化折中，不是通用替代品 |
+
+这些模型的选择并不由人数单独决定。更直接的问题是：你要验证单个 PR、整个 Sprint，还是一个明确的发布组合？测试环境与发布组合越不一致，越需要额外的候选版本验证。
+
 ## 一次 Sprint 如何运行
 
 ### Sprint 开始：建立干净的集成点
 
 `develop` 在 Sprint 开始时从最新 `main` 建立。它的生命周期跟 Sprint 绑定，结束后重建，而不是永久保留。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"background":"#f6f0df","primaryColor":"#f6f0df","primaryTextColor":"#292929","primaryBorderColor":"#292929","lineColor":"#777777","secondaryColor":"#90c7dc","tertiaryColor":"#dcebc1","edgeLabelBackground":"#f6f0df"}}}%%
-flowchart TD
-  A["Sprint 开始：从 main 建立 develop"] --> B["各开发分支合入测试"]
-  B --> C["通过测试与审查的分支分别 MR 回 main"]
-  C --> D["Sprint 收尾：盘点未合并与在测分支"]
-  D --> E["协调重建窗口，保留开发分支与必要修复"]
-  E --> F["从最新 main 重建 develop"]
-  F --> G["重新合入仍需测试的分支，重新部署验证"]
-  G --> B
-```
+![Sprint 结束盘点并重建 develop，未完成分支保留并重新测试](/assets/img/sprint-git-flow/sprint-cycle.webp)
 
 ### 开发：所有分支从 main 出发
 
@@ -115,72 +156,11 @@ feat/short-description ── MR ──> main
 
 我们采用“主干打标签 → CI 构建 → 人工部署”的发布方式，让版本标识、构建产物和部署动作各有明确职责。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"background":"#f6f0df","primaryColor":"#f6f0df","primaryTextColor":"#292929","primaryBorderColor":"#292929","lineColor":"#777777","secondaryColor":"#90c7dc","tertiaryColor":"#dcebc1","edgeLabelBackground":"#f6f0df"}}}%%
-flowchart TD
-  A["确认 main 上的候选提交"] --> B["创建唯一发布标签"]
-  B --> C["CI 构建并记录产物摘要"]
-  C --> D["部署该产物"]
-  D --> E{"运行验证通过？"}
-  E -->|是| F["记录版本与验证结果"]
-  E -->|否| G["评估兼容性，恢复已知正常产物"]
-  G --> H["修复分支或 revert MR，再验证发布"]
-```
+![主干标签经 CI 构建后部署验证，异常时评估兼容性并恢复正常产物](/assets/img/sprint-git-flow/release-recovery.webp)
 
 例如以 `v1.2.3` 表示一次发布，但具体版本由仓库约定，不能原样照抄。若采用 [Semantic Versioning](https://semver.org/)，PATCH 对应兼容的缺陷修复，MINOR 对应向后兼容的功能增加，MAJOR 对应不兼容的公共 API 变化；“改动很大”不自动等于 MAJOR。
 
 回滚时恢复的是已知正常的构建产物，而不是猜测“时间最新的上一条 tag”。数据库迁移、消息格式或外部副作用未必能随应用镜像一起回退，需要先检查兼容性。恢复运行环境以后，仍要通过修复或 revert MR 让主干与后续发布恢复一致。
-
-## 为什么不用一个“更常见”的模型
-
-把这套实践与常见分支模型放在一起，才能看清各自解决的问题和付出的成本。
-
-### Trunk-Based Development：尽快消除分支间的距离
-
-Trunk-Based Development（主干开发）强调小批量、高频率地把变更集成到共同主干。它可以使用短命开发分支和 PR，并不要求所有人直接推送主干，也不排斥测试环境。未完成但需要提前集成的功能可以用 Feature Flag 隔离，不过开关本身也需要管理和清理。
-
-它把难点放在“如何持续保持主干可用”：快速自动化验证、可拆分的小改动，以及快速恢复机制。我们采用这套流程时仍较依赖人工验证，自动化安全网不足，因此选择先在共享沙箱中组合测试。这是当时的取舍，不代表 Trunk-Based 不允许手工测试；随着反馈能力改善，也应重新评估是否还需要该沙箱。
-
-### GitHub Flow：围绕一次 PR 完成协作
-
-GitHub Flow 的典型路径是创建分支、提交、发起 PR、讨论与检查、合并、删除分支。GitHub 官方文档明确包含合并前的自动检查；团队也可以给 PR 部署预览环境，或先部署验证再合并。**GitHub Flow 并不禁止独立测试环境，合并也不天然等于部署。**
-
-所以，“需要测试”不足以解释为什么不用 GitHub Flow。本文额外引入 `develop`，是为了集中验证多个未合并功能的组合。这只有在共享组合验证确有价值时，才值得支付维护分支的成本。
-
-### 经典 GitFlow：显式管理开发、发布准备和维护
-
-Vincent Driessen 提出的经典 GitFlow 有长期的 `master` 和 `develop`：feature 从 `develop` 分出并回到 `develop`；准备发布时切出 release，稳定后合入 `master` 并把必要修复回补 `develop`；hotfix 从生产主干出发，完成后也需要回补开发线。
-
-这里的 `develop` 是持久开发线，与本文会重建的测试沙箱同名却不同义。经典 GitFlow 适合需要明确版本发布与维护边界的情况，但增加了合并和回补成本。原作者在 2020 年补充说明：持续交付的 Web 应用可以选择更简单的工作流，不应把 GitFlow 当成通用教条。
-
-### AoneFlow：按发布组合组织集成分支
-
-AoneFlow 从主干创建功能分支，也从主干创建发布分支，再将选定功能合入发布分支进行验证。按阿里云效原始介绍，正式部署成功后，将发布分支合回主干并打标签。本文则是功能分支分别 MR 回主干，再打标签构建部署；临时 `develop` 不整体回主干。这才是两者关键的结构差别。
-
-发布分支可以按迭代聚合全部功能，也可以按需挑选，因此“全量还是挑选”并非两者的绝对分界。AoneFlow 让发布分支承载一个明确的组合，代价是管理组合、环境和修复回补。本文只是借鉴了分离开发基线与集成环境的思路，并不是 AoneFlow 的完整实现。
-
-在 AoneFlow 中，发布成功后合回主干的是发布分支：
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"background":"#f6f0df","primaryColor":"#f6f0df","primaryTextColor":"#292929","primaryBorderColor":"#292929","lineColor":"#777777","secondaryColor":"#90c7dc","tertiaryColor":"#dcebc1","edgeLabelBackground":"#f6f0df"}}}%%
-flowchart TD
-  M["主干"] --> F["功能分支"]
-  M --> R["发布分支"]
-  F -->|组合功能| R
-  R --> V["测试该组合并部署"]
-  V --> S["正式部署成功"]
-  S --> B["发布分支合回主干并打标签"]
-```
-
-| 模型 | 集成方式 | 更适合什么条件 | 这份实践为何没有直接采用 |
-|---|---|---|---|
-| Trunk-Based | 小改动频繁集成主干，可用短命分支 | 快速反馈、可拆分改动、稳定 CI | 采用时人工验证较多，自动化安全网不足 |
-| GitHub Flow | PR 审查、检查后合入主干，可有预览环境 | 单条主线、轻量协作 | 本文另设跨 PR 的共享组合测试沙箱 |
-| GitFlow | `feature → develop → release → master`，修复需回补 | 明确的发布准备阶段和生产维护需求 | 没有采用长期 develop 与 release 层级 |
-| AoneFlow | 功能组合到 release，发布成功后 release 回主干 | 需要管理明确的发布组合和环境 | 本文 develop 不回主干，功能分别 MR，需补验发布组合 |
-| 本文 Flow | Sprint 内全量进入临时 `develop`，再分别回 `main` | 小团队、单迭代节奏、测试环境独立 | 这是场景化折中，不是通用替代品 |
-
-这些模型的选择并不由人数单独决定。更直接的问题是：你要验证单个 PR、整个 Sprint，还是一个明确的发布组合？测试环境与发布组合越不一致，越需要额外的候选版本验证。
 
 ## 这个 Flow 的代价
 
@@ -243,20 +223,7 @@ git push origin fix/revert-wrong-merge
 
 异常处理按发生位置分流：
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"background":"#f6f0df","primaryColor":"#f6f0df","primaryTextColor":"#292929","primaryBorderColor":"#292929","lineColor":"#777777","secondaryColor":"#90c7dc","tertiaryColor":"#dcebc1","edgeLabelBackground":"#f6f0df"}}}%%
-flowchart TD
-  A{"问题在哪里？"} -->|开发分支基线错误| B["从 main 建干净分支，核对并迁移提交"]
-  A -->|develop 集成冲突| C["区分功能缺陷与组合冲突"]
-  C --> D["修复功能分支或集成合并，重新测试"]
-  A -->|main 已误合并| E{"已部署且影响运行？"}
-  E -->|是| F["先评估并恢复正常运行版本"]
-  E -->|否| G["新建 fix 分支修复或 revert"]
-  F --> G
-  G --> H["develop 测试与目标组合验证"]
-  H --> I["审查 MR，再发布"]
-  B --> H
-```
+![按开发基线错误、集成冲突和主干误合并分别处理，并重新验证](/assets/img/sprint-git-flow/incident-routing.webp)
 
 ### 紧急修复：优先级可以变，证据链不能消失
 
