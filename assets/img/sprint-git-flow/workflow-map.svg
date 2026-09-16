@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">五种 Flow，如何组织验证与合并</title>
+<desc id="desc">横轴从随改动进入主干到按发布批次进入主干，纵轴从单项改动验证到显式多功能组合。本篇位于组合测试与分别回主干的一侧。位置为典型用法示意，不代表评分。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10" fill="#292929"/></marker></defs>
+<rect width="1200" height="675" fill="#f6f0df"/>
+<g font-family="Arial Unicode MS, PingFang SC, sans-serif" fill="#292929">
+<text x="600" y="58" text-anchor="middle" font-size="38" font-weight="700">五种 Flow：验证怎样组织，代码何时回主干</text>
+<rect x="155" y="135" width="900" height="400" rx="18" fill="#fffdf7"/>
+<path d="M155 335 H1055 M605 135 V535" stroke="#c9c0aa" stroke-width="2" stroke-dasharray="7 7"/>
+<path d="M155 548 V116 M140 535 H1080" stroke="#292929" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<text x="172" y="111" font-size="23">主干外：显式组织多功能组合</text>
+<text x="174" y="507" font-size="23" fill="#666">以单项改动验证为主</text>
+<text x="155" y="582" font-size="25">随改动逐步进入主干</text>
+<text x="1055" y="582" text-anchor="end" font-size="25">按发布批次进入主干</text>
+<g stroke="#292929" stroke-width="3">
+<circle cx="275" cy="415" r="12" fill="#90c7dc"/>
+<circle cx="465" cy="360" r="12" fill="#90c7dc"/>
+<circle cx="410" cy="230" r="16" fill="#f4b66e"/>
+<circle cx="765" cy="270" r="12" fill="#dcebc1"/>
+<circle cx="930" cy="195" r="12" fill="#ffd36a"/>
+</g>
+<text x="235" y="457" font-size="27" font-weight="700">Trunk-Based</text>
+<text x="490" y="405" font-size="27" font-weight="700">GitHub Flow</text>
+<text x="285" y="197" font-size="29" font-weight="700">本篇 Sprint Flow</text>
+<text x="435" y="269" font-size="23">组合测试 · 分别回主干</text>
+<text x="791" y="307" font-size="27" font-weight="700">AoneFlow</text>
+<text x="856" y="167" font-size="27" font-weight="700">经典 GitFlow</text>
+<text x="600" y="640" text-anchor="middle" font-size="23" fill="#555">典型用法的定性定位；无数值刻度，不代表优劣或固定边界</text>
+</g></svg>
