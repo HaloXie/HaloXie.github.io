@@ -33,6 +33,7 @@ exclude_from_localization:
   - assets/img/llm-call-anatomy
   - assets/img/openclaw-guide
   - assets/img/thinking-on-by-default
+  - assets/img/sprint-git-flow
   - assets/img/favicons/apple-touch-icon
   - assets/img/favicons/favicon
   - assets/img/favicons/web-app-manifest
