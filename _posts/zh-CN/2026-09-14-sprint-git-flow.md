@@ -26,11 +26,9 @@ mermaid: true
 
 ## 它把什么问题放在了哪里
 
-本文用 `main` 表示生产主干；仓库使用 `master` 时，职责相同。这里的 Flow 是普通的“协作流程”，并不指下文介绍的经典 GitFlow。
-
 这套 Flow 把三个职责拆开：
 
-- `main` 只代表已经审查、可以作为生产基线的代码。
+- `master/main` 是生产主干，只包含已经审查、可以作为生产基线的代码。
 - `develop` 是当前 Sprint 的临时集成沙箱，允许组合多个改动来暴露交叉影响。
 - `feat/*`、`fix/*`、`upd/*` 保留单个改动的审查边界。
 
@@ -44,7 +42,7 @@ mermaid: true
 
 假设 A 修改查询接口，B 增加一个供 A 调用的新接口。在 `develop` 上测试的是 `main + A + B`，但 A 的 MR 可能只准备发布 `main + A`。组合测试通过，无法证明 A 可以独立发布。
 
-**集成环境的验证结果，不能自动替代目标发布组合的验证结果。** 分支模型本身并不能消除这个验证缺口。实际采用时，应在 MR 上验证当前目标主干与本次改动的合并结果；存在依赖时，先合并并验证依赖，或者明确组成同一发布批次。做不到这一步，就不能把“develop 测过”当作独立上线的充分条件。
+**集成环境的验证结果，不能自动替代目标发布组合的验证结果。** 应在 MR 上验证当前目标主干与本次改动的合并结果；存在依赖时，先合并并验证依赖，或者明确组成同一发布批次。做不到这一步，就不能把“develop 测过”当作独立上线的充分条件。
 
 ## 一次 Sprint 如何运行
 
@@ -161,7 +159,7 @@ AoneFlow 从主干创建功能分支，也从主干创建发布分支，再将�
 
 发布分支可以按迭代聚合全部功能，也可以按需挑选，因此“全量还是挑选”并非两者的绝对分界。AoneFlow 让发布分支承载一个明确的组合，代价是管理组合、环境和修复回补。本文只是借鉴了分离开发基线与集成环境的思路，并不是 AoneFlow 的完整实现。
 
-下图展示 AoneFlow 原文的发布主线，注意发布成功后回到主干的是发布分支；环境间晋级与功能分支清理从略。
+在 AoneFlow 中，发布成功后合回主干的是发布分支：
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"background":"#f6f0df","primaryColor":"#f6f0df","primaryTextColor":"#292929","primaryBorderColor":"#292929","lineColor":"#777777","secondaryColor":"#90c7dc","tertiaryColor":"#dcebc1","edgeLabelBackground":"#f6f0df"}}}%%
@@ -239,7 +237,7 @@ git revert -m 1 <merge-commit-hash>
 git push origin fix/revert-wrong-merge
 ```
 
-是否需要先回滚部署、谁有权限操作生产环境、标签如何命名，属于项目自己的发布与应急制度，不由本文规定。
+回滚时机、生产操作权限和标签命名，应由团队的发布与应急制度明确。
 
 上面的 `-m 1` 只适用于已确认第一父提交是目标主干的 merge commit。Squash Merge 产生普通提交，应使用普通 `git revert <commit>`；Rebase Merge 可能要撤销多个提交。revert 也不会抹掉原合并的祖先关系，后续修复不能指望“把原分支再 merge 一次”就恢复所有内容。
 
@@ -300,8 +298,6 @@ flowchart TD
 采用后，至少用一个 Sprint 观察三件事：集成冲突是否更早暴露、测试等待是否可接受、主干回滚是否减少。数据不能支持假设时，就应调整模型，而不是继续增加规则。
 
 ## 参考资料与进一步阅读
-
-本文流程来自我的团队实践。下面的公开资料用于理解和对比其他分支模型；实践中效果良好，并不意味着它适合所有团队。
 
 - [GitHub Flow 官方说明](https://docs.github.com/en/get-started/using-github/github-flow)：围绕分支、PR、审查、自动检查和合并组织协作，支持合并前检查。
 - [A successful Git branching model](https://nvie.com/posts/a-successful-git-branching-model/)：经典 GitFlow 的原始说明，包含发布分支、hotfix 回补和作者 2020 年对适用范围的反思。
