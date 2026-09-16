@@ -1,29 +1,31 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
-<title id="title">五种 Flow，如何组织验证与合并</title>
-<desc id="desc">横轴从随改动进入主干到按发布批次进入主干，纵轴从单项改动验证到显式多功能组合。本篇位于组合测试与分别回主干的一侧。位置为典型用法示意，不代表评分。</desc>
+<title id="title">迭代协同与发布节奏</title><desc id="desc">坐标中心为画布正中心，右侧偏向批次协同，上方偏向就绪即发布。典型实践示意，不是评分。</desc>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10" fill="#292929"/></marker></defs>
 <rect width="1200" height="675" fill="#f6f0df"/>
 <g font-family="Arial Unicode MS, PingFang SC, sans-serif" fill="#292929">
-<text x="600" y="58" text-anchor="middle" font-size="38" font-weight="700">五种 Flow：验证怎样组织，代码何时回主干</text>
-<rect x="155" y="135" width="900" height="400" rx="18" fill="#fffdf7"/>
-<path d="M155 335 H1055 M605 135 V535" stroke="#c9c0aa" stroke-width="2" stroke-dasharray="7 7"/>
-<path d="M155 548 V116 M140 535 H1080" stroke="#292929" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
-<text x="172" y="111" font-size="23">主干外：显式组织多功能组合</text>
-<text x="174" y="507" font-size="23" fill="#666">以单项改动验证为主</text>
-<text x="155" y="582" font-size="25">随改动逐步进入主干</text>
-<text x="1055" y="582" text-anchor="end" font-size="25">按发布批次进入主干</text>
+<text x="600" y="58" text-anchor="middle" font-size="38" font-weight="700">迭代怎样协同，版本何时发布？</text>
+<rect x="90" y="100" width="1020" height="475" rx="20" fill="#fffdf7"/>
+<path d="M95 337.5 H1105" stroke="#292929" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+<path d="M600 575 V105" stroke="#292929" stroke-width="3" fill="none" marker-end="url(#arrow)"/><text x="619" y="130" font-size="23" font-weight="700">就绪后及时发布</text>
+<text x="619" y="563" font-size="23" font-weight="700">集中窗口发布</text>
+<text x="111" y="323" font-size="23">单项改动独立推进</text>
+<text x="1090" y="371" text-anchor="end" font-size="23">多功能按 Sprint／批次协同</text>
+<text x="578" y="367" font-size="20">0</text>
 <g stroke="#292929" stroke-width="3">
-<circle cx="275" cy="415" r="12" fill="#90c7dc"/>
-<circle cx="465" cy="360" r="12" fill="#90c7dc"/>
-<circle cx="410" cy="230" r="16" fill="#f4b66e"/>
-<circle cx="765" cy="270" r="12" fill="#dcebc1"/>
-<circle cx="930" cy="195" r="12" fill="#ffd36a"/>
+<circle cx="255" cy="175" r="12" fill="#90c7dc"/>
+<circle cx="413" cy="260" r="12" fill="#90c7dc"/>
+<circle cx="840" cy="205" r="16" fill="#f4b66e"/>
+<circle cx="999" cy="294" r="12" fill="#dcebc1"/>
+<circle cx="891" cy="476" r="12" fill="#ffd36a"/>
 </g>
-<text x="235" y="457" font-size="27" font-weight="700">Trunk-Based</text>
-<text x="490" y="405" font-size="27" font-weight="700">GitHub Flow</text>
-<text x="285" y="197" font-size="29" font-weight="700">本篇 Sprint Flow</text>
-<text x="435" y="269" font-size="23">组合测试 · 分别回主干</text>
-<text x="791" y="307" font-size="27" font-weight="700">AoneFlow</text>
-<text x="856" y="167" font-size="27" font-weight="700">经典 GitFlow</text>
-<text x="600" y="640" text-anchor="middle" font-size="23" fill="#555">典型用法的定性定位；无数值刻度，不代表优劣或固定边界</text>
+<text x="190" y="215" font-size="27" font-weight="700">Trunk-Based</text>
+<text x="278" y="293" font-size="27" font-weight="700">GitHub Flow</text>
+<text x="870" y="208" font-size="27" font-weight="700">本篇 Flow</text>
+<text x="749" y="248" font-size="22">集中测试，准备好的先上线</text>
+<text x="835" y="300" font-size="26" font-weight="700">AoneFlow</text>
+<text x="771" y="445" font-size="27" font-weight="700">经典 GitFlow</text>
+<text x="191" y="467" font-size="24" fill="#888">按单项开发，也可以定期发布</text>
+<text x="600" y="618" text-anchor="middle" font-size="23">五点表示典型实践；中心为取向分界，不是能力零分</text>
+<text x="600" y="653" text-anchor="middle" font-size="21" fill="#555">发布及时性取决于测试、依赖和部署能力，不由分支模型单独保证</text>
 </g></svg>
+
