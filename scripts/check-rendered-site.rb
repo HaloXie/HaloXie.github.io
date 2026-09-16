@@ -691,7 +691,8 @@ LANGUAGES.each do |lang, prefix|
   namespace = { "s" => "http://www.sitemaps.org/schemas/sitemap/0.9" }
   locations = sitemap.xpath("//s:loc", namespace).map(&:text)
   errors << "#{prefix}/sitemap.xml: empty sitemap" if locations.empty?
-  errors << "#{prefix}/sitemap.xml: duplicate loc entries" unless locations.uniq.length == locations.length
+  duplicates = locations.tally.select { |_location, count| count > 1 }.keys
+  errors << "#{prefix}/sitemap.xml: duplicate loc entries #{duplicates.inspect}" unless duplicates.empty?
   if lang == "en"
     wrong = locations.reject { |location| location.start_with?("#{ORIGIN}/en/") }
   else
