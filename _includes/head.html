@@ -111,7 +111,8 @@
       {% endif %}
     {% endfor %}
   {% elsif page.layout == 'home' %}
-    {%- capture home_url -%}{{ site.url }}{{ site.baseurl }}{% if site.active_lang != site.default_lang %}/{{ site.active_lang }}{% endif %}/{%- endcapture -%}
+    {%- assign home_path = page.url | replace: '/index.html', '/' -%}
+    {%- capture home_url -%}{{ site.url }}{{ site.baseurl }}{% if site.active_lang != site.default_lang %}/{{ site.active_lang }}{% endif %}{{ home_path }}{%- endcapture -%}
     <link rel="canonical" href="{{ home_url }}">
     {% for language in site.languages %}
       {%- capture alternate_home_url -%}{{ site.url }}{{ site.baseurl }}{% if language != site.default_lang %}/{{ language }}{% endif %}/{%- endcapture -%}
