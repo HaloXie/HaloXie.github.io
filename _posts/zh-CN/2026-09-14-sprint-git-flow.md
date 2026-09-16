@@ -11,7 +11,7 @@ categories: [Tools]
 tags: [git, workflow, code-review, ci]
 image:
   path: /assets/img/sprint-git-flow/cover.webp
-  alt: 开发分支汇入 Sprint 集成测试环境后再合并到主干的流程图
+  alt: 多项改动共享测试空间，同时保留各自的交付边界
 toc: true
 ---
 
