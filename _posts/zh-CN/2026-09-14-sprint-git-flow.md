@@ -15,47 +15,130 @@ image:
 toc: true
 ---
 
-> 这套 Git 协作流程是我在团队中实践和完善的，取得了良好的实践效果。本文分享它的设计思路、具体做法与适用边界，供面临类似协作问题的团队参考。
+假设你和同事正在修改同一个后台系统：你增加“导出报表”，同事调整“查询接口”。两个人各自在自己的分支上开发，单独测试都没问题。一放到一起，导出功能却因为查询接口返回格式变了而报错。
 
-多人同时开发时，真正容易出问题的地方通常不是“有没有分支”，而是**几个改动第一次组合时，谁来验证它们能否一起工作**。每个人的分支单独看都通过了测试，合在一起却可能出现接口冲突、配置不兼容或数据库变更顺序错误。
+这时你需要一个地方，先把大家的代码放到一起试一试。但同事的功能还没做完，你也不想为了发布导出功能，就把测试环境里的所有代码都带到线上。
 
-我们的做法是：让一个短生命周期的 `develop` 承担 Sprint 集成测试，再让每个开发分支分别回到生产主干。
+**怎样提前发现一起运行时的问题，又能单独审查和发布每项改动？** 这是这套分支流程要解决的问题。
 
-> **先说边界：这不是 Git 的标准流程，也不是行业统一规范。** 它只适合特定规模、发布节奏和测试条件的团队。采用前应结合仓库保护规则、CI 能力、测试环境和发布责任人验证；如果这些前提不成立，应选择其他模型。
+我在团队中实践和完善了这套做法，取得了良好的实践效果。我们增加一个临时的 `develop` 分支，把本轮开发的功能放到一起测试；测试通过后，每个功能仍通过自己的开发分支申请合并到主干。
 
-## 它把什么问题放在了哪里
+> 这是一套适合小团队、按迭代集中测试的实践，**不是 Git 标准流程，也不是经典 GitFlow 的另一种写法**。它需要独立测试环境和明确的测试负责人。你只需了解 commit、branch 和 merge；下面先用导出报表的例子走完开发与发布，再比较其他模型。
 
-这套 Flow 把三个职责拆开：
+想先选方案，可以直接看[四种主流模型对比](#workflow-comparison)；想知道自己该怎么做，就从下面的报表示例开始。
 
-- `master/main` 是生产主干，只包含已经审查、可以作为生产基线的代码。
-- `develop` 是当前 Sprint 的临时集成沙箱，允许组合多个改动来暴露交叉影响。
-- `feat/*`、`fix/*`、`upd/*` 保留单个改动的审查边界。
+## 先看一个功能经过哪三个地方
+
+一次 **Sprint** 就是一轮约定好时间与目标的迭代。我们在这轮迭代里，让三个分支各做一件事：
+
+| 分支 | 负责什么 | 放到报表例子里 |
+|---|---|---|
+| `master/main` | 生产主干，保存经过审查的代码，作为开发与发布的基线 | 当前已被团队接受的报表功能 |
+| `feat/export-report` | 只开发一项改动 | 你新写的导出功能 |
+| `develop` | 把本轮多项改动合在一起测试 | 导出功能和同事的查询改动一起运行 |
+
+这里的“集成测试”就是最后一行：检查几项改动组合起来是否正常。`develop` 是代码分支，测试环境是运行这份代码的地方；团队的 CI 流水线负责在推送后自动构建、部署，二者并不是同一个东西。
 
 ![开发分支进入 develop 组合测试，通过后仍由原分支发起主干 MR](/assets/img/sprint-git-flow/flow.webp)
 
-这里有一个容易被误读的细节：`develop` 用来测试组合结果，但生产 MR 的 Source 仍然是原开发分支，而不是 `develop`。这样审查者看到的是“这次改动本身”，而不是一个混合了整个 Sprint 的大分支。
+把图读成两次合并，就容易理解了：
 
-这套流程的核心规则是：开发分支从主干创建；包括紧急修复在内，先进入集成测试；最终通过 MR 回主干；发布标签只在主干上创建。不要直接在共享分支上开发功能，也不要用强推回退共享主干。`develop` 的计划重建是一个单独协调的生命周期操作，不是允许随意回退历史。
+1. **先去测试**：从主干创建 `feat/export-report`，写完导出功能后，把它合入 `develop`，与同事的代码一起验证。
+2. **再申请进入主干**：测试通过后，用 `feat/export-report` 向主干发起 MR，交给同事审查。不要把整个 `develop` 合回主干。
 
-### 先识别它最重要的盲点
+**MR（Merge Request）就是合并请求；GitHub 中叫 PR（Pull Request）。** Source 是提供改动的分支，Target 是接收改动的分支。这里 Source 是你的功能分支，Target 是主干，所以审查者看到的是导出功能，而不是本轮所有人的代码。
 
-假设 A 修改查询接口，B 增加一个供 A 调用的新接口。在 `develop` 上测试的是 `main + A + B`，但 A 的 MR 可能只准备发布 `main + A`。组合测试通过，无法证明 A 可以独立发布。
+### 为什么还要检查“能否单独发布”
+
+接着看导出报表的例子。如果你修复兼容性问题后，导出功能既能配合现有查询接口，也能配合同事的新接口，它就有机会先发布。如果它必须调用同事尚未发布的新接口，测试环境通过也没用：线上还没有这个接口。
+
+测试环境运行的是“主干 + 导出 + 新查询”，单独发布导出时运行的却是“主干 + 导出”。**一起能跑，不代表拆开也能跑。**
 
 **集成环境的验证结果，不能自动替代目标发布组合的验证结果。** 应在 MR 上验证当前目标主干与本次改动的合并结果；存在依赖时，先合并并验证依赖，或者明确组成同一发布批次。做不到这一步，就不能把“develop 测过”当作独立上线的充分条件。
 
-## 与四种主流 Git 分支模型对比
+## 用导出报表走完一次开发与发布
+
+下面的命令是一条功能分支的操作示例，不是整段粘贴执行的脚本。运行前先确认 `git status`，保存未提交工作；团队已建好 `develop` 并配置了测试部署。示例中的文件名和提交标识需要换成实际值。
+
+### Sprint 开始：建立干净的集成点
+
+`develop` 在 Sprint 开始时从最新 `main` 建立。它的生命周期跟 Sprint 绑定，结束后重建，而不是永久保留。
+
+例如上一轮导出功能已经进入主干，查询改动却延期了。如果一直沿用旧 `develop`，新一轮测试仍会默认带上未发布的查询改动。从主干重建后，导出功能自然还在，查询分支则按本轮需要重新纳入，测试环境里有哪些改动就重新变得清楚。
+
+![Sprint 结束盘点并重建 develop，未完成分支保留并重新测试](/assets/img/sprint-git-flow/sprint-cycle.webp)
+
+### 开发：所有分支从 main 出发
+
+```bash
+git switch main
+git pull --ff-only origin main
+git switch -c feat/export-report
+```
+
+命名只表达改动类型和主题，例如 `feat/checkout-summary`、`fix/race-condition`。分支名不携带个人姓名，也不使用无法表达意图的 `wip`、`test` 等模糊前缀。
+
+`feat/` 表示新功能，`fix/` 表示缺陷修复，`upd/` 表示非缺陷的增强或调整。这是我们的命名约定，Git 本身不要求这些前缀。
+
+开发过程中正常提交和推送：
+
+```bash
+git add <files>
+git commit -m "feat: add export preview"
+git push -u origin feat/export-report
+```
+
+提交信息可参考 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) 的 `type: description` 结构，常用类型包括 `feat`、`fix`、`refactor`、`docs`、`chore`。标题写清改动；涉及原因、兼容性或破坏性变化时，正文和 footer 仍有价值，不必拘泥于只写标题。
+
+### 集成：把改动合到 develop 验证组合结果
+
+```bash
+git switch develop
+git pull --ff-only origin develop
+git merge feat/export-report
+git push origin develop
+```
+
+在这套流程中，推送 `develop` 会触发 CI 部署到测试环境。这是仓库流水线的配置，不是创建一个名为 `develop` 的分支就自然具备的能力。
+
+测试包括自身功能和与其他分支的交叉影响。合入 `develop` 时可以解决集成冲突，但这个解决结果只存在于集成分支，不会自动进入开发分支。
+
+如果发现导出功能本身有问题，先切回 `feat/export-report` 修复、提交并推送，再重复上面的 `develop` 集成步骤。不要因为当前停在 `develop`，就直接在那里继续写功能。
+
+要区分两种情况：如果暴露的是功能自身缺陷，应在开发分支修复后重新集成；如果只是未发布分支之间的冲突，应在集成合并中处理并记录。**不要为了带回冲突解决结果，把整个 `develop` 合回开发分支**，否则会把其他未验证改动一起带入生产 MR。面对 `main` 的冲突，应以最新 `main` 为基线单独解决并重新测试。
+
+### 合并：测试通过后由开发分支发起 MR
+
+```text
+feat/export-report ── MR ──> main
+          │
+          └── 已在 develop 完成集成验证
+```
+
+创建 MR 时，Source 选择 `feat/export-report`，Target 选择 `main`。合并前要完成三件事：共享环境的集成测试、代码审查，以及实际发布组合的验证。
+
+第三项可以这样落地：由 MR 流水线临时组合“最新主干 + 导出分支”，先运行自动化测试，再把这个候选产物部署到独立的预览环境，由测试负责人检查导出功能。这里只包含准备发布的代码，不混入同事尚未发布的查询改动。目标主干或导出代码发生变化后，要重新验证。
+
+如果团队只有一个共享测试环境，也可以协调一个验证窗口，部署同样的候选产物，验证完成后再恢复共享版本。**如果只能测试混合了其他功能的 `develop`，就还没有证明导出功能能独立上线。** 这时应补齐验证条件，或先完成依赖的合并与验证，不能只勾选“测试通过”。这些候选验证能力需要团队配置，Git 和 MR 页面不会自动替你建立环境。
+
+三项都通过后再合并，随后清理开发分支。
+
+删除前确认远端 MR 已合并且本地没有未交付修改。普通合并可使用 `git branch -d`；Squash Merge 或 Rebase Merge 后，Git 未必能通过提交祖先关系识别“已合并”，此时应核对 MR 和内容，不要遇到拒绝就盲目强删。
+
+### 发布：标签、构建产物和运行环境不是同一件事
+
+我们采用“主干打标签 → CI 构建 → 人工部署”的发布方式，让版本标识、构建产物和部署动作各有明确职责。
+
+![主干标签经 CI 构建后部署验证，异常时评估兼容性并恢复正常产物](/assets/img/sprint-git-flow/release-recovery.webp)
+
+例如以 `v1.2.3` 表示一次发布，但具体版本由仓库约定，不能原样照抄。若采用 [Semantic Versioning](https://semver.org/)，PATCH 对应兼容的缺陷修复，MINOR 对应向后兼容的功能增加，MAJOR 对应不兼容的公共 API 变化；“改动很大”不自动等于 MAJOR。
+
+回滚时恢复的是已知正常的构建产物，而不是猜测“时间最新的上一条 tag”。数据库迁移、消息格式或外部副作用未必能随应用镜像一起回退，需要先检查兼容性。恢复运行环境以后，仍要通过修复或 revert MR 让主干与后续发布恢复一致。
+
+## 别的团队怎么做：与四种主流模型对比
+{: #workflow-comparison }
 
 选分支模型，先看代码从哪里出发、在哪里验证、最后由谁回到主干。同样叫 `develop`，在经典 GitFlow 中是长期开发线，在这套 Sprint Flow 中却是可重建的测试沙箱。
-
-| 模型 | 开发分支起点 | 集成与验证位置 | 进入生产主干的路径 | 生命周期 |
-|---|---|---|---|---|
-| Trunk-Based | 主干，也可直接在主干小步开发 | 合并前检查与主干持续验证 | 小改动高频集成主干 | 开发分支短命，避免长期分叉 |
-| GitHub Flow | 主干 | PR 检查、审查，可配预览环境 | 功能分支经 PR 合入主干 | 围绕一次改动创建与删除 |
-| 经典 GitFlow | `develop` | 长期 develop 集成，release 稳定版本 | release / hotfix 进入生产主干，修复回补开发线 | 主干与 develop 长期保留 |
-| AoneFlow | 主干 | 按需组合功能到 release，验证发布组合 | 正式发布后 release 合回主干 | 由发布组合和环境决定 |
-| **这套 Sprint Flow** | **master/main** | **本 Sprint 功能进入共享 develop 测试** | **原功能分支分别 MR 回主干** | **develop 每个 Sprint 协调重建** |
-
-**最容易混淆的是 AoneFlow：它把发布组合所在的 release 合回主干；这里的 develop 不整体合回主干。** 因此，这套流程需要额外确认“单个功能 + 当前主干”的发布组合，而不能只依赖共享环境的测试结果。
 
 ### Trunk-Based Development：尽快消除分支间的距离
 
@@ -85,84 +168,21 @@ AoneFlow 从主干创建功能分支，也从主干创建发布分支，再将�
 
 ![AoneFlow 将功能组合到发布分支，正式部署成功后由发布分支合回主干](/assets/img/sprint-git-flow/aoneflow-release.webp)
 
-| 模型 | 集成方式 | 更适合什么条件 | 这份实践为何没有直接采用 |
-|---|---|---|---|
-| Trunk-Based | 小改动频繁集成主干，可用短命分支 | 快速反馈、可拆分改动、稳定 CI | 采用时人工验证较多，自动化安全网不足 |
-| GitHub Flow | PR 审查、检查后合入主干，可有预览环境 | 单条主线、轻量协作 | 本文另设跨 PR 的共享组合测试沙箱 |
-| GitFlow | `feature → develop → release → master`，修复需回补 | 明确的发布准备阶段和生产维护需求 | 没有采用长期 develop 与 release 层级 |
-| AoneFlow | 功能组合到 release，发布成功后 release 回主干 | 需要管理明确的发布组合和环境 | 本文 develop 不回主干，功能分别 MR，需补验发布组合 |
-| 本文 Flow | Sprint 内全量进入临时 `develop`，再分别回 `main` | 小团队、单迭代节奏、测试环境独立 | 这是场景化折中，不是通用替代品 |
+### 放在一起看，关键差别是什么
+
+| 模型 | 开发分支起点 | 集成与验证位置 | 进入生产主干的路径 | 生命周期 |
+|---|---|---|---|---|
+| Trunk-Based | 主干，也可直接在主干小步开发 | 合并前检查与主干持续验证 | 小改动高频集成主干 | 开发分支短命，避免长期分叉 |
+| GitHub Flow | 主干 | PR 检查、审查，可配预览环境 | 功能分支经 PR 合入主干 | 围绕一次改动创建与删除 |
+| 经典 GitFlow | `develop` | 长期 develop 集成，release 稳定版本 | release / hotfix 进入生产主干，修复回补开发线 | 主干与 develop 长期保留 |
+| AoneFlow | 主干 | 按需组合功能到 release，验证发布组合 | 正式发布后 release 合回主干 | 由发布组合和环境决定 |
+| **这套 Sprint Flow** | **master/main** | **本 Sprint 功能进入共享 develop 测试** | **原功能分支分别 MR 回主干** | **develop 每个 Sprint 协调重建** |
+
+**最容易混淆的是 AoneFlow：它把发布组合所在的 release 合回主干；这里的 develop 不整体合回主干。** 因此，这套流程需要额外确认“单个功能 + 当前主干”的发布组合，而不能只依赖共享环境的测试结果。
 
 这些模型的选择并不由人数单独决定。更直接的问题是：你要验证单个 PR、整个 Sprint，还是一个明确的发布组合？测试环境与发布组合越不一致，越需要额外的候选版本验证。
 
-## 一次 Sprint 如何运行
-
-### Sprint 开始：建立干净的集成点
-
-`develop` 在 Sprint 开始时从最新 `main` 建立。它的生命周期跟 Sprint 绑定，结束后重建，而不是永久保留。
-
-![Sprint 结束盘点并重建 develop，未完成分支保留并重新测试](/assets/img/sprint-git-flow/sprint-cycle.webp)
-
-### 开发：所有分支从 main 出发
-
-```bash
-git switch main
-git pull --ff-only origin main
-git switch -c feat/short-description
-```
-
-命名只表达改动类型和主题，例如 `feat/checkout-summary`、`fix/race-condition`。分支名不携带个人姓名，也不使用无法表达意图的 `wip`、`test` 等模糊前缀。
-
-`feat/` 表示新功能，`fix/` 表示缺陷修复，`upd/` 表示非缺陷的增强或调整。这是我们的命名约定，Git 本身不要求这些前缀。
-
-开发过程中正常提交和推送：
-
-```bash
-git add <files>
-git commit -m "feat: add export preview"
-git push -u origin feat/short-description
-```
-
-提交信息可参考 [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) 的 `type: description` 结构，常用类型包括 `feat`、`fix`、`refactor`、`docs`、`chore`。标题写清改动；涉及原因、兼容性或破坏性变化时，正文和 footer 仍有价值，不必拘泥于只写标题。
-
-### 集成：把改动合到 develop 验证组合结果
-
-```bash
-git switch develop
-git pull --ff-only origin develop
-git merge feat/short-description
-git push origin develop
-```
-
-在这套流程中，推送 `develop` 会触发 CI 部署到测试环境。这是仓库流水线的配置，不是创建一个名为 `develop` 的分支就自然具备的能力。
-
-测试包括自身功能和与其他分支的交叉影响。合入 `develop` 时可以解决集成冲突，但这个解决结果只存在于集成分支，不会自动进入开发分支。
-
-要区分两种情况：如果暴露的是功能自身缺陷，应在开发分支修复后重新集成；如果只是未发布分支之间的冲突，应在集成合并中处理并记录。**不要为了带回冲突解决结果，把整个 `develop` 合回开发分支**，否则会把其他未验证改动一起带入生产 MR。面对 `main` 的冲突，应以最新 `main` 为基线单独解决并重新测试。
-
-### 合并：测试通过后由开发分支发起 MR
-
-```text
-feat/short-description ── MR ──> main
-          │
-          └── 已在 develop 完成集成验证
-```
-
-测试环境通过、Code Review 完成后，MR 的 Target 是 `main`。合并后删除开发分支，减少误操作入口。
-
-删除前确认远端 MR 已合并且本地没有未交付修改。普通合并可使用 `git branch -d`；Squash Merge 或 Rebase Merge 后，Git 未必能通过提交祖先关系识别“已合并”，此时应核对 MR 和内容，不要遇到拒绝就盲目强删。
-
-### 发布：标签、构建产物和运行环境不是同一件事
-
-我们采用“主干打标签 → CI 构建 → 人工部署”的发布方式，让版本标识、构建产物和部署动作各有明确职责。
-
-![主干标签经 CI 构建后部署验证，异常时评估兼容性并恢复正常产物](/assets/img/sprint-git-flow/release-recovery.webp)
-
-例如以 `v1.2.3` 表示一次发布，但具体版本由仓库约定，不能原样照抄。若采用 [Semantic Versioning](https://semver.org/)，PATCH 对应兼容的缺陷修复，MINOR 对应向后兼容的功能增加，MAJOR 对应不兼容的公共 API 变化；“改动很大”不自动等于 MAJOR。
-
-回滚时恢复的是已知正常的构建产物，而不是猜测“时间最新的上一条 tag”。数据库迁移、消息格式或外部副作用未必能随应用镜像一起回退，需要先检查兼容性。恢复运行环境以后，仍要通过修复或 revert MR 让主干与后续发布恢复一致。
-
-## 这个 Flow 的代价
+## 什么时候值得多维护一个 develop
 
 它并非只增加了一条分支这么简单：
 
@@ -173,7 +193,9 @@ feat/short-description ── MR ──> main
 
 因此，评估是否采用时，应该观察集成冲突率、测试等待时间和重建频率，而不是只看分支数量。
 
-## 偏差如何收口
+## 遇到问题时，按发生的位置处理
+
+正常流程理解之后，再看下面这些情况。它们是按需查阅的处理方式，不是每次开发都要执行的步骤。
 
 ### 主干更新了：同步，而不是复制 develop
 
@@ -181,9 +203,9 @@ feat/short-description ── MR ──> main
 
 ```bash
 git fetch origin
-git switch feat/short-description
+git switch feat/export-report
 git rebase origin/main
-git push origin feat/short-description --force-with-lease
+git push origin feat/export-report --force-with-lease
 ```
 
 仅对自己独占、允许改写历史的开发分支使用 rebase；多人共享分支可选择 `git merge origin/main`。rebase 冲突解决后执行 `git add <files>` 和 `git rebase --continue`，无法确认时用 `git rebase --abort` 恢复。
@@ -199,7 +221,7 @@ git fetch origin
 git log origin/main..wrong-branch --oneline
 git switch main
 git pull origin main
-git switch -c feat/short-description-clean
+git switch -c feat/export-report-clean
 git cherry-pick <your-commit>
 ```
 
@@ -225,7 +247,7 @@ git push origin fix/revert-wrong-merge
 
 ![按开发基线错误、集成冲突和主干误合并分别处理，并重新验证](/assets/img/sprint-git-flow/incident-routing.webp)
 
-### 紧急修复：优先级可以变，证据链不能消失
+### 紧急修复：加快处理，但仍要测试
 
 在这套流程中，紧急修复同样先进入 `develop` 测试，再 MR 到主干；变化的是优先级和响应速度，不省略测试。若共享测试环境混有未发布功能，仍要检查修复在实际生产基线上是否成立。不能及时获得可靠验证环境时，说明这套 Flow 的前提不满足，需要团队另行制定应急流程，不能临时把跳过验证当成常规做法。
 
@@ -258,11 +280,11 @@ git push origin fix/revert-wrong-merge
 
 如果这些条件长期存在，问题不在命令写得不够详细，而在分支模型与团队运行方式不匹配。
 
-## 结语：把它当作一个可验证的假设
+## 最后：记住两次合并的不同目的
 
-这套 Flow 的核心不是“必须有 `develop`”，而是把集成风险提前暴露，并保留单个改动的审查边界。它可以作为小团队在特定阶段的实践假设，但不能被包装成标准答案。
+第一次合入 `develop`，是让大家的改动一起接受测试；第二次由功能分支 MR 回主干，是决定这项改动是否可以进入发布基线。分清这两次合并，才能理解为什么开发分支要从主干创建、为什么不能把整个测试分支直接上线。
 
-采用后，至少用一个 Sprint 观察三件事：集成冲突是否更早暴露、测试等待是否可接受、主干回滚是否减少。数据不能支持假设时，就应调整模型，而不是继续增加规则。
+这套做法在我们的团队中有效，但多一个分支也意味着多一份维护成本。尝试时可以观察一轮迭代：冲突是否更早暴露、测试是否排队、功能能否独立发布。如果共享测试分支并没有带来这些收益，就没有必要为了遵循流程而保留它。
 
 ## 参考资料与进一步阅读
 
