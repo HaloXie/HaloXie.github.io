@@ -28,6 +28,7 @@ exclude_from_localization:
   - assets/img/chat-workflow-agent-guide
   - assets/img/from-skills-to-abilities
   - assets/img/harness-engineering
+  - assets/img/hindsight-shared-memory
   - assets/img/identity
   - assets/img/language-choose
   - assets/img/llm-call-anatomy
