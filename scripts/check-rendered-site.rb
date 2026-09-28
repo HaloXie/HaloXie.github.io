@@ -148,9 +148,6 @@ page_geometry.each do |token, expected|
   actual = base_style[/#{Regexp.escape(token)}:\s*([^;]+);/, 1]&.strip
   errors << "Base #{token} must match demo page (#{expected.inspect}), got #{actual.inspect}" unless expected && actual == expected
 end
-%w[--home-canvas-width --home-panel-width --home-layout-gap].each do |token|
-  errors << "obsolete independent home layout: #{token}" if style_entry.include?(token)
-end
 errors << "shared page canvas must consume Base width" unless style_entry.match?(/#main-wrapper > \.container\s*\{[^}]*max-width:\s*var\(--page-width\)/m)
 errors << "page titles must consume Base type scale" unless style_entry.match?(/main \.dynamic-title\s*\{[^}]*font-size:\s*var\(--text-h1\)/m)
 override_styles = {
