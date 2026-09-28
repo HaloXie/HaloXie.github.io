@@ -78,7 +78,9 @@
   --media-aspect: 16 / 9;
 
   /* Global shell role */
-  --desktop-sidebar-width: clamp(16.25rem, 15vw, 18.75rem);
+  --desktop-sidebar-width: 18rem;
+  --page-width: 82rem;
+  --page-gutter: clamp(1.25rem, 5vw, 5rem);
 }
 
 html:lang(en) {
@@ -202,7 +204,9 @@ html:lang(en) {
 }
 
 body {
-  background-color: var(--canvas);
+  background:
+    radial-gradient(circle at 92% 2%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 26rem),
+    var(--canvas);
   color: var(--ink);
   font-family: var(--font-ui);
   font-size: var(--text-base);
@@ -218,6 +222,9 @@ body {
 
 h1 {
   font-family: var(--font-display);
+  font-size: var(--text-h1);
+  font-weight: var(--font-weight-display);
+  line-height: var(--leading-heading);
   letter-spacing: var(--tracking-display);
 }
 

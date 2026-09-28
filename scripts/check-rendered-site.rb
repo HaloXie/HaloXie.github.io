@@ -129,6 +129,30 @@ errors << "style entry must load custom/base" unless style_entry.include?("@use 
 required_base_tokens.each do |token|
   errors << "base style missing #{token}" unless base_style.include?(token)
 end
+
+# Page geometry must remain tied to the approved demo, rather than growing
+# independent widths for each menu. Browser QA also checks computed bounds.
+demo_style = ROOT.join("docs/design/blog-base-style-demo.html").read
+%w[--measure-copy --measure-prose --text-h1].each do |token|
+  declaration = /#{Regexp.escape(token)}:\s*([^;]+);/
+  expected = demo_style.match(declaration)&.[](1)&.strip
+  actual = base_style.match(declaration)&.[](1)&.strip
+  errors << "Base #{token} must match demo (#{expected.inspect}), got #{actual.inspect}" unless expected && actual == expected
+end
+demo_page = demo_style[/\.page\s*\{([^}]+)\}/m, 1].to_s
+page_geometry = {
+  "--page-width" => demo_page[/width:\s*min\(100%,\s*([^\)]+)\)/, 1],
+  "--page-gutter" => demo_page[/padding:\s*clamp\([^)]*\)\s*(clamp\([^)]*\))/, 1]
+}
+page_geometry.each do |token, expected|
+  actual = base_style[/#{Regexp.escape(token)}:\s*([^;]+);/, 1]&.strip
+  errors << "Base #{token} must match demo page (#{expected.inspect}), got #{actual.inspect}" unless expected && actual == expected
+end
+%w[--home-canvas-width --home-panel-width --home-layout-gap].each do |token|
+  errors << "obsolete independent home layout: #{token}" if style_entry.include?(token)
+end
+errors << "shared page canvas must consume Base width" unless style_entry.match?(/#main-wrapper > \.container\s*\{[^}]*max-width:\s*var\(--page-width\)/m)
+errors << "page titles must consume Base type scale" unless style_entry.match?(/main \.dynamic-title\s*\{[^}]*font-size:\s*var\(--text-h1\)/m)
 override_styles = {
   "page override Sass" => style_entry,
   "reading highlights component CSS" => reading_highlights_style

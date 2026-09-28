@@ -15,16 +15,39 @@ lang-exclusive: [zh-CN]
 
 @use 'custom/base';
 
-/* Keep the existing wide-content treatment on non-post pages. */
-body:not(:has(main article[data-toc])) .col-xl-11 {
-  flex: 0 0 auto;
-  width: 95%;
+/* The demo's page canvas applies to every route. !important only replaces
+   Chirpy/Bootstrap padding utilities and vendor container sizing. */
+#main-wrapper > .container {
+  width: 100%;
+  max-width: var(--page-width);
+  padding-inline: var(--page-gutter) !important;
 }
 
-body:has(#post-list) {
-  --home-canvas-width: 100rem;
-  --home-panel-width: clamp(14rem, 15vw, 16rem);
-  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
+#main-wrapper > .container > .row {
+  margin-inline: 0;
+}
+
+#main-wrapper main,
+#main-wrapper #tail-wrapper {
+  width: 100%;
+  max-width: 100%;
+  flex: 0 0 100%;
+  padding-inline: 0 !important;
+}
+
+#main-wrapper main > article,
+#topbar-wrapper #topbar {
+  padding-inline: 0 !important;
+}
+
+body:not(:has(main article[data-toc])) #panel-wrapper {
+  display: none;
+}
+
+main .dynamic-title {
+  font-size: var(--text-h1);
+  font-weight: var(--font-weight-display);
+  line-height: var(--leading-heading);
 }
 
 body:has(main article[data-toc]) {
@@ -285,48 +308,6 @@ body:has(#post-list) #topbar-wrapper {
   transform: scale(1.018);
 }
 
-/* Home is a discovery surface, not a reading measure. It can use the space
-   beside the fixed sidebar while the post layout keeps its independent prose
-   and TOC constraints below. */
-@media (min-width: 850px) {
-  body:has(#post-list) #main-wrapper > .container {
-    width: 100%;
-    max-width: var(--home-canvas-width);
-    padding-right: clamp(1.25rem, 2.2vw, 2.75rem) !important;
-    padding-left: clamp(1.25rem, 2.2vw, 2.75rem) !important;
-  }
-
-  body:has(#post-list) main:has(#post-list) {
-    width: 100%;
-    max-width: none;
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-    flex: 1 1 auto;
-  }
-}
-
-@media (min-width: 1200px) {
-  body:has(#post-list) #main-wrapper > .container > .row:has(#post-list) {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) var(--home-panel-width);
-    gap: var(--home-layout-gap);
-    margin-right: 0 !important;
-    margin-left: 0 !important;
-    align-items: start;
-  }
-
-  body:has(#post-list) main:has(#post-list) {
-    grid-column: 1;
-  }
-
-  body:has(#post-list) #panel-wrapper {
-    grid-column: 2;
-    width: 100%;
-    max-width: none;
-    padding-left: 0 !important;
-  }
-}
-
 @media (max-width: 575.98px) {
   #post-list {
     gap: 1.1rem;
@@ -571,32 +552,11 @@ article > header .post-desc {
 body:has(.learning-hub),
 body:has(.series-roadmap),
 body:has(.category-catalog) {
-  #panel-wrapper {
-    display: none;
-  }
-
-  #main-wrapper > .container {
-    width: 100%;
-    max-width: 92rem;
-  }
-
-  main,
-  #tail-wrapper {
-    width: 100%;
-    max-width: 74rem;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
-  main {
-    flex: 0 0 100%;
-  }
-
   .dynamic-title {
     margin-bottom: 1.1rem;
     color: var(--learning-ink);
     font-family: var(--font-display);
-    font-size: clamp(2.15rem, 5vw, 4rem);
+    font-size: var(--text-h1);
     font-weight: var(--font-weight-display);
     letter-spacing: -0.035em;
   }
@@ -756,10 +716,10 @@ body:has(.category-catalog) {
   margin: 0 0 0.9rem;
   color: var(--learning-ink);
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 2.8vw, 2.45rem);
+  font-size: var(--text-h2);
   font-weight: var(--font-weight-display);
   letter-spacing: -0.035em;
-  line-height: 1.2;
+  line-height: var(--leading-heading);
 }
 
 .series-card h2 a {
@@ -1433,7 +1393,7 @@ body:has(.category-catalog) {
   body:has(.series-roadmap),
   body:has(.category-catalog) {
     .dynamic-title {
-      font-size: 2.35rem;
+      font-size: var(--text-h1);
     }
   }
 
@@ -1990,6 +1950,16 @@ body:has(main article[data-toc]) #topbar :is(.command-search-placeholder, .comma
 }
 
 @media (max-width: 991.98px) {
+  #topbar-title {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+    margin-right: 5.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   #topbar-actions {
     position: absolute;
     right: 0.5rem;
@@ -2139,13 +2109,6 @@ body:has(main article[data-toc])
     display: none !important;
   }
 
-  body:has(main article[data-toc]) #main-wrapper > .container {
-    width: 100%;
-    max-width: 95rem;
-    padding-right: clamp(1.5rem, 3vw, 3.5rem) !important;
-    padding-left: clamp(1.5rem, 3vw, 3.5rem) !important;
-  }
-
   body:has(main article[data-toc]) #topbar {
     padding-right: 0 !important;
     padding-left: 0 !important;
@@ -2244,11 +2207,6 @@ body:has(main article[data-toc])
     --post-panel-width: 12rem;
     --post-layout-gap: 1.5rem;
   }
-
-  body:has(main article[data-toc]) #main-wrapper > .container {
-    padding-right: 1rem !important;
-    padding-left: 1rem !important;
-  }
 }
 
 /* Centring the prose + TOC group inside the space beside the fixed sidebar
@@ -2324,7 +2282,6 @@ body:has(main article[data-toc])
  */
 
 .project-shelf {
-  max-width: 70rem;
   margin: 0 auto;
   padding-bottom: var(--space-7);
 }
