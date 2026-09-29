@@ -664,6 +664,129 @@ body:has(.category-catalog) {
   gap: 1.5rem;
 }
 
+.learning-labs {
+  margin-top: clamp(3rem, 7vw, 6rem);
+  padding-top: clamp(1.5rem, 3vw, 2.5rem);
+  border-top: 1px solid var(--learning-line);
+}
+
+.learning-labs__intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.learning-labs__intro h2 {
+  margin: 0.35rem 0 0.55rem;
+  color: var(--learning-ink);
+  font-size: var(--text-h2);
+  line-height: var(--leading-heading);
+}
+
+.learning-labs__intro p:last-child {
+  max-width: 48rem;
+  margin: 0;
+  color: var(--learning-muted);
+  line-height: var(--leading-body);
+}
+
+.learning-labs__eyebrow,
+.learning-labs__status,
+.learning-lab-card__topline {
+  color: var(--learning-accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-label);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.learning-labs__eyebrow {
+  margin: 0;
+}
+
+.learning-labs__status {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--learning-accent);
+  border-radius: var(--radius-pill);
+}
+
+.learning-labs__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.learning-lab-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  min-height: 12rem;
+  padding: 1.35rem 1.4rem 1.2rem;
+  border: 1px solid var(--learning-line);
+  border-radius: var(--radius-md);
+  background: var(--learning-paper);
+  box-shadow: var(--shadow-menu);
+}
+
+.learning-lab-card__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--learning-muted);
+}
+
+.learning-lab-card h3 {
+  margin: 1rem 0 0.65rem;
+  font-size: var(--text-h3);
+  line-height: var(--leading-heading);
+}
+
+.learning-lab-card h3 a,
+.learning-lab-card__link {
+  color: var(--learning-ink);
+  text-decoration: none;
+}
+
+.learning-lab-card h3 a:hover,
+.learning-lab-card h3 a:focus-visible,
+.learning-lab-card__link:hover,
+.learning-lab-card__link:focus-visible {
+  color: var(--learning-accent);
+}
+
+.learning-lab-card p {
+  margin: 0;
+  color: var(--learning-muted);
+  line-height: var(--leading-body);
+}
+
+.learning-lab-card__link {
+  margin-top: auto;
+  padding-top: 1rem;
+  color: var(--learning-accent);
+  font-weight: var(--font-weight-label);
+}
+
+@media (max-width: 700px) {
+  .learning-labs__intro,
+  .learning-labs__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-labs__intro {
+    display: block;
+  }
+
+  .learning-labs__status {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+}
+
 .series-card {
   position: relative;
   display: grid;

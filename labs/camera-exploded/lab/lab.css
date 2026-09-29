@@ -1,0 +1,61 @@
+/* 本课内容样式（面板骨架、按钮、标签在 kit/kit.css） */
+#app { position: relative; width: 100vw; height: 100vh; }
+.num { font-family: var(--mono); font-weight: 800; font-variant-numeric: tabular-nums; }
+#narration { font-size: 12px; line-height: 1.6; color: #d9e0ea; min-height: 96px; }
+.tag { display: inline-block; font-size: 10px; font-weight: 800; padding: 1px 7px; border-radius: 99px; margin-right: 5px; vertical-align: 1px; }
+.tag-o { background: rgba(255, 138, 42, .2); color: var(--o); }
+.tag-c { background: rgba(63, 224, 255, .16); color: var(--c); }
+.tag-y { background: rgba(255, 210, 74, .16); color: var(--y); }
+.tag-g { background: rgba(125, 255, 168, .16); color: var(--g); }
+.tag-w { background: rgba(255, 255, 255, .1); color: #dfe6ef; }
+.read { font-size: 11px; color: #c9d3e2; margin-top: 2px; }
+.note { font-size: 10.5px; line-height: 1.5; color: var(--dim); margin-top: 5px; }
+.note.sect { color: #b8c4d4; }
+.mini { border: 0; background: rgba(255,255,255,.08); color: #dfe6ef; font: 700 10px var(--font); padding: 2px 8px; border-radius: 99px; cursor: pointer; letter-spacing: 0; text-transform: none; }
+.btns { display: flex; gap: 6px; }
+.btns .primary { flex: 1; }
+#seg-cut.dim { opacity: .5; }
+#perf { font: 600 9.5px var(--mono); color: #6f7f96; margin-top: 4px; }
+
+/* 取景窗 */
+#vf-box { position: relative; width: 100%; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: #000; cursor: zoom-in;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12), 0 0 0 3px rgba(0,0,0,.35); }
+#vf-box canvas { width: 100%; height: 100%; display: block; }
+#vf-box::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(90deg, transparent 33.2%, rgba(255,255,255,.12) 33.3%, transparent 33.5%, transparent 66.5%, rgba(255,255,255,.12) 66.6%, transparent 66.8%),
+              linear-gradient(0deg, transparent 33.2%, rgba(255,255,255,.12) 33.3%, transparent 33.5%, transparent 66.5%, rgba(255,255,255,.12) 66.6%, transparent 66.8%); }
+#vf-meta { display: flex; justify-content: space-between; font: 700 10.5px var(--mono); color: #dfe6ef; margin-top: 5px; }
+#vf-meta span { color: var(--g); }
+
+/* 曝光图 */
+#chart, #ruler { width: 100%; height: auto; display: block; }
+#chart .ch-bg { fill: rgba(0,0,0,.28); stroke: var(--line); }
+#chart .ch-over { fill: rgba(255, 138, 42, .12); }
+#chart .ch-under { fill: rgba(63, 120, 255, .12); }
+#chart .ch-ok { stroke: var(--g); stroke-width: 1.6; }
+#chart .ch-ok1 { stroke: rgba(125, 255, 168, .35); stroke-width: 1; stroke-dasharray: 3 3; }
+.ch-ax { font: 700 8.5px var(--mono); fill: var(--dim); }
+.ch-lab { font: 800 9px var(--font); }
+.ch-lab.over { fill: rgba(255, 170, 110, .85); }
+.ch-lab.under { fill: rgba(140, 180, 255, .85); }
+#ch-dot { transition: transform .35s cubic-bezier(.3, 1.5, .5, 1); }
+.ch-halo { fill: rgba(255, 138, 42, .25); }
+.ch-cur { fill: var(--o); }
+
+/* 景深尺 */
+.ru-axis { stroke: rgba(255,255,255,.3); stroke-width: 1; }
+.ru-band { fill: rgba(63, 224, 255, .35); stroke: var(--c); stroke-width: 1; transition: x .3s, width .3s; }
+.ru-obj { fill: rgba(255, 210, 74, .25); stroke: var(--y); stroke-width: 1; transition: r .3s; }
+.ru-obj.sharp { fill: var(--g); stroke: var(--g); }
+.ru-lab { font: 700 8.5px var(--font); fill: #c9d3e2; }
+
+/* 照片条 */
+.ph-slot { width: 112px; height: 88px; border-radius: 6px; border: 1px dashed rgba(255,255,255,.18); background: rgba(10, 16, 28, .35); position: relative; }
+.ph-slot.full { border: 0; background: none; }
+.ph-hint { position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--dim); white-space: nowrap; pointer-events: none; }
+.ph-card { position: absolute; inset: 0; padding: 4px 4px 0; border: 0; border-radius: 4px; background: #f4efe6; cursor: zoom-in; box-shadow: 0 8px 20px rgba(0,0,0,.45); display: flex; flex-direction: column; }
+.ph-card canvas { width: 100%; aspect-ratio: 3 / 2; display: block; border-radius: 2px; transition: filter 2.2s ease-out, opacity 2.2s; }
+.ph-card.developing canvas { filter: brightness(2.2) contrast(.3) sepia(.6); opacity: .6; }
+.ph-cap { font: 700 8.5px var(--mono); color: #3a3a3a; text-align: center; padding: 3px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ph-card:hover { transform: translateY(-3px); }
+.ph-card:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }

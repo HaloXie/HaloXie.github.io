@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>梯度下降为什么会卡住</title>
+<style>
+  :root{
+    --bg:#0b0e14;
+    --panel:#12161f;
+    --panel-border:#232838;
+    --accent:#5b8cff;
+    --accent2:#ffb454;
+    --text:#e8ecf5;
+    --dim:#8b93a7;
+    --good:#4fd67a;
+    --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;overflow:hidden;height:100%;}
+  #app{position:relative;width:100vw;height:100vh;}
+  #canvas-wrap{position:absolute;inset:0;}
+  canvas{display:block;}
+
+  .panel{
+    position:absolute;
+    background:rgba(18,22,31,0.88);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    backdrop-filter:blur(10px);
+    padding:16px 18px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  }
+
+  /* Top-left: title block */
+  #info-panel{
+    top:20px;
+    left:20px;
+    width:360px;
+  }
+  #info-panel h1{
+    font-size:22px;
+    line-height:1.25;
+    margin:0 0 10px 0;
+    font-weight:800;
+    letter-spacing:-0.01em;
+  }
+  #info-panel .sub{
+    font-size:13px;
+    color:var(--dim);
+    line-height:1.6;
+    margin-bottom:14px;
+  }
+  .stat-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:14px;
+  }
+  .stat-card{
+    flex:1;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--panel-border);
+    border-radius:10px;
+    padding:8px 10px;
+  }
+  .stat-card .label{
+    font-size:10px;
+    color:var(--dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    margin-bottom:4px;
+  }
+  .stat-card .value{
+    font-size:18px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+  }
+  #narration{
+    font-size:13px;
+    line-height:1.65;
+    color:#c4cbe0;
+    border-top:1px solid var(--panel-border);
+    padding-top:12px;
+  }
+  #narration b{color:var(--text);}
+  #narration .tag{
+    display:inline-block;
+    font-size:10px;
+    padding:2px 7px;
+    border-radius:5px;
+    margin-right:6px;
+    font-weight:700;
+    letter-spacing:0.03em;
+  }
+  .tag-converge{background:rgba(79,214,122,0.15);color:var(--good);}
+  .tag-local{background:rgba(255,180,84,0.15);color:var(--accent2);}
+  .tag-diverge{background:rgba(255,107,107,0.15);color:var(--bad);}
+  .tag-running{background:rgba(91,140,255,0.15);color:var(--accent);}
+  .tag-idle{background:rgba(139,147,167,0.15);color:var(--dim);}
+
+  /* Top-right: control panel */
+  #control-panel{
+    top:20px;
+    right:20px;
+    width:300px;
+  }
+  #control-panel h2{
+    font-size:13px;
+    font-weight:700;
+    margin:0 0 12px 0;
+    color:var(--dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .ctrl-group{margin-bottom:14px;}
+  .ctrl-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--dim);
+    margin-bottom:6px;
+  }
+  .ctrl-label .val{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums;}
+  input[type=range]{
+    width:100%;
+    -webkit-appearance:none;
+    height:5px;
+    border-radius:3px;
+    background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,50%), #2a3040 var(--pct,50%), #2a3040 100%);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:16px;height:16px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:0 0 0 3px rgba(91,140,255,0.4);
+    cursor:pointer;
+  }
+  .btn-row{display:flex;gap:8px;}
+  button{
+    flex:1;
+    background:#1a2030;
+    border:1px solid var(--panel-border);
+    color:var(--text);
+    padding:9px 10px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.15s, border-color 0.15s;
+  }
+  button:hover{background:#232b40;}
+  button.active{
+    background:rgba(91,140,255,0.18);
+    border-color:var(--accent);
+    color:#cddcff;
+  }
+  button.primary{
+    background:var(--accent);
+    border-color:var(--accent);
+    color:#0b0e14;
+  }
+  button.primary:hover{background:#7aa0ff;}
+  button:disabled{opacity:0.4;cursor:not-allowed;}
+  .hint{
+    font-size:11px;
+    color:var(--dim);
+    margin-top:6px;
+    line-height:1.5;
+  }
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:12px;
+    color:var(--dim);
+  }
+  .switch{
+    width:38px;height:20px;
+    background:#2a3040;
+    border-radius:10px;
+    position:relative;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  .switch.on{background:var(--accent);}
+  .switch .knob{
+    position:absolute;
+    top:2px;left:2px;
+    width:16px;height:16px;
+    border-radius:50%;
+    background:#fff;
+    transition:left 0.2s;
+  }
+  .switch.on .knob{left:20px;}
+
+  /* Predict quiz */
+  #predict-panel{
+    bottom:20px;
+    left:20px;
+    width:360px;
+  }
+  #predict-panel h2{
+    font-size:13px;
+    font-weight:700;
+    margin:0 0 8px 0;
+    color:var(--accent2);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  #predict-panel .q{
+    font-size:13px;
+    color:var(--dim);
+    margin-bottom:10px;
+    line-height:1.5;
+  }
+  .predict-options{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .predict-opt{
+    text-align:left;
+    padding:9px 12px;
+    font-size:12px;
+  }
+  .predict-opt.selected{
+    background:rgba(255,180,84,0.18);
+    border-color:var(--accent2);
+    color:#ffe0af;
+  }
+  .predict-opt.correct{
+    background:rgba(79,214,122,0.2) !important;
+    border-color:var(--good) !important;
+    color:#c8f7d6 !important;
+  }
+  .predict-opt.wrong{
+    background:rgba(255,107,107,0.2) !important;
+    border-color:var(--bad) !important;
+    color:#ffd4d4 !important;
+  }
+  #predict-result{
+    font-size:12px;
+    line-height:1.6;
+    padding-top:8px;
+    border-top:1px solid var(--panel-border);
+    display:none;
+  }
+  #predict-result.show{display:block;}
+  #predict-result b{font-size:13px;}
+
+  /* Bottom-right: view switch */
+  #view-panel{
+    bottom:20px;
+    right:20px;
+    width:220px;
+  }
+  #view-panel h2{
+    font-size:13px;
+    font-weight:700;
+    margin:0 0 10px 0;
+    color:var(--dim);
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  .view-grid{display:flex;gap:8px;}
+
+  #reset-view-hint{
+    font-size:10px;
+    color:var(--dim);
+    margin-top:8px;
+    text-align:center;
+  }
+</style>
+<link rel="stylesheet" href="../lab-shell.css">
+</head>
+<body>
+<div class="lab-shell"><nav class="lab-nav"><a href="../../learn/" aria-label="返回学习路线">← 返回学习路线</a></nav><div class="lab-content">
+<div id="app">
+  <div id="canvas-wrap"></div>
+
+  <!-- Top-left: title + explainer + stats + narration -->
+  <div class="panel" id="info-panel">
+    <h1>梯度下降为什么会卡住？<br>学习率怎么选？</h1>
+    <div class="sub">
+      小球代表当前参数 (x, y)，曲面高度是损失值。每一步小球沿曲面最陡下降方向挪一点，挪多远由学习率决定。曲面上有两个坑：左下的浅坑是局部极小值，右上的深坑是全局最低点，小球未必找得到深的那个。
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="label">当前 Loss</div>
+        <div class="value" id="stat-loss">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">步数</div>
+        <div class="value" id="stat-step">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">梯度模长</div>
+        <div class="value" id="stat-grad">—</div>
+      </div>
+    </div>
+    <div id="narration">
+      <span class="tag tag-idle" id="narr-tag">未开始</span>
+      <span id="narr-text">点击曲面选一个起点，或直接按“播放”从默认起点出发。</span>
+    </div>
+  </div>
+
+  <!-- Top-right: controls -->
+  <div class="panel" id="control-panel">
+    <h2>控制面板</h2>
+    <div class="ctrl-group">
+      <div class="ctrl-label"><span>学习率</span><span class="val" id="lr-val">0.10</span></div>
+      <input type="range" id="lr-slider" min="0.01" max="1.20" step="0.01" value="0.10">
+    </div>
+    <div class="ctrl-group">
+      <div class="toggle-row">
+        <span>动量 (momentum = 0.85)</span>
+        <div class="switch" id="momentum-switch"><div class="knob"></div></div>
+      </div>
+    </div>
+    <div class="ctrl-group">
+      <div class="btn-row">
+        <button id="btn-step">单步</button>
+        <button id="btn-play" class="primary">播放</button>
+        <button id="btn-reset">重置</button>
+      </div>
+      <div class="hint">在曲面上点击可重新选起点（会自动重置）。</div>
+    </div>
+    <div class="ctrl-group" style="margin-bottom:0;">
+      <div class="ctrl-label"><span>起点</span><span class="val" id="start-val">(2.50, 2.50)</span></div>
+    </div>
+  </div>
+
+  <!-- Bottom-left: predict quiz -->
+  <div class="panel" id="predict-panel">
+    <h2>先预测，再运行</h2>
+    <div class="q">按当前设置运行，小球最终会怎样？</div>
+    <div class="predict-options">
+      <button class="predict-opt" data-choice="global">会滚到全局最低点</button>
+      <button class="predict-opt" data-choice="local">会卡在某个局部极小值</button>
+      <button class="predict-opt" data-choice="diverge">会发散 / 跳来跳去不收敛</button>
+    </div>
+    <div id="predict-result"></div>
+  </div>
+
+  <!-- Bottom-right: view switch -->
+  <div class="panel" id="view-panel">
+    <h2>视图</h2>
+    <div class="view-grid">
+      <button id="view-orbit" class="active">自由</button>
+      <button id="view-top">俯视</button>
+      <button id="view-side">侧视</button>
+    </div>
+    <div class="reset-view-hint" id="reset-view-hint">拖拽旋转 · 滚轮缩放</div>
+  </div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+/* ---------------------------------------------------------------
+   Loss function (shared "ground truth" — mirrored in check.mjs)
+   f(x,y) = 0.1*(x^2+y^2) - 1.2*exp(-((x-1.5)^2+(y-1)^2)) - 0.8*exp(-((x+1.5)^2+(y+1.2)^2))
+   --------------------------------------------------------------- */
+function lossFn(x, y) {
+  const bowl = 0.1 * (x * x + y * y);
+  const wellA = -1.2 * Math.exp(-((x - 1.5) * (x - 1.5) + (y - 1) * (y - 1)));
+  const wellB = -0.8 * Math.exp(-((x + 1.5) * (x + 1.5) + (y + 1.2) * (y + 1.2)));
+  return bowl + wellA + wellB;
+}
+
+// Analytic gradient (exact, matches lossFn derivative term by term)
+function gradFn(x, y) {
+  const dBowlX = 0.2 * x;
+  const dBowlY = 0.2 * y;
+
+  const eA = Math.exp(-((x - 1.5) * (x - 1.5) + (y - 1) * (y - 1)));
+  const dAx = -1.2 * eA * (-2 * (x - 1.5)); // d/dx[-1.2*exp(-(...))]
+  const dAy = -1.2 * eA * (-2 * (y - 1));
+
+  const eB = Math.exp(-((x + 1.5) * (x + 1.5) + (y + 1.2) * (y + 1.2)));
+  const dBx = -0.8 * eB * (-2 * (x + 1.5));
+  const dBy = -0.8 * eB * (-2 * (y + 1.2));
+
+  return [dBowlX + dAx + dBx, dBowlY + dAy + dBy];
+}
+
+// Global minimum found by dense grid search (used for "converged to global?" narration)
+let GLOBAL_MIN = { x: 1.5, y: 1, loss: lossFn(1.5, 1) };
+(function refineGlobalMin() {
+  const range = 4, steps = 400;
+  let best = GLOBAL_MIN;
+  for (let i = 0; i <= steps; i++) {
+    for (let j = 0; j <= steps; j++) {
+      const x = -range + (2 * range * i) / steps;
+      const y = -range + (2 * range * j) / steps;
+      const l = lossFn(x, y);
+      if (l < best.loss) best = { x, y, loss: l };
+    }
+  }
+  GLOBAL_MIN = best;
+})();
+// Local minimum near (-1.5,-1.2) well, refined the same way, for narration comparisons
+let LOCAL_MIN = { x: -1.5, y: -1.2, loss: lossFn(-1.5, -1.2) };
+(function refineLocalMin() {
+  const range = 0.8, steps = 200, cx = -1.5, cy = -1.2;
+  let best = LOCAL_MIN;
+  for (let i = 0; i <= steps; i++) {
+    for (let j = 0; j <= steps; j++) {
+      const x = cx - range + (2 * range * i) / steps;
+      const y = cy - range + (2 * range * j) / steps;
+      const l = lossFn(x, y);
+      if (l < best.loss) best = { x, y, loss: l };
+    }
+  }
+  LOCAL_MIN = best;
+})();
+
+/* ---------------------------------------------------------------
+   Scene setup
+   --------------------------------------------------------------- */
+const wrap = document.getElementById("canvas-wrap");
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0b0e14);
+scene.fog = new THREE.Fog(0x0b0e14, 12, 30);
+
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+camera.position.set(6, 6, 8);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+wrap.appendChild(renderer.domElement);
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.target.set(0, 0, 0);
+
+// Lights
+scene.add(new THREE.AmbientLight(0x8899bb, 0.6));
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+keyLight.position.set(5, 10, 5);
+scene.add(keyLight);
+const rimLight = new THREE.DirectionalLight(0x5b8cff, 0.5);
+rimLight.position.set(-6, 4, -6);
+scene.add(rimLight);
+
+/* ---------------------------------------------------------------
+   Surface mesh
+   Grid in x,y in [-4,4], height = loss(x,y) scaled for visibility
+   --------------------------------------------------------------- */
+const RANGE = 4;
+const SEG = 90;
+const HEIGHT_SCALE = 1.4; // visual scale for z (up axis)
+
+function surfaceHeight(x, y) {
+  return lossFn(x, y) * HEIGHT_SCALE;
+}
+
+const geo = new THREE.PlaneGeometry(RANGE * 2, RANGE * 2, SEG, SEG);
+geo.rotateX(-Math.PI / 2); // plane in XY -> lay flat, height becomes Y (up)
+
+const posAttr = geo.attributes.position;
+let minH = Infinity, maxH = -Infinity;
+for (let i = 0; i < posAttr.count; i++) {
+  const x = posAttr.getX(i);
+  const z = posAttr.getZ(i);
+  const h = surfaceHeight(x, z);
+  posAttr.setY(i, h);
+  if (h < minH) minH = h;
+  if (h > maxH) maxH = h;
+}
+geo.computeVertexNormals();
+
+// Color by height (cool = low loss, warm = high loss) via vertex colors
+const colors = new Float32Array(posAttr.count * 3);
+const lowColor = new THREE.Color(0x2f6fff);   // deep blue = low loss
+const midColor = new THREE.Color(0x7a5cff);   // purple
+const highColor = new THREE.Color(0xff8a3d);  // orange = high loss
+for (let i = 0; i < posAttr.count; i++) {
+  const h = posAttr.getY(i);
+  const t = (h - minH) / (maxH - minH);
+  const c = new THREE.Color();
+  if (t < 0.5) c.lerpColors(lowColor, midColor, t * 2);
+  else c.lerpColors(midColor, highColor, (t - 0.5) * 2);
+  colors[i * 3] = c.r;
+  colors[i * 3 + 1] = c.g;
+  colors[i * 3 + 2] = c.b;
+}
+geo.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+const surfMat = new THREE.MeshStandardMaterial({
+  vertexColors: true,
+  metalness: 0.15,
+  roughness: 0.55,
+  side: THREE.DoubleSide,
+});
+const surfaceMesh = new THREE.Mesh(geo, surfMat);
+scene.add(surfaceMesh);
+
+// Wireframe overlay for that "lab schematic" feel
+const wireGeo = new THREE.WireframeGeometry(geo);
+const wireMat = new THREE.LineBasicMaterial({ color: 0x1a2540, transparent: true, opacity: 0.35 });
+const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
+scene.add(wireMesh);
+
+// Base platform
+const platGeo = new THREE.CylinderGeometry(RANGE * 1.55, RANGE * 1.65, 0.3, 64);
+const platMat = new THREE.MeshStandardMaterial({ color: 0x151a26, metalness: 0.4, roughness: 0.6 });
+const platform = new THREE.Mesh(platGeo, platMat);
+platform.position.y = minH - 0.35;
+scene.add(platform);
+
+// Marker at global minimum
+function makeMarker(color) {
+  const g = new THREE.Group();
+  const ring = new THREE.Mesh(
+    new THREE.RingGeometry(0.18, 0.24, 32),
+    new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide, transparent: true, opacity: 0.85 })
+  );
+  ring.rotateX(-Math.PI / 2);
+  g.add(ring);
+  return g;
+}
+const globalMarker = makeMarker(0x4fd67a);
+globalMarker.position.set(GLOBAL_MIN.x, surfaceHeight(GLOBAL_MIN.x, GLOBAL_MIN.y) + 0.02, GLOBAL_MIN.y);
+scene.add(globalMarker);
+
+const localMarker = makeMarker(0xffb454);
+localMarker.position.set(LOCAL_MIN.x, surfaceHeight(LOCAL_MIN.x, LOCAL_MIN.y) + 0.02, LOCAL_MIN.y);
+scene.add(localMarker);
+
+/* ---------------------------------------------------------------
+   Ball + trail
+   --------------------------------------------------------------- */
+const ballGeo = new THREE.SphereGeometry(0.16, 24, 24);
+const ballMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x334477, emissiveIntensity: 0.4, metalness: 0.3, roughness: 0.3 });
+const ball = new THREE.Mesh(ballGeo, ballMat);
+scene.add(ball);
+
+const MAX_TRAIL = 300;
+const trailPositions = new Float32Array(MAX_TRAIL * 3);
+const trailGeo = new THREE.BufferGeometry();
+trailGeo.setAttribute("position", new THREE.BufferAttribute(trailPositions, 3));
+trailGeo.setDrawRange(0, 0);
+const trailMat = new THREE.LineBasicMaterial({ color: 0x5b8cff, linewidth: 2, transparent: true, opacity: 0.9 });
+const trailLine = new THREE.Line(trailGeo, trailMat);
+scene.add(trailLine);
+
+/* ---------------------------------------------------------------
+   Optimization state
+   --------------------------------------------------------------- */
+const state = {
+  x: 2.5,
+  y: 2.5,
+  vx: 0, // velocity for momentum
+  vy: 0,
+  step: 0,
+  lossHistory: [],
+  running: false,
+  momentum: false,
+  lr: 0.10,
+  trailCount: 0,
+  outcome: null, // 'converge' | 'local' | 'diverge' once settled/decided
+  predicted: null,
+};
+
+function resetState(newX, newY) {
+  state.x = newX;
+  state.y = newY;
+  state.vx = 0;
+  state.vy = 0;
+  state.step = 0;
+  state.lossHistory = [lossFn(state.x, state.y)];
+  state.running = false;
+  state.trailCount = 0;
+  state.outcome = null;
+  playBtn.textContent = "播放";
+  document.getElementById("start-val").textContent = `(${state.x.toFixed(2)}, ${state.y.toFixed(2)})`;
+  updateBallPosition();
+  addTrailPoint();
+  updateStatsUI();
+  updateNarration();
+  clearPredictHighlight();
+}
+
+function updateBallPosition() {
+  ball.position.set(state.x, surfaceHeight(state.x, state.y) + 0.02, state.y);
+}
+
+function addTrailPoint() {
+  if (state.trailCount >= MAX_TRAIL) return;
+  const idx = state.trailCount * 3;
+  trailPositions[idx] = state.x;
+  trailPositions[idx + 1] = surfaceHeight(state.x, state.y) + 0.03;
+  trailPositions[idx + 2] = state.y;
+  state.trailCount++;
+  trailGeo.setDrawRange(0, state.trailCount);
+  trailGeo.attributes.position.needsUpdate = true;
+}
+
+const MOMENTUM_COEF = 0.85;
+
+function doStep() {
+  const [gx, gy] = gradFn(state.x, state.y);
+  if (state.momentum) {
+    state.vx = MOMENTUM_COEF * state.vx - state.lr * gx;
+    state.vy = MOMENTUM_COEF * state.vy - state.lr * gy;
+    state.x += state.vx;
+    state.y += state.vy;
+  } else {
+    state.x -= state.lr * gx;
+    state.y -= state.lr * gy;
+  }
+  state.step++;
+  state.lossHistory.push(lossFn(state.x, state.y));
+  if (state.lossHistory.length > 400) state.lossHistory.shift();
+  updateBallPosition();
+  addTrailPoint();
+  updateStatsUI();
+  updateNarration();
+  evaluateOutcome();
+}
+
+function currentGradMag() {
+  const [gx, gy] = gradFn(state.x, state.y);
+  return Math.hypot(gx, gy);
+}
+
+function evaluateOutcome() {
+  const isOut = Math.abs(state.x) > RANGE * 1.6 || Math.abs(state.y) > RANGE * 1.6 || !isFinite(state.x) || !isFinite(state.y);
+  if (isOut) {
+    state.outcome = "diverge";
+    state.running = false;
+    playBtn.textContent = "播放";
+    updateNarration();
+    revealPrediction();
+    return;
+  }
+  const gmag = currentGradMag();
+  const recentLoss = state.lossHistory.slice(-8);
+  const lossStable = recentLoss.length >= 6 && (Math.max(...recentLoss) - Math.min(...recentLoss) < 0.0008);
+  if (gmag < 0.01 && lossStable) {
+    const distToGlobal = Math.hypot(state.x - GLOBAL_MIN.x, state.y - GLOBAL_MIN.y);
+    state.outcome = distToGlobal < 0.35 ? "converge" : "local";
+    state.running = false;
+    playBtn.textContent = "播放";
+    updateNarration();
+    revealPrediction();
+  } else if (state.step >= 120 && lossStable) {
+    // A large step can oscillate inside the visible range without settling.
+    state.outcome = "diverge";
+    state.running = false;
+    playBtn.textContent = "播放";
+    updateNarration();
+    revealPrediction();
+  } else if (state.step >= 180) {
+    // Hard safety stop: an exploratory run must never animate forever.
+    state.outcome = "diverge";
+    state.running = false;
+    playBtn.textContent = "播放";
+    updateNarration();
+    revealPrediction();
+  }
+}
+
+/* ---------------------------------------------------------------
+   Narration (derived purely from state — no canned strings with baked numbers)
+   --------------------------------------------------------------- */
+const narrTag = document.getElementById("narr-tag");
+const narrText = document.getElementById("narr-text");
+
+function updateNarration() {
+  const loss = state.lossHistory[state.lossHistory.length - 1];
+  const prevLoss = state.lossHistory.length > 1 ? state.lossHistory[state.lossHistory.length - 2] : loss;
+  const gmag = currentGradMag();
+
+  let tagClass = "tag-idle", tagText = "未开始";
+  let msg = "";
+
+  if (state.step === 0) {
+    tagText = "未开始";
+    tagClass = "tag-idle";
+    msg = `学习率 ${state.lr.toFixed(2)}，起点 (${state.x.toFixed(2)}, ${state.y.toFixed(2)})，loss = ${loss.toFixed(3)}。点“播放”或“单步”开始下降。`;
+  } else if (state.outcome === "diverge") {
+    tagText = "发散";
+    tagClass = "tag-diverge";
+    msg = Math.abs(state.x) > RANGE * 1.6 || Math.abs(state.y) > RANGE * 1.6
+      ? `学习率 ${state.lr.toFixed(2)} 太大，第 ${state.step} 步后坐标冲出曲面范围（当前约 x=${state.x.toFixed(2)}, y=${state.y.toFixed(2)}），loss 不降反升，说明步子迈过了坡，越走越远。`
+      : `学习率 ${state.lr.toFixed(2)} 太大，第 ${state.step} 步仍在可见范围内来回震荡，loss 几乎不变但梯度仍为 ${gmag.toFixed(4)}，所以没有真正收敛。`;
+  } else if (state.outcome === "converge") {
+    tagText = "收敛到全局最低";
+    tagClass = "tag-converge";
+    msg = `第 ${state.step} 步收敛，loss 稳定在 ${loss.toFixed(4)}，这是曲面上最深的坑（全局最低点附近）。梯度模长已降到 ${gmag.toFixed(4)}，基本不再移动。`;
+  } else if (state.outcome === "local") {
+    tagText = "卡在局部极小值";
+    tagClass = "tag-local";
+    msg = `第 ${state.step} 步不再移动，loss 停在 ${loss.toFixed(4)}，但全局最低点的 loss 是 ${GLOBAL_MIN.loss.toFixed(4)}，比这里还低 ${(loss - GLOBAL_MIN.loss).toFixed(4)}。小球掉进了旁边一个较浅的坑，梯度在这里也接近 0（${gmag.toFixed(4)}），所以它以为到底了。`;
+  } else if (state.running || state.step > 0) {
+    tagText = "下降中";
+    tagClass = "tag-running";
+    const delta = prevLoss - loss;
+    const trend = delta > 0.0001 ? "在下降" : (delta < -0.0001 ? "在上升（越过了坑底又爬回坡上）" : "几乎不变（接近平坦区）");
+    msg = `学习率 ${state.lr.toFixed(2)}，第 ${state.step} 步，loss 从 ${prevLoss.toFixed(4)} 到 ${loss.toFixed(4)}，${trend}。梯度模长 ${gmag.toFixed(4)}，当前坐标 (${state.x.toFixed(2)}, ${state.y.toFixed(2)})。`;
+  }
+
+  narrTag.className = "tag " + tagClass;
+  narrTag.textContent = tagText;
+  narrText.textContent = msg;
+}
+
+function updateStatsUI() {
+  const loss = state.lossHistory[state.lossHistory.length - 1];
+  document.getElementById("stat-loss").textContent = loss.toFixed(4);
+  document.getElementById("stat-step").textContent = state.step;
+  document.getElementById("stat-grad").textContent = currentGradMag().toFixed(4);
+}
+
+/* ---------------------------------------------------------------
+   Controls wiring
+   --------------------------------------------------------------- */
+const lrSlider = document.getElementById("lr-slider");
+const lrVal = document.getElementById("lr-val");
+function syncLrPct() {
+  const min = parseFloat(lrSlider.min), max = parseFloat(lrSlider.max);
+  const pct = ((parseFloat(lrSlider.value) - min) / (max - min)) * 100;
+  lrSlider.style.setProperty("--pct", pct + "%");
+}
+lrSlider.addEventListener("input", () => {
+  state.lr = parseFloat(lrSlider.value);
+  lrVal.textContent = state.lr.toFixed(2);
+  syncLrPct();
+  updateNarration();
+});
+syncLrPct();
+
+const momentumSwitch = document.getElementById("momentum-switch");
+momentumSwitch.addEventListener("click", () => {
+  state.momentum = !state.momentum;
+  momentumSwitch.classList.toggle("on", state.momentum);
+  updateNarration();
+});
+
+const playBtn = document.getElementById("btn-play");
+const stepBtn = document.getElementById("btn-step");
+const resetBtn = document.getElementById("btn-reset");
+
+playBtn.addEventListener("click", () => {
+  if (state.outcome) return; // already settled, must reset
+  state.running = !state.running;
+  playBtn.textContent = state.running ? "暂停" : "播放";
+});
+stepBtn.addEventListener("click", () => {
+  if (state.outcome) return;
+  state.running = false;
+  playBtn.textContent = "播放";
+  doStep();
+});
+resetBtn.addEventListener("click", () => resetState(state.x0 ?? 2.5, state.y0 ?? 2.5));
+
+/* ---------------------------------------------------------------
+   Click on surface to pick new start point
+   --------------------------------------------------------------- */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+renderer.domElement.addEventListener("pointerdown", (e) => {
+  // Only treat as a "pick start" click if it's a plain click on the surface (not a drag-orbit)
+  const rect = renderer.domElement.getBoundingClientRect();
+  const downX = e.clientX, downY = e.clientY;
+  const onUp = (upEvent) => {
+    renderer.domElement.removeEventListener("pointerup", onUp);
+    const dx = upEvent.clientX - downX, dy = upEvent.clientY - downY;
+    if (Math.hypot(dx, dy) > 6) return; // was a drag/orbit, ignore
+    mouse.x = ((upEvent.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((upEvent.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
+    const hits = raycaster.intersectObject(surfaceMesh);
+    if (hits.length > 0) {
+      const p = hits[0].point;
+      const nx = Math.max(-RANGE, Math.min(RANGE, p.x));
+      const ny = Math.max(-RANGE, Math.min(RANGE, p.z));
+      state.x0 = nx;
+      state.y0 = ny;
+      resetState(nx, ny);
+    }
+  };
+  renderer.domElement.addEventListener("pointerup", onUp);
+});
+
+/* ---------------------------------------------------------------
+   View switch buttons
+   --------------------------------------------------------------- */
+const viewOrbit = document.getElementById("view-orbit");
+const viewTop = document.getElementById("view-top");
+const viewSide = document.getElementById("view-side");
+function setActiveView(btn) {
+  [viewOrbit, viewTop, viewSide].forEach((b) => b.classList.remove("active"));
+  btn.classList.add("active");
+}
+viewOrbit.addEventListener("click", () => {
+  setActiveView(viewOrbit);
+  animateCameraTo(new THREE.Vector3(6, 6, 8), new THREE.Vector3(0, 0, 0));
+});
+viewTop.addEventListener("click", () => {
+  setActiveView(viewTop);
+  animateCameraTo(new THREE.Vector3(0.001, 11, 0), new THREE.Vector3(0, 0, 0));
+});
+viewSide.addEventListener("click", () => {
+  setActiveView(viewSide);
+  animateCameraTo(new THREE.Vector3(11, 1.2, 0.001), new THREE.Vector3(0, 0, 0));
+});
+
+let camAnim = null;
+function animateCameraTo(pos, target) {
+  camAnim = {
+    fromPos: camera.position.clone(),
+    toPos: pos,
+    fromTarget: controls.target.clone(),
+    toTarget: target,
+    t: 0,
+  };
+}
+
+/* ---------------------------------------------------------------
+   Predict-then-run quiz
+   --------------------------------------------------------------- */
+const predictOpts = Array.from(document.querySelectorAll(".predict-opt"));
+const predictResult = document.getElementById("predict-result");
+
+predictOpts.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (state.step > 0) return; // lock choice once run has started
+    predictOpts.forEach((b) => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    state.predicted = btn.dataset.choice;
+    predictResult.classList.remove("show");
+  });
+});
+
+function clearPredictHighlight() {
+  predictOpts.forEach((b) => b.classList.remove("correct", "wrong"));
+  predictResult.classList.remove("show");
+  predictResult.textContent = "";
+  // keep "selected" highlight and state.predicted until user picks again or resets fully
+}
+
+function revealPrediction() {
+  if (!state.predicted || !state.outcome) return;
+  const quizOutcome = state.outcome === "converge" ? "global" : state.outcome;
+  const correct = state.predicted === quizOutcome;
+  predictOpts.forEach((b) => {
+    if (b.dataset.choice === quizOutcome) b.classList.add("correct");
+    else if (b.dataset.choice === state.predicted && !correct) b.classList.add("wrong");
+  });
+  const labelMap = { global: "全局最低点", local: "局部极小值", diverge: "发散" };
+  predictResult.classList.add("show");
+  predictResult.innerHTML = correct
+    ? `<b style="color:var(--good)">预测正确。</b> 结果确实是「${labelMap[quizOutcome]}」。`
+    : `<b style="color:var(--bad)">预测不对。</b> 你选的是「${labelMap[state.predicted]}」，实际结果是「${labelMap[quizOutcome]}」。`;
+}
+
+/* ---------------------------------------------------------------
+   Animation loop
+   --------------------------------------------------------------- */
+let lastStepTime = 0;
+const STEP_INTERVAL = 140; // ms between auto-steps while playing
+
+function animate(now) {
+  requestAnimationFrame(animate);
+
+  if (state.running && !state.outcome) {
+    if (now - lastStepTime > STEP_INTERVAL) {
+      doStep();
+      lastStepTime = now;
+    }
+  }
+
+  if (camAnim) {
+    camAnim.t += 0.04;
+    const t = Math.min(1, camAnim.t);
+    const ease = 1 - Math.pow(1 - t, 3);
+    camera.position.lerpVectors(camAnim.fromPos, camAnim.toPos, ease);
+    controls.target.lerpVectors(camAnim.fromTarget, camAnim.toTarget, ease);
+    if (t >= 1) camAnim = null;
+  }
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+requestAnimationFrame(animate);
+
+window.addEventListener("resize", () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+/* ---------------------------------------------------------------
+   Init
+   --------------------------------------------------------------- */
+state.x0 = 2.5;
+state.y0 = 2.5;
+resetState(2.5, 2.5);
+</script>
+</div></div>
+</body>
+</html>

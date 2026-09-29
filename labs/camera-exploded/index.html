@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>按下快门，一张照片是怎么做出来的</title>
+<link rel="stylesheet" href="kit/kit.css">
+<link rel="stylesheet" href="lab/lab.css">
+<link rel="stylesheet" href="../lab-shell.css">
+</head>
+<body>
+<div class="lab-shell"><nav class="lab-nav"><a href="../../learn/" aria-label="返回学习路线">← 返回学习路线</a></nav><div class="lab-content">
+<div id="app">
+  <div id="stage" class="kit-stage"></div>
+  <div id="loading" class="kit-loading">加载中…</div>
+
+  <div class="kit-col left" data-dock="left">
+  <div class="kit-title" id="title">
+    <div class="l1">Camera Lab · 1:10 微缩布景</div>
+    <div class="l2">按下快门，照片是怎么做出来的</div>
+    <div class="l3">相机对准一个小布景。调光圈、快门、ISO，右上角是这台相机此刻拍到的画面。</div>
+  </div>
+
+  <div class="kit-panel" id="left">
+    <div class="kit-row"><div id="stats"></div></div>
+    <div class="kit-row" id="narration" aria-live="polite"><span class="tag" id="narr-tag"></span><span id="narr-text"></span></div>
+    <div class="kit-row">
+      <h3><span>曝光 = 孔面积 × 时间 × ISO</span></h3>
+      <svg id="chart" viewBox="0 0 248 128" role="img" aria-label="曝光图：横轴快门，纵轴光圈；绿线是当前 ISO 下的正确曝光"></svg>
+    </div>
+    <div class="kit-row">
+      <h3><span>景深尺 · 到镜头的真实距离（m）</span></h3>
+      <svg id="ruler" viewBox="0 0 248 46" role="img" aria-label="景深尺：青色带是清晰范围，圆点越大越虚"></svg>
+      <div id="dof-read" class="read"></div>
+    </div>
+  </div>
+  </div>
+
+  <div class="kit-panel right" id="right" data-dock="right">
+    <div class="kit-row">
+      <h3><span>取景 · 这台相机拍到的</span><button type="button" id="vf-zoom" class="mini" aria-label="放大取景画面">放大</button></h3>
+      <div id="vf-box" role="img" aria-label="副相机实时取景画面"></div>
+      <div id="vf-meta"></div>
+      <div class="note">景深与运动模糊按物理累积：每个样本在光圈圆盘里挪一下镜头、在快门时间里取一刻。ISO 噪点是示意。</div>
+    </div>
+    <div class="kit-row"><h3><span>光圈 f/</span></h3><div id="seg-f"></div></div>
+    <div class="kit-row"><h3><span>快门 1/x 秒</span></h3><div id="seg-t"></div></div>
+    <div class="kit-row"><h3><span>ISO</span></h3><div id="seg-iso"></div></div>
+    <div class="kit-row"><h3><span>预设</span></h3><div id="seg-preset"></div></div>
+    <div class="kit-row btns">
+      <button type="button" id="btn-fire" class="kit-btn primary">按下快门</button>
+      <button type="button" id="btn-sound" class="kit-btn">声音：关</button>
+    </div>
+    <div class="kit-row"><h3><span>机位</span></h3><div id="seg-view"></div></div>
+    <div class="kit-row"><h3><span>机械剖视</span></h3><div id="seg-cut"></div>
+      <div class="note sect">光线只在前组、后组镜片处弯折，光圈叶片只挡光。f 值 = 焦距 ÷ 入瞳直径（从镜头前方看到的孔）。50mm 是定焦镜头，没有变焦环。取景时快门常开；按下快门，前帘先关住再开始曝光。</div>
+    </div>
+    <div id="perf"></div>
+  </div>
+
+  <div class="kit-tray" id="tray" data-dock="bottom" aria-label="照片条"></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+<script type="module" src="lab/main.js"></script>
+</div></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+labs:
+  - id: gradient-descent
+    path: /labs/gradient-descent/
+    format: 2D interactive
+    locales:
+      zh-CN:
+        title: 梯度下降为什么会卡住？
+        description: 先预测，再拖动学习率，看优化路径如何收敛、停在局部极小值，或直接发散。
+        action: 开始实验
+      en:
+        title: Why Does Gradient Descent Get Stuck?
+        description: Predict first, then change the learning rate and watch the path converge, settle, or diverge.
+        action: Open experiment
+  - id: depth-of-field
+    path: /labs/depth-of-field/
+    format: parameter simulation
+    locales:
+      zh-CN:
+        title: 光圈开大，背景为什么会糊？
+        description: 先判断景深怎么变化，再只改一个参数，看光圈、焦距和对焦距离如何改变清晰范围。
+        action: 开始实验
+      en:
+        title: Why Does a Wide Aperture Blur the Background?
+        description: Predict the depth of field, then change one parameter and compare the optical result.
+        action: Open experiment
+  - id: guess-exif
+    path: /labs/guess-exif/
+    format: local image quiz
+    locales:
+      zh-CN:
+        title: 猜一张照片的拍摄参数
+        description: 在浏览器本地读取 JPEG EXIF，先猜光圈、快门、ISO 和焦距，再查看误差。
+        action: 开始实验
+      en:
+        title: Guess the Camera Settings
+        description: Read JPEG EXIF locally, predict aperture, shutter, ISO, and focal length, then inspect the error.
+        action: Open experiment
+  - id: camera-exploded
+    path: /labs/camera-exploded/
+    format: 3D camera lab
+    locales:
+      zh-CN:
+        title: 相机实验室：按下快门后发生了什么？
+        description: 在 3D 布景中调整光圈、快门和 ISO，看景深、运动模糊、曝光与成片如何联动。
+        action: 开始实验
+      en:
+        title: "Camera Lab: What Happens After You Press the Shutter?"
+        description: Adjust aperture, shutter speed, and ISO in a 3D scene and inspect the linked result.
+        action: Open experiment

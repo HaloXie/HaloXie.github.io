@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>光圈开大，背景为什么会糊？</title>
+<style>
+  :root{
+    --bg:#0b0e14;
+    --panel-border:#232838;
+    --accent:#5b8cff;
+    --accent2:#ffb454;
+    --text:#e8ecf5;
+    --dim:#8b93a7;
+    --good:#4fd67a;
+    --bad:#ff6b6b;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+  #app{max-width:1200px;margin:0 auto;padding:20px;}
+
+  h1{font-size:22px;line-height:1.3;margin:0 0 14px 0;font-weight:800;letter-spacing:-0.01em;}
+
+  .stat-row{display:flex;gap:10px;margin-bottom:14px;}
+  .stat-card{flex:1;background:rgba(255,255,255,0.03);border:1px solid var(--panel-border);border-radius:10px;padding:8px 10px;}
+  .stat-card .label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;}
+  .stat-card .value{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;}
+
+  #narration{
+    font-size:13px;line-height:1.65;color:#c4cbe0;
+    background:rgba(255,255,255,0.03);border:1px solid var(--panel-border);border-radius:10px;
+    padding:10px 12px;margin-bottom:16px;
+  }
+  #narration b{color:var(--text);}
+
+  .layout{display:flex;gap:16px;flex-wrap:wrap;}
+  .visuals{flex:2;min-width:340px;display:flex;flex-direction:column;gap:12px;}
+  .controls{flex:1;min-width:280px;}
+
+  .panel{
+    background:rgba(18,22,31,0.9);
+    border:1px solid var(--panel-border);
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .panel h2{font-size:12px;font-weight:700;margin:0 0 10px 0;color:var(--dim);text-transform:uppercase;letter-spacing:0.05em;}
+
+  canvas{display:block;width:100%;border-radius:10px;background:#05070c;}
+  #diagram-canvas{height:210px;}
+  #photo-canvas{height:260px;}
+
+  .ctrl-group{margin-bottom:16px;}
+  .ctrl-label{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:6px;}
+  .ctrl-label .val{color:var(--text);font-weight:700;font-variant-numeric:tabular-nums;}
+  input[type=range]{
+    width:100%;-webkit-appearance:none;height:5px;border-radius:3px;
+    background:linear-gradient(to right, var(--accent) 0%, var(--accent) var(--pct,50%), #2a3040 var(--pct,50%), #2a3040 100%);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
+    background:#fff;box-shadow:0 0 0 3px rgba(91,140,255,0.4);cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:16px;height:16px;border-radius:50%;border:none;
+    background:#fff;box-shadow:0 0 0 3px rgba(91,140,255,0.4);cursor:pointer;
+  }
+  input[type=range]:disabled{opacity:0.35;}
+
+  .toggle-row{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--dim);margin-bottom:14px;}
+  .switch{width:38px;height:20px;background:#2a3040;border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;flex:0 0 auto;}
+  .switch.on{background:var(--accent);}
+  .switch .knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left 0.2s;}
+  .switch.on .knob{left:20px;}
+  .hint{font-size:11px;color:var(--dim);margin-top:-8px;margin-bottom:14px;line-height:1.5;}
+
+  /* Predict quiz */
+  #predict-panel{margin-top:16px;}
+  #predict-panel h2{color:var(--accent2);}
+  #predict-panel .q{font-size:13px;color:var(--dim);margin-bottom:10px;line-height:1.5;}
+  .predict-options{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+  .predict-opt{
+    text-align:left;padding:9px 12px;font-size:12px;
+    background:#1a2030;border:1px solid var(--panel-border);color:var(--text);
+    border-radius:8px;cursor:pointer;transition:background 0.15s,border-color 0.15s;
+  }
+  .predict-opt:hover{background:#232b40;}
+  .predict-opt.selected{background:rgba(255,180,84,0.18);border-color:var(--accent2);color:#ffe0af;}
+  .predict-opt.correct{background:rgba(79,214,122,0.2) !important;border-color:var(--good) !important;color:#c8f7d6 !important;}
+  .predict-opt.wrong{background:rgba(255,107,107,0.2) !important;border-color:var(--bad) !important;color:#ffd4d4 !important;}
+  #predict-result{font-size:12px;line-height:1.6;padding-top:8px;border-top:1px solid var(--panel-border);display:none;}
+  #predict-result.show{display:block;}
+  #predict-result b{font-size:13px;}
+  #predict-run{
+    margin-top:4px;width:100%;padding:9px 10px;border-radius:8px;font-size:12px;font-weight:600;
+    background:var(--accent);border:1px solid var(--accent);color:#0b0e14;cursor:pointer;
+  }
+  #predict-run:hover{background:#7aa0ff;}
+  #predict-run:disabled{opacity:0.4;cursor:not-allowed;}
+
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--dim);flex-wrap:wrap;margin-top:8px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .swatch{width:10px;height:10px;border-radius:2px;display:inline-block;}
+</style>
+<link rel="stylesheet" href="../lab-shell.css">
+</head>
+<body>
+<div class="lab-shell"><nav class="lab-nav"><a href="../../learn/" aria-label="返回学习路线">← 返回学习路线</a></nav><div class="lab-content">
+<div id="app">
+  <h1>光圈开大，背景为什么会糊？<br>给定光圈、焦距、对焦距离，清晰范围会怎么变？</h1>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="label">近点（清晰起点）</div>
+      <div class="value" id="stat-near">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">远点（清晰终点）</div>
+      <div class="value" id="stat-far">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">景深</div>
+      <div class="value" id="stat-dof">—</div>
+    </div>
+  </div>
+
+  <div id="narration">
+    <span id="narr-text">加载中…</span>
+  </div>
+
+  <div class="layout">
+    <div class="visuals">
+      <div class="panel">
+        <h2>侧视示意图</h2>
+        <canvas id="diagram-canvas"></canvas>
+        <div class="legend">
+          <span><span class="swatch" style="background:#5b8cff"></span>相机</span>
+          <span><span class="swatch" style="background:#ffb454"></span>对焦平面</span>
+          <span><span class="swatch" style="background:rgba(79,214,122,0.35)"></span>清晰范围（近点–远点）</span>
+          <span><span class="swatch" style="background:#ff6b6b"></span>背景点光源</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>模拟照片</h2>
+        <canvas id="photo-canvas"></canvas>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="panel">
+        <h2>控制面板</h2>
+
+        <div class="toggle-row">
+          <span>只改光圈（锁定焦距/对焦距离）</span>
+          <div class="switch on" id="focus-mode-switch"><div class="knob"></div></div>
+        </div>
+        <div class="hint" id="focus-mode-hint">引导模式：只有光圈滑杆可用，方便只看一个变量的效果。关掉可自由调三个参数。</div>
+
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>光圈 f/N</span><span class="val" id="aperture-val">f/1.4</span></div>
+          <input type="range" id="aperture-slider" min="0" max="7" step="1" value="0">
+        </div>
+        <div class="ctrl-group">
+          <div class="ctrl-label"><span>焦距</span><span class="val" id="focal-val">85 mm</span></div>
+          <input type="range" id="focal-slider" min="24" max="200" step="1" value="85">
+        </div>
+        <div class="ctrl-group" style="margin-bottom:0;">
+          <div class="ctrl-label"><span>对焦距离</span><span class="val" id="focus-dist-val">1.50 m</span></div>
+          <input type="range" id="focus-dist-slider" min="0.5" max="10" step="0.1" value="1.5">
+        </div>
+      </div>
+
+      <div class="panel" id="predict-panel">
+        <h2>先预测，再运行</h2>
+        <div class="q">把光圈从 f/1.4 调到 f/16（焦距、对焦距离不变），清晰范围会怎么变？</div>
+        <div class="predict-options">
+          <button class="predict-opt" data-choice="wider">变宽（景深变大）</button>
+          <button class="predict-opt" data-choice="narrower">变窄（景深变小）</button>
+          <button class="predict-opt" data-choice="same">基本不变</button>
+        </div>
+        <button id="predict-run">运行：把光圈调到 f/16 看结果</button>
+        <div id="predict-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Optics model (thin-lens approximation, full frame, c = 0.03mm)
+   All internal length units: mm. UI units: m for distances >=0.5, mm for blur.
+   H  = f^2/(N*c) + f                         hyperfocal distance
+   Dn = s(H-f)/(H+s-2f)                       near limit
+   Df = s(H-f)/(H-s)  (s>=H -> Infinity)      far limit
+   b  = f^2 * |d-s| / (N * d * (s-f))         blur circle diameter at background distance d
+   --------------------------------------------------------------- */
+const C_MM = 0.03; // circle of confusion, full frame
+const APERTURES = [1.4, 2, 2.8, 4, 5.6, 8, 11, 16]; // standard full stops
+
+function hyperfocal(f_mm, N) {
+  return (f_mm * f_mm) / (N * C_MM) + f_mm;
+}
+function nearLimit(f_mm, N, s_mm) {
+  const H = hyperfocal(f_mm, N);
+  return (s_mm * (H - f_mm)) / (H + s_mm - 2 * f_mm);
+}
+function farLimit(f_mm, N, s_mm) {
+  const H = hyperfocal(f_mm, N);
+  if (s_mm >= H) return Infinity;
+  return (s_mm * (H - f_mm)) / (H - s_mm);
+}
+function blurDiameterMm(f_mm, N, s_mm, d_mm) {
+  // background point beyond focus plane: d > s
+  return (f_mm * f_mm * Math.abs(d_mm - s_mm)) / (N * d_mm * (s_mm - f_mm));
+}
+
+/* ---------------------------------------------------------------
+   State — single source of truth. Narration, numbers and canvases
+   are all derived from this object, nothing is hardcoded text.
+   --------------------------------------------------------------- */
+const state = {
+  apertureIdx: 0,       // index into APERTURES; default f/1.4
+  focal: 85,             // mm
+  focusDist: 1.5,        // m
+  bgDist: 5,             // m, fixed background point-light distance
+  focusMode: true,       // guided mode: only aperture slider active
+  predicted: null,
+  predictSettled: false,
+};
+
+function deriveOptics() {
+  const N = APERTURES[state.apertureIdx];
+  const f = state.focal;
+  const s = state.focusDist * 1000; // mm
+  const d = state.bgDist * 1000; // mm
+  const H = hyperfocal(f, N);
+  const Dn = nearLimit(f, N, s);
+  const DfRaw = farLimit(f, N, s);
+  const Df = DfRaw; // mm or Infinity
+  const dof = Df === Infinity ? Infinity : Df - Dn;
+  const bgBlur = state.bgDist * 1000 > s ? blurDiameterMm(f, N, s, d) : 0;
+  return { N, f, s, d, H, Dn, Df, dof, bgBlur };
+}
+
+/* ---------------------------------------------------------------
+   DOM refs
+   --------------------------------------------------------------- */
+const apertureSlider = document.getElementById("aperture-slider");
+const apertureVal = document.getElementById("aperture-val");
+const focalSlider = document.getElementById("focal-slider");
+const focalVal = document.getElementById("focal-val");
+const focusDistSlider = document.getElementById("focus-dist-slider");
+const focusDistVal = document.getElementById("focus-dist-val");
+const focusModeSwitch = document.getElementById("focus-mode-switch");
+const focusModeHint = document.getElementById("focus-mode-hint");
+
+const statNear = document.getElementById("stat-near");
+const statFar = document.getElementById("stat-far");
+const statDof = document.getElementById("stat-dof");
+const narrText = document.getElementById("narr-text");
+
+function fmtMeters(mm) {
+  if (mm === Infinity) return "无穷远";
+  const m = mm / 1000;
+  if (m < 10) return m.toFixed(2) + " m";
+  return m.toFixed(1) + " m";
+}
+function fmtDof(mm) {
+  if (mm === Infinity) return "到无穷远";
+  const m = mm / 1000;
+  if (m < 1) return (m * 100).toFixed(1) + " cm";
+  return m.toFixed(2) + " m";
+}
+
+function syncSliderPct(slider) {
+  const min = parseFloat(slider.min), max = parseFloat(slider.max);
+  const pct = ((parseFloat(slider.value) - min) / (max - min)) * 100;
+  slider.style.setProperty("--pct", pct + "%");
+}
+
+function updateUI() {
+  const o = deriveOptics();
+
+  apertureVal.textContent = "f/" + APERTURES[state.apertureIdx];
+  focalVal.textContent = state.focal + " mm";
+  focusDistVal.textContent = state.focusDist.toFixed(2) + " m";
+  syncSliderPct(apertureSlider);
+  syncSliderPct(focalSlider);
+  syncSliderPct(focusDistSlider);
+
+  statNear.textContent = fmtMeters(o.Dn);
+  statFar.textContent = fmtMeters(o.Df);
+  statDof.textContent = fmtDof(o.dof);
+
+  // Narration derived purely from current state/optics — no baked strings.
+  const wideOpen = state.apertureIdx <= 1; // f/1.4 or f/2
+  const stopped = state.apertureIdx >= 6; // f/11 or f/16
+  let shape;
+  if (o.Df === Infinity) shape = `清晰范围从 ${fmtMeters(o.Dn)} 一直延伸到无穷远`;
+  else shape = `清晰范围在 ${fmtMeters(o.Dn)} 到 ${fmtMeters(o.Df)} 之间，宽 ${fmtDof(o.dof)}`;
+
+  let bgMsg;
+  if (o.bgBlur <= 0) bgMsg = `背景点光源在对焦点之前，此处不参与背景模糊计算。`;
+  else if (o.bgBlur < 0.05) bgMsg = `${state.bgDist}m 处的背景点光源模糊圆直径只有 ${o.bgBlur.toFixed(3)}mm，肉眼基本看不出糊。`;
+  else bgMsg = `${state.bgDist}m 处的背景点光源，模糊圆直径约 ${o.bgBlur.toFixed(2)}mm——光圈越大、光圈数字越小，这个圆越大，背景就越糊。`;
+
+  let apertureNote;
+  if (wideOpen) apertureNote = `光圈开到 f/${APERTURES[state.apertureIdx]}（大光圈），进光孔径相对大，清晰范围被压缩得很窄。`;
+  else if (stopped) apertureNote = `光圈收到 f/${APERTURES[state.apertureIdx]}（小光圈），清晰范围被拉宽，背景模糊也随之减弱。`;
+  else apertureNote = `光圈在 f/${APERTURES[state.apertureIdx]}，清晰范围居中。`;
+
+  narrText.innerHTML = `<b>f/${APERTURES[state.apertureIdx]}</b>，焦距 <b>${state.focal}mm</b>，对焦 <b>${state.focusDist.toFixed(2)}m</b>：${shape}。${apertureNote} ${bgMsg} 超焦距 H=${fmtMeters(o.H)}。`;
+
+  drawDiagram(o);
+  drawPhoto(o);
+}
+
+/* ---------------------------------------------------------------
+   Controls wiring
+   --------------------------------------------------------------- */
+apertureSlider.addEventListener("input", () => {
+  state.apertureIdx = parseInt(apertureSlider.value, 10);
+  updateUI();
+});
+focalSlider.addEventListener("input", () => {
+  state.focal = parseFloat(focalSlider.value);
+  updateUI();
+});
+focusDistSlider.addEventListener("input", () => {
+  state.focusDist = parseFloat(focusDistSlider.value);
+  updateUI();
+});
+focusModeSwitch.addEventListener("click", () => {
+  state.focusMode = !state.focusMode;
+  focusModeSwitch.classList.toggle("on", state.focusMode);
+  focalSlider.disabled = state.focusMode;
+  focusDistSlider.disabled = state.focusMode;
+  focusModeHint.textContent = state.focusMode
+    ? "引导模式：只有光圈滑杆可用，方便只看一个变量的效果。关掉可自由调三个参数。"
+    : "自由模式：三个参数都可以调，观察它们如何一起影响清晰范围。";
+});
+// Init: guided mode locks focal/focus-dist sliders
+focalSlider.disabled = true;
+focusDistSlider.disabled = true;
+
+/* ---------------------------------------------------------------
+   Predict-then-run quiz
+   --------------------------------------------------------------- */
+const predictOpts = Array.from(document.querySelectorAll(".predict-opt"));
+const predictResult = document.getElementById("predict-result");
+const predictRunBtn = document.getElementById("predict-run");
+
+predictOpts.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (state.predictSettled) return;
+    predictOpts.forEach((b) => b.classList.remove("selected"));
+    btn.classList.add("selected");
+    state.predicted = btn.dataset.choice;
+    predictRunBtn.disabled = false;
+  });
+});
+
+predictRunBtn.disabled = true;
+predictRunBtn.addEventListener("click", () => {
+  if (!state.predicted || state.predictSettled) return;
+  // Snapshot dof at f/1.4 (should already be current default) then jump to f/16
+  const before = deriveOptics();
+  state.apertureIdx = APERTURES.indexOf(16);
+  apertureSlider.value = state.apertureIdx;
+  updateUI();
+  const after = deriveOptics();
+
+  const actual = after.dof > before.dof ? "wider" : (after.dof < before.dof ? "narrower" : "same");
+  const correct = state.predicted === actual;
+  state.predictSettled = true;
+  predictRunBtn.disabled = true;
+
+  predictOpts.forEach((b) => {
+    if (b.dataset.choice === actual) b.classList.add("correct");
+    else if (b.dataset.choice === state.predicted && !correct) b.classList.add("wrong");
+  });
+
+  const labelMap = { wider: "变宽", narrower: "变窄", same: "基本不变" };
+  predictResult.classList.add("show");
+  predictResult.innerHTML = correct
+    ? `<b style="color:var(--good)">预测正确。</b> 景深从 ${fmtDof(before.dof)} 变到 ${fmtDof(after.dof)}，确实是「${labelMap[actual]}」。`
+    : `<b style="color:var(--bad)">预测不对。</b> 你选的是「${labelMap[state.predicted]}」，实际景深从 ${fmtDof(before.dof)} 变到 ${fmtDof(after.dof)}，是「${labelMap[actual]}」。`;
+});
+
+/* ---------------------------------------------------------------
+   Diagram canvas: side view of camera, focal plane, near/far limits,
+   background point light. All positions derived from state/optics.
+   --------------------------------------------------------------- */
+const diagCanvas = document.getElementById("diagram-canvas");
+const diagCtx = diagCanvas.getContext("2d");
+
+function resizeCanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = Math.round(rect.width * dpr);
+  canvas.height = Math.round(rect.height * dpr);
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return rect;
+}
+
+function drawDiagram(o) {
+  const rect = resizeCanvas(diagCanvas);
+  const w = rect.width, h = rect.height;
+  diagCtx.clearRect(0, 0, w, h);
+
+  // Map real-world distance (0..bgDist+1m) to x pixels
+  const maxDist = state.bgDist + 1; // meters, leave margin past bg point
+  const padLeft = 46, padRight = 20;
+  const plotW = w - padLeft - padRight;
+  const midY = h / 2;
+
+  function xAt(meters) {
+    return padLeft + (meters / maxDist) * plotW;
+  }
+
+  // Ground baseline
+  diagCtx.strokeStyle = "#1a2030";
+  diagCtx.lineWidth = 1;
+  diagCtx.beginPath();
+  diagCtx.moveTo(padLeft, midY + 40);
+  diagCtx.lineTo(w - padRight, midY + 40);
+  diagCtx.stroke();
+
+  // Distance ticks every 1m (or 2m if range large)
+  const tickStep = maxDist > 7 ? 2 : 1;
+  diagCtx.fillStyle = "#5a6278";
+  diagCtx.font = "10px -apple-system, sans-serif";
+  diagCtx.textAlign = "center";
+  for (let m = 0; m <= maxDist; m += tickStep) {
+    const x = xAt(m);
+    diagCtx.beginPath();
+    diagCtx.moveTo(x, midY + 36);
+    diagCtx.lineTo(x, midY + 44);
+    diagCtx.strokeStyle = "#2a3040";
+    diagCtx.stroke();
+    diagCtx.fillText(m + "m", x, midY + 58);
+  }
+
+  // Sharp-range band (near..far), clipped to visible plot
+  const nearM = o.Dn / 1000;
+  const farM = o.Df === Infinity ? maxDist : o.Df / 1000;
+  const bandX0 = xAt(Math.max(0, Math.min(nearM, maxDist)));
+  const bandX1 = xAt(Math.max(0, Math.min(farM, maxDist)));
+  diagCtx.fillStyle = "rgba(79,214,122,0.22)";
+  diagCtx.fillRect(bandX0, midY - 30, Math.max(1, bandX1 - bandX0), 60);
+  if (o.Df === Infinity) {
+    // fade to indicate "continues to infinity"
+    const grad = diagCtx.createLinearGradient(w - padRight - 30, 0, w - padRight, 0);
+    grad.addColorStop(0, "rgba(79,214,122,0.22)");
+    grad.addColorStop(1, "rgba(79,214,122,0)");
+    diagCtx.fillStyle = grad;
+    diagCtx.fillRect(w - padRight - 30, midY - 30, 30, 60);
+  }
+
+  // Camera icon at x=0
+  const camX = xAt(0);
+  diagCtx.fillStyle = "#5b8cff";
+  diagCtx.fillRect(camX - 10, midY - 10, 20, 20);
+  diagCtx.beginPath();
+  diagCtx.moveTo(camX + 10, midY - 6);
+  diagCtx.lineTo(camX + 20, midY - 10);
+  diagCtx.lineTo(camX + 20, midY + 10);
+  diagCtx.lineTo(camX + 10, midY + 6);
+  diagCtx.closePath();
+  diagCtx.fill();
+
+  // Focal plane marker (dashed vertical line + dot) at focusDist
+  const focusX = xAt(state.focusDist);
+  diagCtx.strokeStyle = "#ffb454";
+  diagCtx.lineWidth = 2;
+  diagCtx.setLineDash([4, 4]);
+  diagCtx.beginPath();
+  diagCtx.moveTo(focusX, midY - 45);
+  diagCtx.lineTo(focusX, midY + 30);
+  diagCtx.stroke();
+  diagCtx.setLineDash([]);
+  diagCtx.fillStyle = "#ffb454";
+  diagCtx.beginPath();
+  diagCtx.arc(focusX, midY, 5, 0, Math.PI * 2);
+  diagCtx.fill();
+  diagCtx.fillStyle = "#ffd9a0";
+  diagCtx.font = "10px -apple-system, sans-serif";
+  diagCtx.fillText("对焦点", focusX, midY - 52);
+
+  // Near/far limit lines
+  function limitLine(meters, label) {
+    if (meters > maxDist) return;
+    const x = xAt(meters);
+    diagCtx.strokeStyle = "#4fd67a";
+    diagCtx.lineWidth = 1.5;
+    diagCtx.beginPath();
+    diagCtx.moveTo(x, midY - 30);
+    diagCtx.lineTo(x, midY + 30);
+    diagCtx.stroke();
+    diagCtx.fillStyle = "#8be8a8";
+    diagCtx.fillText(label, x, midY + 44 + 12);
+  }
+  if (o.Dn / 1000 <= maxDist) limitLine(o.Dn / 1000, "近点");
+  if (o.Df !== Infinity && o.Df / 1000 <= maxDist) limitLine(o.Df / 1000, "远点");
+
+  // Background point light
+  const bgX = xAt(state.bgDist);
+  diagCtx.fillStyle = "#ff6b6b";
+  diagCtx.beginPath();
+  diagCtx.arc(bgX, midY - 10, 5, 0, Math.PI * 2);
+  diagCtx.fill();
+  diagCtx.fillStyle = "#ffb0b0";
+  diagCtx.fillText("背景光源", bgX, midY - 20);
+
+  diagCtx.textAlign = "left";
+}
+
+/* ---------------------------------------------------------------
+   Simulated photo canvas: foreground subject sharp, background
+   point lights blurred to a radius derived from bgBlur (mm ->
+   pixels via sensor-width-to-canvas-width scale, full-frame 36mm).
+   --------------------------------------------------------------- */
+const photoCanvas = document.getElementById("photo-canvas");
+const photoCtx = photoCanvas.getContext("2d");
+const SENSOR_WIDTH_MM = 36; // full frame
+
+function drawPhoto(o) {
+  const rect = resizeCanvas(photoCanvas);
+  const w = rect.width, h = rect.height;
+  photoCtx.clearRect(0, 0, w, h);
+
+  // Background gradient (dusk sky feel)
+  const skyGrad = photoCtx.createLinearGradient(0, 0, 0, h);
+  skyGrad.addColorStop(0, "#141b2e");
+  skyGrad.addColorStop(1, "#1c2438");
+  photoCtx.fillStyle = skyGrad;
+  photoCtx.fillRect(0, 0, w, h);
+
+  // px-per-mm on sensor, mapped to canvas width (simulate framing at the focus distance)
+  const pxPerMm = w / SENSOR_WIDTH_MM;
+  const blurRadiusPx = (o.bgBlur / 2) * pxPerMm * 0.55; // 0.55: perceptual scale so blur stays on-canvas at typical values
+
+  // Background point lights (bokeh), several scattered points at bgDist
+  const lights = [
+    { x: 0.15, y: 0.30 }, { x: 0.28, y: 0.55 }, { x: 0.40, y: 0.22 },
+    { x: 0.62, y: 0.62 }, { x: 0.78, y: 0.35 }, { x: 0.88, y: 0.58 },
+    { x: 0.55, y: 0.40 }, { x: 0.20, y: 0.75 },
+  ];
+  lights.forEach((lp) => {
+    const cx = lp.x * w, cy = lp.y * h;
+    const r = Math.max(1.2, blurRadiusPx);
+    const grad = photoCtx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    grad.addColorStop(0, "rgba(255,220,150,0.95)");
+    grad.addColorStop(0.5, "rgba(255,190,100,0.55)");
+    grad.addColorStop(1, "rgba(255,190,100,0)");
+    photoCtx.fillStyle = grad;
+    photoCtx.beginPath();
+    photoCtx.arc(cx, cy, r, 0, Math.PI * 2);
+    photoCtx.fill();
+  });
+
+  // Foreground subject: always sharp (subject sits at focus plane)
+  const subjX = w * 0.5, subjBaseY = h * 0.92, subjH = h * 0.62, headR = subjH * 0.14;
+  photoCtx.fillStyle = "#2a3550";
+  photoCtx.beginPath();
+  photoCtx.moveTo(subjX - subjH * 0.16, subjBaseY);
+  photoCtx.quadraticCurveTo(subjX - subjH * 0.22, subjBaseY - subjH * 0.55, subjX, subjBaseY - subjH * 0.62);
+  photoCtx.quadraticCurveTo(subjX + subjH * 0.22, subjBaseY - subjH * 0.55, subjX + subjH * 0.16, subjBaseY);
+  photoCtx.closePath();
+  photoCtx.fill();
+  photoCtx.fillStyle = "#f0c9a0";
+  photoCtx.beginPath();
+  photoCtx.arc(subjX, subjBaseY - subjH * 0.62 - headR * 0.85, headR, 0, Math.PI * 2);
+  photoCtx.fill();
+
+  // Sharp-ness caption baked purely from bgBlur magnitude (derived, not fixed text)
+  photoCtx.fillStyle = "rgba(255,255,255,0.55)";
+  photoCtx.font = "11px -apple-system, sans-serif";
+  photoCtx.textAlign = "left";
+  photoCtx.fillText(`背景模糊圆直径 ≈ ${o.bgBlur.toFixed(2)}mm（换算画面像素半径 ≈ ${blurRadiusPx.toFixed(1)}px）`, 10, h - 10);
+}
+
+/* ---------------------------------------------------------------
+   Resize handling
+   --------------------------------------------------------------- */
+window.addEventListener("resize", () => updateUI());
+
+/* ---------------------------------------------------------------
+   Init
+   --------------------------------------------------------------- */
+updateUI();
+</script>
+</div></div>
+</body>
+</html>

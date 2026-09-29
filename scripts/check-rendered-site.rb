@@ -183,6 +183,10 @@ def site_file(url)
   SITE.join(path)
 end
 
+def standalone_lab_path?(url)
+  url.match?(%r{\A(?:/en)?/labs/})
+end
+
 def content_post_links(doc)
   doc.css("a[href]")
     .reject { |node| node.ancestors.any? { |ancestor| ancestor["class"].to_s.split.include?("language-switcher") } }
@@ -523,6 +527,7 @@ SITE.glob("**/*.html").each do |path|
   relative = path.relative_path_from(SITE).to_s
   url = "/#{relative.sub(%r{index\.html\z}, '')}"
   url = URI::DEFAULT_PARSER.escape(url)
+  next if standalone_lab_path?(url)
   next if LEGACY_REDIRECT_PATHS.include?(url)
 
   language = url.start_with?("/en/") ? "en" : "zh-CN"
@@ -537,6 +542,7 @@ SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE).to_s
   rendered_url = "/#{relative.sub(%r{index\.html\z}, '')}"
+  next if standalone_lab_path?(rendered_url)
   next if LEGACY_REDIRECT_PATHS.include?(rendered_url)
 
   doc = Nokogiri::HTML(source)
@@ -761,6 +767,7 @@ SITE.glob("**/*.html").each do |path|
   source = path.read
   relative = path.relative_path_from(SITE)
   rendered_url = "/#{relative.to_s.sub(%r{index\.html\z}, '')}"
+  next if standalone_lab_path?(rendered_url)
   next if LEGACY_REDIRECT_PATHS.include?(rendered_url)
 
   doc = Nokogiri::HTML(source)
