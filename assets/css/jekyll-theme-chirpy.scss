@@ -15,7 +15,7 @@ lang-exclusive: [zh-CN]
 
 @use 'custom/base';
 
-body:has(#post-list) {
+body:not(:has(main article[data-toc])) {
   --home-canvas-width: 100rem;
   --home-panel-width: clamp(14rem, 15vw, 16rem);
   --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
@@ -314,27 +314,8 @@ body:has(#post-list) #topbar-wrapper {
   transform: scale(1.018);
 }
 
-/* Home is a discovery surface, not a reading measure. Keep its archive grid
-   wide enough for cards while the other non-post pages use the demo canvas. */
-@media (min-width: 850px) {
-  body:has(#post-list) #main-wrapper > .container {
-    width: 100%;
-    max-width: var(--home-canvas-width);
-    padding-right: clamp(1.25rem, 2.2vw, 2.75rem) !important;
-    padding-left: clamp(1.25rem, 2.2vw, 2.75rem) !important;
-  }
-
-  body:has(#post-list) main:has(#post-list) {
-    width: 100%;
-    max-width: none;
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-    flex: 1 1 auto;
-  }
-}
-
 @media (min-width: 1200px) {
-  body:has(#post-list) #main-wrapper > .container > .row:has(#post-list) {
+  body:not(:has(main article[data-toc])) #main-wrapper > .container > .row {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) var(--home-panel-width);
     gap: var(--home-layout-gap);
@@ -343,11 +324,11 @@ body:has(#post-list) #topbar-wrapper {
     align-items: start;
   }
 
-  body:has(#post-list) main:has(#post-list) {
+  body:not(:has(main article[data-toc])) main {
     grid-column: 1;
   }
 
-  body:has(#post-list) #panel-wrapper {
+  body:not(:has(main article[data-toc])) #panel-wrapper {
     grid-column: 2;
     width: 100%;
     max-width: none;
