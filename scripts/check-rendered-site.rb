@@ -94,6 +94,10 @@ PAGE_DESCRIPTIONS = {
     "zh-CN" => "正在建设的开源基础设施，以及值得保留的成长坐标。",
     "en" => "Open-source infrastructure in progress, plus a few meaningful waypoints."
   },
+  "/labs/" => {
+    "zh-CN" => "用可操作的实验理解一个正在发生的现象。",
+    "en" => "Understand one changing phenomenon through an interactive experiment."
+  },
   "/learn/agent-zero-to-one/" => {
     "zh-CN" => "用 28 篇短课建立 Agent 的正确心智模型，并用 Pi 完成一个证据优先的技术研究 Agent。",
     "en" => "Build the right agent engineering mental model in 28 short lessons, then ship an evidence-first research agent with Pi."
@@ -184,7 +188,7 @@ def site_file(url)
 end
 
 def standalone_lab_path?(url)
-  url.match?(%r{\A(?:/en)?/labs/})
+  url.match?(%r{\A(?:/en)?/labs/[^/]+/})
 end
 
 def content_post_links(doc)
@@ -804,6 +808,7 @@ SITE.glob("**/*.html").each do |path|
     "#{prefix}/",
     "#{prefix}/learn/",
     "#{prefix}/projects/",
+    "#{prefix}/labs/",
     "#{prefix}/categories/",
     "#{prefix}/tags/",
     "#{prefix}/archives/",

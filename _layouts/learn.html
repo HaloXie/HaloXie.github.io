@@ -88,29 +88,4 @@ layout: page
     {% endfor %}
   </div>
 
-  <section class="learning-labs" aria-labelledby="learning-labs-title">
-    <header class="learning-labs__intro">
-      <div>
-        <p class="learning-labs__eyebrow">Beta learning labs</p>
-        <h2 id="learning-labs-title">把一个现象放到眼前</h2>
-        <p>{% if active_lang == 'en' %}Short interactive lessons built around prediction, manipulation, and immediate feedback. These labs are experimental and run in your browser.{% else %}每次只讲一个正在发生的现象：先预测，再操作，马上看反馈。这些实验课仍在 Beta 阶段，直接运行在浏览器中。{% endif %}</p>
-      </div>
-      <span class="learning-labs__status">Beta</span>
-    </header>
-
-    <div class="learning-labs__grid">
-      {% for lab in site.data.labs.labs %}
-        {% assign locale = lab.locales[active_lang] %}
-        <article class="learning-lab-card">
-          <div class="learning-lab-card__topline">
-            <span>{{ lab.format }}</span>
-            <span>Beta</span>
-          </div>
-          <h3><a href="{{ lab.path | relative_url }}">{{ locale.title }}</a></h3>
-          <p>{{ locale.description }}</p>
-          <a class="learning-lab-card__link" href="{{ lab.path | relative_url }}">{{ locale.action }} <span aria-hidden="true">→</span></a>
-        </article>
-      {% endfor %}
-    </div>
-  </section>
 </div>
