@@ -807,8 +807,8 @@ SITE.glob("**/*.html").each do |path|
   expected_nav_paths = [
     "#{prefix}/",
     "#{prefix}/learn/",
-    "#{prefix}/projects/",
     "#{prefix}/labs/",
+    "#{prefix}/projects/",
     "#{prefix}/categories/",
     "#{prefix}/tags/",
     "#{prefix}/archives/",

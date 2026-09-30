@@ -6,5 +6,5 @@ lang: zh-CN
 page_id: labs
 permalink: /labs/
 icon: fas fa-flask
-order: 1.75
+order: 1.25
 ---
