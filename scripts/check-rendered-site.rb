@@ -101,6 +101,10 @@ PAGE_DESCRIPTIONS = {
   "/learn/agent-zero-to-one/" => {
     "zh-CN" => "用 28 篇短课建立 Agent 的正确心智模型，并用 Pi 完成一个证据优先的技术研究 Agent。",
     "en" => "Build the right agent engineering mental model in 28 short lessons, then ship an evidence-first research agent with Pi."
+  },
+  "/learn/promptweave/" => {
+    "zh-CN" => "从 Prompt、模型和实验逐渐耦合的设计场景出发，理解版本、路由、fallback 与发布快照为什么必须分开又要一起验证。",
+    "en" => "Start with design scenarios where prompts, models, and experiments become coupled, then derive versioning, routing, fallback, and release snapshots."
   }
 }.freeze
 errors = []

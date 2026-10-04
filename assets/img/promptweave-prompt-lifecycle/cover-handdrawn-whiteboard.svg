@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+<defs>
+ <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.2" fill="#c9c7bd" opacity=".42"/></pattern>
+ <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".028" numOctaves="2" seed="22" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="2.5"/></filter>
+ <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#34352f" stroke-width="1.7" stroke-linecap="round"/></marker>
+</defs>
+<rect width="1200" height="675" fill="#f8f7f1"/><rect width="1200" height="675" fill="url(#dots)"/>
+<g font-family="Bradley Hand, Comic Sans MS, cursive" fill="#30312c">
+<text x="56" y="58" font-size="22" font-weight="700" fill="#168c68">PROMPTWEAVE · DESIGN NOTE</text>
+<text x="56" y="105" font-size="39" font-weight="700">Prompt 不只是文本</text>
+<path d="M54 117 Q250 128 460 116" fill="none" stroke="#4aa6c2" stroke-width="9" opacity=".48" filter="url(#rough)"/>
+<text x="58" y="145" font-size="20">先看一次“只改 Prompt”为什么会失控</text>
+<!-- left source/problem -->
+<g filter="url(#rough)" stroke="#34352f" stroke-width="2.5" fill="#fffef8"><path d="M53 194 Q57 185 68 188 L286 189 Q297 191 295 202 L293 391 Q290 402 280 400 L67 401 Q55 398 56 388Z"/></g>
+<text x="78" y="226" font-size="21" font-weight="700">原来的配置页</text>
+<text x="78" y="260" font-size="18">promptCode → Prompt + Model</text>
+<path d="M78 281 Q170 275 264 282" stroke="#e5a45f" stroke-width="13" opacity=".58"/>
+<text x="78" y="319" font-size="18">后来又加了：</text>
+<text x="88" y="350" font-size="17">• 实验流量比例</text><text x="88" y="377" font-size="17">• backup ID</text>
+<text x="82" y="432" font-size="19" font-weight="700" fill="#d7674b">问题：一次发布到底改了什么？</text>
+<!-- center chain -->
+<text x="360" y="220" font-size="25" font-weight="700">设计推导</text>
+<g stroke="#34352f" stroke-width="2.5" fill="#fffef8" filter="url(#rough)"><path d="M355 250 Q359 243 367 246 L522 246 Q530 249 528 258 L526 315 Q524 324 516 322 L365 323 Q356 320 358 312Z" fill="#c4e2e9"/><path d="M588 250 Q592 243 600 246 L753 246 Q761 249 759 258 L757 315 Q755 324 747 322 L598 323 Q589 320 591 312Z" fill="#dfebbd"/><path d="M820 250 Q824 243 832 246 L987 246 Q995 249 993 258 L991 315 Q989 324 981 322 L830 323 Q821 320 823 312Z" fill="#f2d09f"/></g>
+<g font-size="22" text-anchor="middle"><text x="442" y="283">Prompt</text><text x="442" y="307">版本</text><text x="674" y="283">模型</text><text x="674" y="307">配置</text><text x="906" y="283">路由</text><text x="906" y="307">规则</text></g>
+<g fill="none" stroke="#34352f" stroke-width="3" marker-end="url(#arrow)"><path d="M535 285 Q555 275 580 285"/><path d="M765 285 Q788 275 812 285"/></g>
+<text x="360" y="365" font-size="18" font-weight="700">单独改一项，会临时拼出一套新组合</text>
+<path d="M360 378 Q585 389 815 378" fill="none" stroke="#d7674b" stroke-width="5"/>
+<text x="360" y="425" font-size="23" font-weight="700">所以发布单位要变成：</text>
+<g stroke="#34352f" stroke-width="2.5" fill="#fffef8" filter="url(#rough)"><path d="M360 447 Q364 439 373 442 L815 442 Q825 445 822 455 L820 505 Q817 514 808 512 L370 513 Q359 510 361 500Z" fill="#e2edc8"/></g>
+<text x="590" y="481" font-size="25" text-anchor="middle" font-weight="700">完整环境快照</text><text x="590" y="503" font-size="17" text-anchor="middle">一起验证 · 一起发布 · 一起恢复</text>
+<!-- right takeaway -->
+<g filter="url(#rough)" stroke="#34352f" stroke-width="2.5" fill="#fffef8"><path d="M930 188 Q934 180 943 183 L1140 184 Q1149 187 1147 197 L1145 405 Q1142 414 1133 412 L939 413 Q928 410 930 400Z"/></g>
+<text x="960" y="225" font-size="25" font-weight="700">读者带走</text>
+<text x="956" y="270" font-size="18">✓ 为什么要有 revision</text><text x="956" y="305" font-size="18">✓ 为什么不能只改 Prompt</text><text x="956" y="340" font-size="18">✓ 为什么要保留完整历史</text><text x="956" y="375" font-size="18">✓ 为什么可以整体回滚</text>
+<path d="M958 390 Q1037 398 1120 389" fill="none" stroke="#168c68" stroke-width="7" opacity=".6"/>
+<text x="56" y="626" font-size="22" font-weight="700" fill="#168c68">从问题出发 → 选择最小的可靠设计</text>
+</g></svg>

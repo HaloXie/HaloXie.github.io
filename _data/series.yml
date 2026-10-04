@@ -431,3 +431,119 @@ series:
         outcome: The final project will be a Pi Agent whose control loop, tool protocol, and recovery model you can explain and maintain.
         planned_note: Roadmap follows after the current series is finalized
     stages: []
+
+  - id: promptweave
+    path: /learn/promptweave/
+    status: active
+    final_project: promptweave-release-snapshot
+    locales:
+      zh-CN:
+        title: Prompt 系统设计：从文本管理到可回滚运行版本
+        eyebrow: PromptWeave 架构设计系列
+        description: 从 Prompt、模型和实验逐渐耦合的设计场景出发，理解版本、路由、fallback 与发布快照为什么必须分开又要一起验证。
+        audience: 适合需要管理多 Prompt、多模型或实验分流的 AI 应用开发者。
+        outcome: 最终能为一次模型调用划定配置边界，设计可审计、可验证、可恢复的发布链路。
+      en:
+        title: "Designing Prompt Systems: From Text to Rollbackable Runtime Versions"
+        eyebrow: PromptWeave architecture series
+        description: Start with design scenarios where prompts, models, and experiments become coupled, then derive versioning, routing, fallback, and release snapshots.
+        audience: For developers building AI applications with multiple prompts, models, or experiments.
+        outcome: You will be able to define configuration boundaries and design an auditable, verifiable, recoverable release path.
+    stages:
+      - id: foundations
+        number: "01"
+        locales:
+          zh-CN:
+            title: 先建立问题边界
+            description: 从一次配置表失控的设计场景出发，理解 Prompt 系统究竟要管理什么。
+          en:
+            title: Establish the problem boundary
+            description: Start with a design scenario where a configuration table stops being enough.
+        lessons:
+          - number: "01"
+            page_id: promptweave-prompt-lifecycle
+            status: published
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /learn/promptweave/promptweave-prompt-lifecycle/
+            locales:
+              zh-CN:
+                title: Prompt 不只是文本：先划清配置系统的边界
+                description: 从 Prompt、模型和实验逐渐耦合的场景出发，判断系统应该拥有和不应该拥有的责任。
+              en:
+                title: A Prompt Is More Than Text
+                description: Derive the ownership boundary from a scenario where prompts, models, and experiments become coupled.
+          - number: "02"
+            page_id: promptweave-routing-boundaries
+            status: published
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /learn/promptweave/promptweave-routing-boundaries/
+            locales:
+              zh-CN:
+                title: PromptCode、ModelConfig 与路由：一次请求谁决定什么
+                description: 区分调用方事实、Prompt 版本、模型配置和受限路由，建立一期直接执行的最小契约。
+              en:
+                title: PromptCode, ModelConfig, and Routing
+                description: Separate caller facts, prompt revisions, model configuration, and typed routing.
+      - id: runtime
+        number: "02"
+        locales:
+          zh-CN:
+            title: 保护一次运行
+            description: 继续同一场景，说明失败路径和执行记录为什么必须提前设计。
+          en:
+            title: Protect one execution
+            description: Continue the same scenario to derive fallback and execution trace boundaries.
+        lessons:
+          - number: "03"
+            page_id: promptweave-fallback-observability
+            status: published
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /learn/promptweave/promptweave-fallback-observability/
+            locales:
+              zh-CN:
+                title: 主调用失败后，怎样进入一条可信的备用路径
+                description: 用显式 fallback 和 runId 解决临时换模型不可解释、失败无法还原的问题。
+              en:
+                title: A Trustworthy Fallback Path
+                description: Use explicit fallback bindings and run traces instead of ad hoc model substitution.
+      - id: release
+        number: "03"
+        locales:
+          zh-CN:
+            title: 把验证过的版本交付出去
+            description: 用 A/B 全量切换场景说明发布、审批、加载核对与完整回滚。
+          en:
+            title: Ship the verified version
+            description: Use a winner-promotion scenario to derive approval, loaded-hash checks, and full rollback.
+        lessons:
+          - number: "04"
+            page_id: promptweave-release-snapshots
+            status: published
+            statuses:
+              zh-CN: published
+              en: planned
+            paths:
+              zh-CN: /learn/promptweave/promptweave-release-snapshots/
+            locales:
+              zh-CN:
+                title: 为什么发布和回滚必须以完整快照为单位
+                description: 从 A/B 实验切换到 B 全量，推导不可变版本、环境指针、审批 hash 和完整回滚。
+              en:
+                title: Why Releases and Rollbacks Use Full Snapshots
+                description: Derive immutable versions, environment pointers, approval hashes, and full rollback from an A/B winner promotion.
+    resources:
+      - title: PromptWeave README
+        url: https://github.com/HaloXie/promptweave
+        kind: project
+      - title: PromptWeave Architecture Contract
+        url: https://github.com/HaloXie/promptweave/blob/main/docs/ARCHITECTURE.md
+        kind: architecture

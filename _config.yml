@@ -35,6 +35,11 @@ exclude_from_localization:
   - assets/img/openclaw-guide
   - assets/img/thinking-on-by-default
   - assets/img/sprint-git-flow
+  - assets/img/promptweave-architecture
+  - assets/img/promptweave-prompt-lifecycle
+  - assets/img/promptweave-routing-boundaries
+  - assets/img/promptweave-fallback-observability
+  - assets/img/promptweave-release-snapshots
   - assets/img/favicons/apple-touch-icon
   - assets/img/favicons/favicon
   - assets/img/favicons/web-app-manifest
