@@ -67,9 +67,15 @@ toc: true
 
 </details>
 
-[![前缀校验机在第一处差异前停止复用，后续未改文字也进入重算区](/assets/img/prompt-cache-prefix/prefix-machine.webp)](/assets/img/prompt-cache-prefix/prefix-machine.webp)
+<iframe src="/labs/prompt-cache-prefix/?embed=1" loading="lazy" title="前缀校验机：修改不同段，观察缓存命中与重算" style="display:block;width:100%;max-width:100%;height:1px;border:0;"></iframe>
 
-[打开交互版：修改不同段，观察命中 token、重算 token 和相对输入成本](/labs/prompt-cache-prefix/)
+[全屏打开交互版](/labs/prompt-cache-prefix/)
+
+<noscript markdown="1">
+
+![前缀校验机在第一处差异前停止复用，后续未改文字也进入重算区](/assets/img/prompt-cache-prefix/prefix-machine.webp)
+
+</noscript>
 
 这台机器把输入排成连续的分段带。选择一段，相当于改动那一段的首个 token；边界前是可复用的前缀，边界后都需要重新处理。先改参考资料，再把改动移到系统指令或工具定义，观察“没有修改的后半段”为什么也跟着失去复用。
 

@@ -90,12 +90,14 @@ const plateHtml = k.plateHtml({
 const buttons = CONFIG.labels.map((label, index) => `<button type="button" data-change="${index}" aria-pressed="${index === CONFIG.initialChange}">改第 ${index + 1} 段：${label}</button>`).join('');
 const body = `<nav class="topbar"><a href="/posts/general/prompt-cache-prefix/">← 返回文章</a><span>交互解释图 · Prompt caching</span></nav><header><h1>改动一个 token，缓存停在哪里？</h1><p class="intro">从左到右沿用同一段前缀。改变一张卡片的开头，校验头就停在它前面；后面的文字即使没变，也要重新计算。</p></header>${plateHtml}<section class="controls" aria-label="改变提示内容"><p>选择一段，改动它的首个 token：</p><div class="buttons">${buttons}<button type="button" data-change="none" aria-pressed="false">完全不改</button></div><button type="button" class="tour" id="tour" aria-pressed="true">暂停自动演示</button><p class="sr-only" id="announcement" role="status" aria-live="polite">${describe(initial)}</p></section><section class="assumptions"><h2>这台机器假设了什么</h2><p>每个段末的前缀都已经缓存、仍然有效，本次也能查询这些边界。卡片只是教学分段，不代表厂商真实 block 大小或断点规则。一次只修改所选段的首个 token，输入总长度不变。</p><p>相对成本只比较本次输入的「缓存读取 + 普通重算」，以完全未命中的输入成本为 ${Math.round(model(0).relativeCost * 100)}%。读取倍率取 ${CONFIG.readMultiplier}，对应 <a href="${CONFIG.source}">Anthropic Claude Sonnet 4.6 的缓存读取价 / 普通输入价</a>（查证：${CONFIG.checkedOn}）。不含首次缓存写入、写入溢价及输出费用，不是完整请求账单。</p><p>来源：确定性 SVG（anatomy skill）。所有 token 与成本读数由同一个模型函数生成。</p></section>`;
 const css = readFileSync(join(HERE, 'style.css'), 'utf8');
+const embedCss = readFileSync(join(HERE, 'embed.css'), 'utf8');
+const embedCode = readFileSync(join(HERE, 'embed.mjs'), 'utf8');
 const modelCode = readFileSync(join(HERE, 'model.mjs'), 'utf8').replaceAll('export ', '');
 const runtime = readFileSync(join(HERE, 'runtime.mjs'), 'utf8');
 const endProjection = k.iso([travel, 0, 0], P);
 const translation = endProjection.map((value, index) => value - P.origin[index]);
 const data = { translation, depthTravel, count: CONFIG.labels.length };
-const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前缀校验机 · Prompt caching</title><style>${k.ISO_CSS}\n${css}</style></head><body class="iso" data-theme="light"><main>${body}</main><script type="module">${modelCode}\nconst GEOMETRY = ${JSON.stringify(data)};\n${runtime}</script></body></html>`;
+const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前缀校验机 · Prompt caching</title><style>${k.ISO_CSS}\n${css}\n${embedCss}</style></head><body class="iso" data-theme="light"><main>${body}</main><script type="module">${modelCode}\nconst GEOMETRY = ${JSON.stringify(data)};\n${embedCode}\n${runtime}</script></body></html>`;
 writeFileSync(join(HERE, 'index.html'), html);
 const imageDir = join(HERE, '../../assets/img/prompt-cache-prefix');
 mkdirSync(imageDir, { recursive: true });

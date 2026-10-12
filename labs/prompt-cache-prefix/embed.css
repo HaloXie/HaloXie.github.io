@@ -1,0 +1,27 @@
+/* Embedded chrome inherits the blog; only the physical parts have a local dark palette. */
+.iso[data-embed="true"][data-theme="dark"] {
+  --anatomy-face:#51483e;--anatomy-top:#51483e;
+  --anatomy-shade-0:#25221f;--anatomy-shade-1:#302b26;--anatomy-shade-2:#3b342d;--anatomy-shade-3:#463e35;
+  --anatomy-hi:#eee3d4;--anatomy-mid:#c5b7a3;--anatomy-lo:#9b8d7a;--anatomy-faint:#746856;
+  --anatomy-lit:#f4c594;--anatomy-lit-top:#a47245;--anatomy-lit-shade:#785236;
+  --anatomy-halo:#0e0c0a;--anatomy-dot:#eee3d4;
+}
+.iso[data-embed="true"] { font-family:var(--anatomy-font-prose, inherit) }
+[data-embed="true"] main { max-width:100%;padding:4px 4px 12px }
+[data-embed="true"] .topbar,
+[data-embed="true"] header,
+[data-embed="true"] .assumptions { display:none }
+[data-embed="true"] .iso-figure { margin:0 0 20px }
+[data-embed="true"] .iso-plate,
+[data-embed="true"] .iso-keys,
+[data-embed="true"] button { font-family:var(--anatomy-font-ui, inherit) }
+[data-embed="true"] .iso-plate { aspect-ratio:auto;padding:16px;overflow:visible }
+[data-embed="true"] .iso-plate-corners { position:static;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px }
+[data-embed="true"] .iso-plate-corner { position:static;max-width:100%;white-space:normal;line-height:1.5;text-align:left }
+[data-embed="true"] .iso-stage { position:static;aspect-ratio:960/430 }
+[data-embed="true"] .card-status { position:static;gap:8px }
+[data-embed="true"] .iso-key { min-width:0 }
+@media(max-width:600px) {
+  [data-embed="true"] .iso-plate { height:auto;padding:12px }
+  [data-embed="true"] .card-status { grid-template-columns:repeat(2,minmax(0,1fr));font-size:12px }
+}

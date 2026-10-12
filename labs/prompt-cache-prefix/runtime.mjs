@@ -14,7 +14,7 @@ let targetState = state;
 let share = state.matchedSegments / GEOMETRY.count;
 let target = share;
 let visible = false, frame = 0, last = 0, idle = 0;
-let touring = !reduced.matches, held = false;
+let touring = !embedded && !reduced.matches, held = false;
 const tourChoices = [CONFIG.initialChange, 0, CONFIG.labels.length - 1, null];
 let tourIndex = 0;
 

@@ -97,3 +97,42 @@
 - 用户要求单个自包含 HTML，优先于通用 code-style 的静态页面四文件发布建议；可分开发源码，但构建内联发布页。
 - 用户限定 anatomy light、无 WebGL/3D runtime；采用等轴 SVG，3D 运行时与深色变体不在本篇发布范围。
 - 封面按 `docs/skills/blog-imagegen` 的公共风格块加顶部标题生成，实际 Prompt 与生成记录见 `docs/design/prompt-cache-prefix-image-prompts.md`。
+
+## 嵌入改造
+
+本次修复保留在工作区，未 commit / push。
+
+- 文章正文图改为普通 `![alt](path)`，移除外层图片链接，让 Chirpy 的 GLightbox 接管放大；交互图改为 `/labs/prompt-cache-prefix/?embed=1` iframe，下方保留全屏链接，并在 `<noscript>` 中保留 WebP 回退。
+- lab 新增嵌入模式：隐藏顶栏、标题、引言和长假设说明；嵌入模式默认不自动演示，独立页继续自动演示。
+- 嵌入模式从同源父页面读取 Base 变量并监听 `data-bs-theme` 与 `prefers-color-scheme`，窗口和字体加载变化时通过 `window.frameElement` 更新 iframe 高度；`build.mjs` 重新内联 `embed.css` 与 `embed.mjs`。
+
+### Token 映射
+
+博客变量映射到 `anatomy` token 如下。Light 使用现有 anatomy 组；Dark 只为零件明暗面新增一组与暗色画布协调的值。
+
+| 博客变量 | anatomy token | Light | Dark |
+|---|---|---|---|
+| `--canvas`（body 背景回退为实际背景色） | `--anatomy-page`, `--anatomy-card`, `--anatomy-paper` | 父页 `--canvas`（当前为 `#f7f5f1`） | 父页 `--canvas`（当前为 `#191817`） |
+| `--ink` | `--anatomy-text` | 父页 `--ink`（当前为 `#37332f`） | 父页 `--ink`（当前为 `#d8d1ca`） |
+| `--ink-strong` | `--anatomy-strong` | 父页 `--ink-strong`（当前为 `#27231f`） | 父页 `--ink-strong`（当前为 `#f2ece6`） |
+| `--ink-muted` | `--anatomy-muted` | 父页 `--ink-muted`（当前为 `#716a63`） | 父页 `--ink-muted`（当前为 `#aaa19a`） |
+| `--border` | `--anatomy-border` | 父页 `--border`（当前为 `#e2dcd3`） | 父页 `--border`（当前为 `#3d3935`） |
+| `--font-prose` / `--font-ui` | `--anatomy-font-prose` / `--anatomy-font-ui` | 父页实际 family | 父页实际 family |
+| 零件明暗面 | `face/top/shade-0..3/hi/mid/lo/faint/lit*` | 现有米白组 | `face #51483e`、`top #51483e`、`shade #25221f/#302b26/#3b342d/#463e35`、`hi #eee3d4`、`mid #c5b7a3`、`lo #9b8d7a`、`faint #746856`、`lit #f4c594`、`lit-top #a47245`、`lit-shade #785236` |
+
+### 本轮门禁
+
+| 命令 | 退出码 |
+|---|---:|
+| `ruby scripts/check-translations.rb` | 0 |
+| `ruby scripts/check-content-images.rb` | 0 |
+| `ruby scripts/check-reference-links.rb` | 0 |
+| `git diff --check` | 0 |
+| `JEKYLL_ENV=production bundle exec jekyll build` | 0 |
+| `pnpm exec pagefind --root-selector 'article[data-toc]' --keep-index-url --quiet --site _site --output-path _site/pagefind` | 0 |
+| `bundle exec ruby scripts/check-rendered-site.rb` | 0 |
+| `bundle exec htmlproofer _site --disable-external --ignore-urls '/^http:\/\/127.0.0.1/,/^http:\/\/0.0.0.0/,/^http:\/\/localhost/'` | 0 |
+| `node labs/prompt-cache-prefix/build.mjs --audit` | 0 |
+| `node labs/prompt-cache-prefix/model.test.mjs` | 0 |
+
+未做浏览器验收：当前沙箱无法启动 Chrome，需由外部检查 Light / Dark、360px 宽度、iframe 高度更新、控件操作和 GLightbox 点击放大。
