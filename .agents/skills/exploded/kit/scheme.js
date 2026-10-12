@@ -9,6 +9,8 @@
     if (root.dataset.explodedScheme !== scheme) root.dataset.explodedScheme = scheme;
   };
   apply();
+  // 嵌入模式：宿主用 iframe 引 ?embed=1，带 data-embed="hide" 的元素隐藏（kit.css）
+  if (new URLSearchParams(location.search).get('embed') === '1') root.dataset.explodedEmbed = '';
   media.addEventListener('change', apply);
   new MutationObserver(apply).observe(root, { attributes: true, attributeFilter: ['data-exploded-theme'] });
 })();

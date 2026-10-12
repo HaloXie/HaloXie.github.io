@@ -10,12 +10,17 @@ button { font-family: inherit; }
 .kit-labels { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .kit-loading { position: absolute; inset: 0; display: grid; place-items: center; background: var(--exploded-bg); color: var(--exploded-dim); font-weight: 700; z-index: 20; transition: opacity .5s; }
 .kit-loading.hide { opacity: 0; pointer-events: none; }
+/* 嵌入模式（?embed=1）：lab 把次要面板标 data-embed="hide"，iframe 里只留场景和主控件 */
+:root[data-exploded-embed] [data-embed="hide"] { display: none; }
+:root[data-exploded-embed] { --exploded-panel-w: 208px; }
 
 /* 左 / 右列：标题和面板上下排，不会互相压 */
 .kit-col { position: absolute; top: 16px; z-index: 4; width: var(--exploded-panel-w); display: flex; flex-direction: column; gap: 10px; }
 .kit-col.left { left: 18px; }
 .kit-col.right { right: 18px; }
 .kit-col > .kit-panel { position: relative; left: auto; right: auto; top: auto; }
+/* 视口矮时面板内部滚动，不被截断 */
+.kit-col, .kit-panel.right { max-height: calc(100% - 32px); overflow-y: auto; scrollbar-width: thin; }
 /* 标题 */
 .kit-title { width: var(--exploded-panel-w); pointer-events: none; }
 .kit-title .l1 { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--exploded-cyan); text-transform: uppercase; }

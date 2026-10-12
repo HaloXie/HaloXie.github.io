@@ -30,11 +30,16 @@ test('theme.css 与 palette.js 允许写颜色', () => {
 });
 
 test('HTML：<style>、style= 报错；缺 kit.css / scheme.js 引用报错', () => {
-  const bad = '<html><head><style>body{}</style></head><body><div style="color:red"></div></body></html>';
+  const bad = '<html><head><style>body{}</style></head><body><div id="app"></div><p style="color:red"></p></body></html>';
   const rules = checkHtml('index.html', bad).map((f) => f.rule);
-  assert.equal(rules.length, 4);
-  const ok = '<head><script src="../../kit/scheme.js"></script><link rel="stylesheet" href="../../kit/kit.css"></head>';
+  assert.equal(rules.length, 5);
+  const ok = '<head><script src="../../kit/scheme.js"></script><link rel="stylesheet" href="../../kit/kit.css"></head><body><div id="app"></div></body>';
   assert.deepEqual(checkHtml('index.html', ok), []);
+});
+
+test('HTML：<body> 里写了面板骨架报错', () => {
+  const bad = '<head><script src="kit/scheme.js"></script><link rel="stylesheet" href="kit/kit.css"></head><body><div id="app"><div class="kit-panel"></div></div></body>';
+  assert.ok(checkHtml('index.html', bad).some((f) => f.rule.includes('只许一个空的')));
 });
 
 test('lab 里拷了一份 kit 文件、超体积预算都报错', () => {

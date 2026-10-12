@@ -16,6 +16,9 @@ import { buildDofBoard, buildLightCone, buildDust } from './overlays.js';
 import { narrate, verdict, buildChart, updateChart, buildRuler, updateRuler } from './panel.js';
 import { createPhotoStrip } from './photos.js';
 import { unlockAudio, playShutter } from './audio.js';
+import { MARKUP } from './markup.js';
+
+$('app').innerHTML = MARKUP;
 
 addEventListener('error', (e) => console.error('[error]', e.error?.stack ?? e.message));
 

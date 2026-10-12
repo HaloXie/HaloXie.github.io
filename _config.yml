@@ -161,6 +161,11 @@ exclude:
   - "*.config.js"
   - "package*.json"
   - scripts
+  # labs/exploded 软链到 .agents/skills/exploded：只发布 kit 与 examples，skill 文档和审计脚本不进站点
+  - labs/exploded/SKILL.md
+  - labs/exploded/references
+  - labs/exploded/scripts
+  - labs/exploded/package.json
 
 jekyll-archives:
   enabled: [categories, tags]
