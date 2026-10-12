@@ -1,6 +1,6 @@
 # exploded：独立的 3D 拆解交互图 skill（Spec）
 
-状态：Spec 已确认（2026-10-12），未开工。
+状态：6 个子项已完成（2026-10-12），验收记录见 `docs/tasks/exploded-delivery.md`。
 
 ## 目标
 
