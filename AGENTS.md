@@ -191,7 +191,8 @@
 - 只有需要精确文字、可验证几何关系或可编辑图表时，才可以使用 SVG 作为 source of truth；使用前必须明确告诉用户这是确定性绘图，不是 `gpt-image-2` 生成。
 - 使用 SVG 时，文章仍引用由 SVG 导出的 WebP。SVG 与 WebP 同名并保存在同一文章目录。
 - 禁止声称调用了未实际调用的模型或工具。最终交付必须说明图片来源：`gpt-image-2`、确定性 SVG，或其他真实方式。
-- `.agents/skills/anatomy` 只用于明确需要交互解释图的文章，产物放 `labs/<slug>/`；正文用 `iframe` 嵌入其 `?embed=1` 模式，嵌入模式从父页面读取 Base 变量与 Light/Dark，不另存配色；WebP 截图放 `<noscript>` 作回退并标明「确定性 SVG（anatomy）」；普通配图仍按上条用 `imagegen`，正文图片不包链接（保留弹出放大）。
+- `.agents/skills/anatomy` 只用于明确需要交互解释图的文章，产物放 `labs/<slug>/`；正文用 `iframe` 嵌入其 `?embed=1` 模式，配色与 Light/Dark 由 `labs/shared/theme-bridge.{js,css}` 从 Base 映射，不另存配色；WebP 截图放 `<noscript>` 作回退并标明「确定性 SVG（anatomy）」；普通配图仍按上条用 `imagegen`，正文图片不包链接（保留弹出放大）。
+- 空间结构、光学、机械拆解这类平面图讲不清的主题用 `.agents/skills/exploded`（3D 拆解交互图）。kit 与 lab 代码只在 skill 里一份，经软链 `labs/exploded` 发布；博客页 `labs/<slug>/index.html` 只写壳（`theme-bridge.js` → kit `scheme.js` → kit.css → lab.css → `../lab-shell.css` → `theme-bridge.css` → importmap → lab `main.js`），参照 `labs/camera-exploded/`。
 
 ### 验收
 

@@ -38,3 +38,34 @@ Spec：`docs/tasks/exploded-skill-spec.md`。每个子项单独提交，按最�
 - 顺带调了 light 主题：半球光 1.15→0.8、环境光 0.85→0.6、地面与墙面压深、雾起点推远；1280×800 下地面不再发白。
 - 验收：两个测试文件 11/11 通过；`node scripts/audit.ts examples/camera --root . --view "view=overview" --view "view=section&cut=exploded"` → `audit: OK`（静态 156.1 KB；draw call 总览 198、爆炸图 156）。
 - 已知：URL 直接打开 `view=section&cut=exploded` 时机位与点击进入不同（过渡未完成），沿用原示例行为，未改。
+
+## 子项 5：camera 实验室改用 exploded（2026-10-12）
+
+- **index.html 只当壳**：面板 DOM 移进 `examples/camera/lab/markup.js`，`main.js` 启动时写进 `#app`；壳只剩 `scheme.js` → kit.css → lab.css → importmap → `main.js` 和一个空 `#app`。`check-static.ts` 新增规则：`<body>` 只许一个空 `#app`（附坏输入测试）。
+- **嵌入模式**：`?embed=1` 时 `scheme.js` 加 `data-exploded-embed`，`data-embed="hide"` 的元素隐藏，面板收到 208px，过高时内部滚动。camera 嵌入时保留场景、台面操作件、取景画面和机位 / 剖视切换。
+- **发布**：`labs/exploded` 软链到 `.agents/skills/exploded`，`_config.yml` 排除 SKILL.md、references、scripts、package.json；`labs/camera-exploded/` 删掉原来的 kit 与 lab 两份副本（−3103 行），index.html 改成博客壳，引用 `/labs/exploded/…`。
+- **验收**：skill 审计 `audit: OK`（light / dark × 总览 / 爆炸图，draw call 198 / 156，静态 157.0 KB）；构建产物里博客页 light / dark 截图：界面用博客字体与 Base 配色，dark 房间为暖暗色，控制台 0 报错。
+
+## 子项 6：博客主题桥（2026-10-12）
+
+- `labs/shared/theme-bridge.scss`（Jekyll 编译为 `/labs/shared/theme-bridge.css`）：`@import "custom/base"` 取博客 Base 变量，把 `--exploded-*` 与嵌入时的 `--anatomy-*` 映射过去；房间色由 `--canvas` / `--ink` 用 `color-mix` 派生；返回导航跟随 Base；嵌入时隐藏导航。
+- `labs/shared/theme-bridge.js`：只同步明暗。嵌入时跟父页面 `data-bs-theme`，独立页读 Chirpy 的 `localStorage.theme`，没有就跟系统；写本页 `data-bs-theme` 与 `data-exploded-theme`。
+- prompt-cache 的 `embed.mjs` 去掉逐项读取父页面颜色和字体的代码，只保留 anatomy 的 `body[data-theme]` 同步与高度自适应；anatomy 审计与模型测试通过。
+- `check-rendered-site.rb` 新增两条：主题桥引用的 Base 变量必须在编译产物里有定义；`labs/*/index.html` 引用的 `/labs/…` 文件必须存在。两条都用改坏的产物验证过会失败。
+- **验收**：
+  - 文章里的 prompt-cache：light / dark 背景与父页面一致（247,245,241 / 25,24,23），切换父页面明暗随之变化；高度 764 等于内容高度；360px 下 iframe 宽 320、页面无横向溢出；
+  - camera 以 `?embed=1` 嵌入测试页（只放在 `_site`，未提交）：跟随父页面切换明暗，导航与左栏隐藏，draw call 198；
+  - 博客门禁：translations / content-images / reference-links / diff-check / jekyll build / pagefind / check-rendered-site / htmlproofer 全部通过（htmlproofer 第一次失败是增量构建留下的旧 `_site/en/labs/camera-exploded`，`jekyll clean` 后通过）。
+
+## 子项 4：SKILL.md 与 references（2026-10-12）
+
+- `SKILL.md`：一个原则（先定现象再搭物件）、规模两档与预算、9 步工作流、硬规则表（每条对应 `check-static.ts` / `capture.ts` 的检查，或写明人工审查）、已知陷阱。
+- `references/kit.md`（API 与坐标约定）、`references/explode.md`（零件表、爆炸 / 光路位移、弹簧级联、标签）、`references/theming.md`（三处颜色来源、明暗解析、宿主接入、嵌入模式）。
+- Claude Code 入口 `.claude/skills/exploded` 软链；博客 `AGENTS.md` 补 exploded 的使用规则，并把 anatomy 那条改成走共享主题桥。
+- 测试：`node --test scripts/*.test.ts` 12/12 通过。
+
+## 未做 / 已知
+
+- 360px 手机宽度下的独立 camera 页没有专门适配（原线上版同样没有）；嵌入模式最小验到 720×450。
+- URL 直接打开 `view=section&cut=exploded` 时机位按组装态包围盒算，和点击进入不同，沿用原行为。
+- 博客没有嵌入 camera 的文章；嵌入只在 `_site` 测试页验证过。
