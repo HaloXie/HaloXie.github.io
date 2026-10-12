@@ -1,0 +1,84 @@
+/* kit 样式：面板、HUD、胶囊标签、弹窗、底部托盘。lab 只写自己的内容样式。 */
+:root {
+  --o: #ff8a2a; --c: #3fe0ff; --g: #7dffa8; --bad: #ff6b6b; --y: #ffd24a;
+  --text: #eef2f8; --dim: #93a1b5;
+  --glass: rgba(14, 20, 34, 0.62); --glass-hi: rgba(28, 38, 60, 0.7); --line: rgba(255, 255, 255, 0.09);
+  --panel-w: 272px;
+  --font: "SF Pro Display", -apple-system, system-ui, "PingFang SC", sans-serif;
+  --mono: "SF Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #0f1628; color: var(--text); font-family: var(--font); }
+canvas { display: block; }
+button { font-family: inherit; }
+.kit-stage { position: absolute; inset: 0; }
+.kit-labels { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.kit-loading { position: absolute; inset: 0; display: grid; place-items: center; background: #0f1628; color: var(--dim); font-weight: 700; z-index: 20; transition: opacity .5s; }
+.kit-loading.hide { opacity: 0; pointer-events: none; }
+
+/* 左 / 右列：标题和面板上下排，不会互相压 */
+.kit-col { position: absolute; top: 16px; z-index: 4; width: var(--panel-w); display: flex; flex-direction: column; gap: 10px; }
+.kit-col.left { left: 18px; }
+.kit-col.right { right: 18px; }
+.kit-col > .kit-panel { position: relative; left: auto; right: auto; top: auto; }
+/* 标题 */
+.kit-title { width: var(--panel-w); pointer-events: none; }
+.kit-title .l1 { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--c); text-transform: uppercase; }
+.kit-title .l2 { font-size: 25px; font-weight: 850; letter-spacing: -0.03em; line-height: 1.08; color: #fff; margin-top: 2px; text-shadow: 0 2px 16px rgba(0,0,0,.4); }
+.kit-title .l3 { font-size: 12px; line-height: 1.5; color: #c9d3e2; margin-top: 6px; }
+
+/* 面板：≤ 300px，半透明 + 背景模糊 */
+.kit-panel { position: absolute; z-index: 4; width: var(--panel-w); background: var(--glass); border: 1px solid var(--line); border-radius: 14px;
+  backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2); box-shadow: 0 12px 34px rgba(0, 0, 0, 0.35); padding: 10px 12px; }
+.kit-panel.left { left: 18px; }
+.kit-panel.right { right: 18px; top: 16px; }
+.kit-panel h3 { margin: 0 0 6px; font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--dim); display: flex; justify-content: space-between; }
+.kit-panel h3 .rv { color: var(--text); font-family: var(--mono); letter-spacing: 0; text-transform: none; }
+.kit-row { padding: 7px 0; border-top: 1px solid var(--line); }
+.kit-row:first-child { border-top: 0; padding-top: 0; }
+
+/* 分段按钮 */
+.kit-seg { display: flex; gap: 3px; background: rgba(0,0,0,.25); border-radius: 9px; padding: 3px; }
+.kit-seg button { flex: 1; min-width: 0; border: 0; background: transparent; color: #c7d0dd; font: 700 11px var(--mono); padding: 6px 0; border-radius: 6px; cursor: pointer; transition: background .15s, color .15s, transform .12s; }
+.kit-seg button:hover { background: rgba(255,255,255,.07); }
+.kit-seg button:active { transform: scale(.94); }
+.kit-seg button.on { background: var(--glass-hi); color: #fff; box-shadow: inset 0 0 0 1px rgba(63,224,255,.45); }
+.kit-seg button:focus-visible, .kit-btn:focus-visible { outline: 2px solid var(--c); outline-offset: 1px; }
+
+.kit-btn { border: 1px solid var(--line); background: rgba(255,255,255,.06); color: var(--text); font: 800 12px var(--font); padding: 8px 10px; border-radius: 9px; cursor: pointer; transition: transform .12s, background .15s; }
+.kit-btn:hover { background: rgba(255,255,255,.12); }
+.kit-btn:active { transform: scale(.95); }
+.kit-btn.primary { background: linear-gradient(180deg, #ff5a4a, #d93a2e); border-color: transparent; }
+
+/* 数字卡 */
+.kit-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+.kit-stat { background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 8px; padding: 5px 6px; min-width: 0; }
+.kit-stat .k { font-size: 9px; font-weight: 800; color: var(--dim); letter-spacing: .06em; }
+.kit-stat .v { font: 800 14px var(--mono); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kit-stat .s { font: 700 9px var(--mono); color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tone-o { color: var(--o); } .tone-c { color: var(--c); } .tone-g { color: var(--g); } .tone-y { color: var(--y); } .tone-w { color: #fff; }
+.kit-flash { animation: kitflash .5s ease-out; }
+@keyframes kitflash { from { text-shadow: 0 0 12px currentColor; transform: translateY(-1px); } to { text-shadow: none; transform: none; } }
+
+/* 胶囊标签 + 引线 */
+.kit-cap { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.kit-cap-body { background: rgba(10, 16, 28, .82); border: 1px solid rgba(255,255,255,.14); border-radius: 99px; padding: 3px 9px; font: 700 11px var(--font); white-space: nowrap; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+.kit-cap-body b { font-family: var(--mono); }
+.kit-cap-line { width: 1px; background: linear-gradient(rgba(255,255,255,.7), rgba(255,255,255,.15)); }
+.kit-cap-dot { width: 5px; height: 5px; border-radius: 50%; background: #fff; margin-top: -2px; }
+.kit-cap.tone-o .kit-cap-body { border-color: rgba(255,138,42,.6); } .kit-cap.tone-o .kit-cap-dot { background: var(--o); }
+.kit-cap.tone-c .kit-cap-body { border-color: rgba(63,224,255,.6); } .kit-cap.tone-c .kit-cap-dot { background: var(--c); }
+.kit-cap.tone-g .kit-cap-body { border-color: rgba(125,255,168,.6); } .kit-cap.tone-g .kit-cap-dot { background: var(--g); }
+
+/* 底部托盘（胶片条 / 照片条） */
+.kit-tray { position: absolute; bottom: 14px; left: calc(var(--panel-w) + 36px); right: calc(var(--panel-w) + 36px); z-index: 4; display: flex; gap: 8px; align-items: flex-end; justify-content: center; pointer-events: none; }
+.kit-tray > * { pointer-events: auto; }
+
+/* 弹窗 */
+.kit-modal { position: fixed; inset: 0; z-index: 30; display: none; place-items: center; background: rgba(5, 8, 14, .6); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.kit-modal.open { display: grid; animation: kitfade .2s ease-out; }
+.kit-modal-card { position: relative; background: #121a2b; border: 1px solid var(--line); border-radius: 14px; padding: 14px; max-width: min(92vw, 1000px); box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.kit-modal-body canvas { width: min(86vw, 960px); height: auto; border-radius: 6px; display: block; }
+.kit-modal-cap { font: 700 13px var(--mono); color: #cfd8e6; margin-top: 10px; line-height: 1.6; }
+.kit-modal-x { position: absolute; top: 8px; right: 10px; border: 0; background: rgba(255,255,255,.08); color: #fff; width: 28px; height: 28px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+@keyframes kitfade { from { opacity: 0; } to { opacity: 1; } }
