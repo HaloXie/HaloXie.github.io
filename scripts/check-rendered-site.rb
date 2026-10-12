@@ -849,8 +849,29 @@ LEGACY_REDIRECTS.each do |legacy_path, target_path|
   errors << "#{legacy_path}: redirect target does not exist #{target_path}" unless site_file(target_path).file?
 end
 
+# Lab theme bridge: every Base variable it maps from must still be defined, or the labs silently lose the blog palette.
+bridge = SITE.join("labs/shared/theme-bridge.css")
+if bridge.file?
+  css = bridge.read
+  referenced = css.scan(/var\((--[\w-]+)/).flatten.to_set.reject { |name| name.start_with?("--exploded-", "--anatomy-", "--lab-") }
+  defined = css.scan(/(--[\w-]+)\s*:/).flatten.to_set
+  (referenced.to_set - defined).each { |name| errors << "labs/shared/theme-bridge.css maps from undefined Base variable #{name}" }
+else
+  errors << "labs/shared/theme-bridge.css missing"
+end
+
+# Lab shells load kit and lab code through /labs/... (labs/exploded is a symlink into the skill); every reference must exist.
+SITE.glob("labs/*/index.html").each do |page|
+  Nokogiri::HTML(page.read).css("script[src], link[rel='stylesheet'][href]").each do |node|
+    ref = node["src"] || node["href"]
+    next unless ref.start_with?("/labs/")
+
+    errors << "#{page.relative_path_from(SITE)}: missing #{ref}" unless SITE.join(ref.delete_prefix("/")).file?
+  end
+end
+
 if errors.empty?
-  puts "Rendered localization check passed: language-aware metadata, reading highlights, Pagefind command search, sitemaps, feeds and shared assets."
+  puts "Rendered localization check passed: language-aware metadata, reading highlights, Pagefind command search, sitemaps, feeds, shared assets and lab theme bridge."
 else
   warn "Rendered localization check failed with #{errors.length} error(s):"
   errors.each { |error| warn "- #{error}" }

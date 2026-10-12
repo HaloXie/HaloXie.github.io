@@ -97,7 +97,7 @@ const runtime = readFileSync(join(HERE, 'runtime.mjs'), 'utf8');
 const endProjection = k.iso([travel, 0, 0], P);
 const translation = endProjection.map((value, index) => value - P.origin[index]);
 const data = { translation, depthTravel, count: CONFIG.labels.length };
-const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前缀校验机 · Prompt caching</title><style>${k.ISO_CSS}\n${css}\n${embedCss}</style></head><body class="iso" data-theme="light"><main>${body}</main><script type="module">${modelCode}\nconst GEOMETRY = ${JSON.stringify(data)};\n${embedCode}\n${runtime}</script></body></html>`;
+const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>前缀校验机 · Prompt caching</title><script src="/labs/shared/theme-bridge.js"></script><link rel="stylesheet" href="/labs/shared/theme-bridge.css"><style>${k.ISO_CSS}\n${css}\n${embedCss}</style></head><body class="iso" data-theme="light"><main>${body}</main><script type="module">${modelCode}\nconst GEOMETRY = ${JSON.stringify(data)};\n${embedCode}\n${runtime}</script></body></html>`;
 writeFileSync(join(HERE, 'index.html'), html);
 const imageDir = join(HERE, '../../assets/img/prompt-cache-prefix');
 mkdirSync(imageDir, { recursive: true });

@@ -1,0 +1,64 @@
+---
+---
+// 博客 Base → lab token 的唯一映射（产出 /labs/shared/theme-bridge.css）。
+// lab 页面在 skill 的 kit.css 之后 <link> 本文件；明暗由 theme-bridge.js 写到 <html data-bs-theme>。
+// 颜色全部引用 Base 变量或由它们 color-mix 派生，不另存一份博客配色。
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..800&family=Noto+Serif+SC:wght@400;600&display=swap");
+@import "custom/base";
+
+// exploded（3D 拆解图）：界面跟博客 Base；房间从画布色派生，明暗两套都与正文协调。
+// 选择器带 [data-exploded-scheme]，与 kit 的 dark 选择器同权重，靠加载顺序在后胜出。
+:root[data-exploded-scheme] {
+  --exploded-font: var(--font-ui);
+  --exploded-mono: var(--font-mono);
+  --exploded-bg: var(--canvas);
+  --exploded-text: var(--ink);
+  --exploded-text-strong: var(--ink-strong);
+  --exploded-text-soft: var(--ink);
+  --exploded-dim: var(--ink-muted);
+  --exploded-line: var(--border);
+  --exploded-card: var(--surface);
+  --exploded-glass: color-mix(in srgb, var(--surface) 84%, transparent);
+  --exploded-glass-hi: var(--surface);
+  --exploded-well: color-mix(in srgb, var(--ink) 6%, transparent);
+  --exploded-hover: color-mix(in srgb, var(--ink) 8%, transparent);
+  --exploded-cap-bg: color-mix(in srgb, var(--surface) 92%, transparent);
+  --exploded-cap-text: var(--ink-strong);
+  --exploded-cap-line: color-mix(in srgb, var(--ink) 60%, transparent);
+  --exploded-primary: var(--accent);
+  --exploded-primary-lo: var(--accent-hover);
+  --exploded-on-primary: var(--accent-contrast);
+
+  --exploded-wall: color-mix(in oklab, var(--canvas), var(--ink) 9%);
+  --exploded-wall-lo: color-mix(in oklab, var(--canvas), var(--ink) 15%);
+  --exploded-trim: color-mix(in oklab, var(--canvas), var(--ink) 24%);
+  --exploded-floor: color-mix(in oklab, var(--canvas), var(--ink) 20%);
+}
+
+// 独立打开的 lab 页面：博客的返回导航跟随 Base。
+.lab-nav {
+  border-bottom-color: var(--border);
+  background: color-mix(in srgb, var(--canvas) 88%, transparent);
+}
+.lab-nav a { color: var(--ink); font-family: var(--font-ui); }
+.lab-nav a:hover, .lab-nav a:focus-visible { color: var(--ink-strong); }
+
+// 嵌入文章（?embed=1）时去掉返回导航，场景占满 iframe。
+:root[data-exploded-embed] {
+  .lab-nav { display: none; }
+  .lab-content { padding-top: 0; }
+  body .lab-content > #app { height: 100vh; min-height: 0; }
+}
+
+// anatomy（平面交互图）嵌入文章时：卡片、文字、边框、字体跟博客 Base；零件的明暗面由各 lab 自己定义。
+:root[data-bs-theme] .iso[data-embed="true"] {
+  --anatomy-page: var(--canvas);
+  --anatomy-card: var(--canvas);
+  --anatomy-paper: var(--canvas);
+  --anatomy-text: var(--ink);
+  --anatomy-strong: var(--ink-strong);
+  --anatomy-muted: var(--ink-muted);
+  --anatomy-border: var(--border);
+  --anatomy-font-prose: var(--font-prose);
+  --anatomy-font-ui: var(--font-ui);
+}
