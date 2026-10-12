@@ -6,6 +6,8 @@ import { createPicker, knob, pushButton, gauge } from '../../../kit/controls3d.j
 import { createLabels } from '../../../kit/labels.js';
 import { seg, statCards, modal } from '../../../kit/hud.js';
 import { $, paint, at, merge, prbox } from '../../../kit/util.js';
+import { ORANGE, CYAN, YELLOW } from '../../../kit/palette.js';
+import { BODY } from './palette.js';
 import * as O from './optics.js';
 import { buildRig, PART_META, curtainStarts } from './camera.js';
 import { buildDiorama, AXIS } from './diorama.js';
@@ -58,10 +60,10 @@ const cam = buildRig(mount);
   const parts = [];
   const bx = mount.position.x - 0.45;
   const top = AXIS.y - 0.56 * RIG_S;
-  parts.push(prbox(0x1d2129, 0.7, 0.05, 0.6, bx, 0.025, 0, 0.02));
-  parts.push(at(paint(new THREE.CylinderGeometry(0.06, 0.08, top - 0.05, 16), 0x2a2f38), bx, 0.05 + (top - 0.05) / 2, 0));
-  parts.push(prbox(0x3a4250, 0.5, 0.04, 0.34, bx, top - 0.02, 0, 0.015));
-  parts.push(prbox(0x161a21, 3.3, 0.06, 1.1, -3.1, 0.03, -2.45, 0.03));
+  parts.push(prbox(BODY.stand, 0.7, 0.05, 0.6, bx, 0.025, 0, 0.02));
+  parts.push(at(paint(new THREE.CylinderGeometry(0.06, 0.08, top - 0.05, 16), BODY.standPost), bx, 0.05 + (top - 0.05) / 2, 0));
+  parts.push(prbox(BODY.standTop, 0.5, 0.04, 0.34, bx, top - 0.02, 0, 0.015));
+  parts.push(prbox(BODY.rail, 3.3, 0.06, 1.1, -3.1, 0.03, -2.45, 0.03));
   const m = new THREE.Mesh(merge(parts), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.45, metalness: 0.5 }));
   m.castShadow = true;
   m.receiveShadow = true;
@@ -82,9 +84,9 @@ const dust = buildDust(scene, new THREE.Box3(new THREE.Vector3(AXIS.x + 0.1, 0.2
 // ---------- 台面控件（kit） ----------
 const picker = createPicker(stage);
 const CZ = -2.45;
-const kF = knob(stage, picker, { position: new THREE.Vector3(-1.9, 0.06, CZ), labels: O.F_STOPS.map((x) => x.label), title: 'APERTURE', tone: 0xff8a2a, value: st.f, onStep: (i) => set('f', i) });
-const kT = knob(stage, picker, { position: new THREE.Vector3(-2.75, 0.06, CZ), labels: O.SHUTTERS.map((x) => x.label.replace('1/', '')), title: 'SHUTTER', tone: 0x3fe0ff, value: st.t, onStep: (i) => set('t', i) });
-const kI = knob(stage, picker, { position: new THREE.Vector3(-3.6, 0.06, CZ), labels: O.ISOS.map((x) => x.label), title: 'ISO', tone: 0xffd24a, value: st.iso, onStep: (i) => set('iso', i) });
+const kF = knob(stage, picker, { position: new THREE.Vector3(-1.9, 0.06, CZ), labels: O.F_STOPS.map((x) => x.label), title: 'APERTURE', tone: ORANGE, value: st.f, onStep: (i) => set('f', i) });
+const kT = knob(stage, picker, { position: new THREE.Vector3(-2.75, 0.06, CZ), labels: O.SHUTTERS.map((x) => x.label.replace('1/', '')), title: 'SHUTTER', tone: CYAN, value: st.t, onStep: (i) => set('t', i) });
+const kI = knob(stage, picker, { position: new THREE.Vector3(-3.6, 0.06, CZ), labels: O.ISOS.map((x) => x.label), title: 'ISO', tone: YELLOW, value: st.iso, onStep: (i) => set('iso', i) });
 const meter = gauge(stage, { position: new THREE.Vector3(-4.35, 0.06, CZ), r: 0.34, range: 3, title: 'METER', ticks: [{ v: -3, label: '-3' }, { v: 0, label: '0' }, { v: 3, label: '+3' }] });
 pushButton(stage, picker, { position: new THREE.Vector3(-1.2, 0.06, CZ), onPress: fire });
 

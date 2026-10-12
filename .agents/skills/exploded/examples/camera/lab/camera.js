@@ -1,7 +1,9 @@
 // 相机本体：本地 +x = 镜头朝向（光从 +x 进来往 -x 走），-z 一侧是剖切开口，朝向观众，+x 端背面（-x）是取景背屏。
 // 相机模型按展示比例放大画，不在 1:10 布景比例里；光学计算只用 optics.js 里的真实 50mm 参数。
 import * as THREE from 'three';
-import { paint, at, merge, glow, spring, springVec, damp, rbox, ORANGE, CYAN } from '../../../kit/util.js';
+import { paint, at, merge, glow, spring, springVec, damp, rbox } from '../../../kit/util.js';
+import { ORANGE, CYAN } from '../../../kit/palette.js';
+import { BODY, LIGHT } from './palette.js';
 import { F_STOPS } from './optics.js';
 
 // 闪光同步速度：典型值，机型不同（常见 1/160–1/250）。比它快时前后帘同时走，只留一道缝。
@@ -146,7 +148,7 @@ export function buildRig(mount) {
     const B = { x0: -1.5, x1: -0.62, y0: -0.54, y1: 0.54, z0: -1.1, z1: 1.1 };
     const dx = B.x1 - B.x0;
     const cx = (B.x0 + B.x1) / 2;
-    const G = 0x2c3037;
+    const G = BODY.shell;
     const list = [];
     // 外壳板全部倒角
     list.push(at(paint(rbox(0.07, 1.1, 2.22, 0.03), G), B.x0 + 0.035, 0, 0));
@@ -155,10 +157,10 @@ export function buildRig(mount) {
     list.push(at(paint(rbox(dx, 1.1, 0.07, 0.03), G), cx, 0, B.z1 - 0.035));
     list.push(at(paint(rbox(dx, 0.26, 0.07, 0.03), G), cx, B.y0 + 0.13, B.z0 + 0.035));
     // 背屏边框（屏幕本体是单独的 mesh，贴副相机画面）
-    list.push(at(paint(rbox(0.04, 0.72, 1.12, 0.02), 0x121418), B.x0 - 0.015, 0.02, 0.12));
+    list.push(at(paint(rbox(0.04, 0.72, 1.12, 0.02), BODY.screenBezel), B.x0 - 0.015, 0.02, 0.12));
     // 热靴 + 取景器目镜
-    list.push(at(paint(rbox(0.3, 0.05, 0.36, 0.015), 0x9aa3ad), B.x1 - 0.4, B.y1 + 0.33, 0));
-    list.push(at(paint(rbox(0.12, 0.2, 0.34, 0.04), 0x1b1d21), B.x0 - 0.05, B.y1 + 0.08, 0));
+    list.push(at(paint(rbox(0.3, 0.05, 0.36, 0.015), BODY.hotshoe), B.x1 - 0.4, B.y1 + 0.33, 0));
+    list.push(at(paint(rbox(0.12, 0.2, 0.34, 0.04), BODY.evf), B.x0 - 0.05, B.y1 + 0.08, 0));
     // 前板带卡口孔
     const fs = new THREE.Shape();
     fs.moveTo(-1.1, -0.54); fs.lineTo(1.1, -0.54); fs.lineTo(1.1, 0.54); fs.lineTo(-1.1, 0.54); fs.lineTo(-1.1, -0.54);
@@ -168,22 +170,22 @@ export function buildRig(mount) {
     const fg = new THREE.ExtrudeGeometry(fs, { depth: 0.06, bevelEnabled: false, curveSegments: 40 });
     fg.rotateY(Math.PI / 2);
     fg.translate(B.x1 - 0.06, 0, 0);
-    list.push(paint(fg, 0x353a42));
+    list.push(paint(fg, BODY.frontPlate));
     // 五棱镜顶
     const hs = new THREE.Shape();
     hs.moveTo(-0.34, 0); hs.lineTo(0.34, 0); hs.lineTo(0.2, 0.3); hs.lineTo(-0.2, 0.3); hs.lineTo(-0.34, 0);
     const hg = new THREE.ExtrudeGeometry(hs, { depth: dx * 0.85, bevelEnabled: true, bevelSize: 0.02, bevelThickness: 0.02, bevelSegments: 2 });
     hg.rotateY(-Math.PI / 2);
     hg.translate(B.x1 - 0.04, B.y1, 0);
-    list.push(paint(hg, 0x30343b));
+    list.push(paint(hg, BODY.prism));
     // 握把（远侧）
-    list.push(at(paint(new THREE.CapsuleGeometry(0.2, 0.6, 4, 12), 0x1b1d21), cx + 0.12, -0.05, B.z1 - 0.08));
+    list.push(at(paint(new THREE.CapsuleGeometry(0.2, 0.6, 4, 12), BODY.grip), cx + 0.12, -0.05, B.z1 - 0.08));
     // 顶部：快门键、模式转盘、橙色饰线
-    list.push(at(paint(new THREE.CylinderGeometry(0.07, 0.07, 0.05, 20), 0xc9cfd8), cx + 0.1, B.y1 + 0.025, 0.72));
-    list.push(at(paint(new THREE.CylinderGeometry(0.16, 0.16, 0.08, 28), 0x3d424b), cx - 0.05, B.y1 + 0.04, -0.62));
+    list.push(at(paint(new THREE.CylinderGeometry(0.07, 0.07, 0.05, 20), BODY.shutterButton), cx + 0.1, B.y1 + 0.025, 0.72));
+    list.push(at(paint(new THREE.CylinderGeometry(0.16, 0.16, 0.08, 28), BODY.modeDial), cx - 0.05, B.y1 + 0.04, -0.62));
     for (let i = 0; i < 24; i++) {
       const a = (i / 24) * Math.PI * 2;
-      list.push(at(paint(new THREE.BoxGeometry(0.012, 0.07, 0.02), 0x1b1d21), cx - 0.05 + Math.cos(a) * 0.16, B.y1 + 0.04, -0.62 + Math.sin(a) * 0.16, 0, -a));
+      list.push(at(paint(new THREE.BoxGeometry(0.012, 0.07, 0.02), BODY.dialTick), cx - 0.05 + Math.cos(a) * 0.16, B.y1 + 0.04, -0.62 + Math.sin(a) * 0.16, 0, -a));
     }
     list.push(at(paint(new THREE.BoxGeometry(0.02, 0.02, 2.2), ORANGE), B.x1 - 0.005, B.y1 - 0.08, 0));
     const g = new THREE.Group();
@@ -191,7 +193,7 @@ export function buildRig(mount) {
     m.castShadow = true;
     g.add(m);
     // 背屏：朝 -x，贴副相机的取景画面（main 里设置 map）
-    screenMat = new THREE.MeshBasicMaterial({ color: 0x0a0c10 });
+    screenMat = new THREE.MeshBasicMaterial({ color: BODY.screen });
     const scr = new THREE.Mesh(new THREE.PlaneGeometry(1.02, 0.66), screenMat);
     scr.rotation.y = -Math.PI / 2;
     scr.position.set(B.x0 - 0.037, 0.02, 0.12);
@@ -200,7 +202,7 @@ export function buildRig(mount) {
   }
 
   // 传感器基板
-  const sensorMat = new THREE.MeshStandardMaterial({ color: 0x3a3228, roughness: 0.35, metalness: 0.7 });
+  const sensorMat = new THREE.MeshStandardMaterial({ color: BODY.sensor, roughness: 0.35, metalness: 0.7 });
   {
     const g = new THREE.Group();
     const m = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.62, 0.86), sensorMat);
@@ -235,7 +237,7 @@ export function buildRig(mount) {
   }
 
   // 快门：框 + 前后帘（哑黑 + 亮边）
-  const frameMat = new THREE.MeshStandardMaterial({ color: 0x3b3f46, roughness: 0.5, metalness: 0.6 });
+  const frameMat = new THREE.MeshStandardMaterial({ color: BODY.sensorFrame, roughness: 0.5, metalness: 0.6 });
   {
     const s = new THREE.Shape();
     s.moveTo(-0.52, -0.46); s.lineTo(0.52, -0.46); s.lineTo(0.52, 0.46); s.lineTo(-0.52, 0.46); s.lineTo(-0.52, -0.46);
@@ -250,7 +252,7 @@ export function buildRig(mount) {
     g.add(m);
     reg('frame', g, V(-0.7), V(-0.25), V(-1.2, 0.5, 0), [frameMat]);
   }
-  const curtainMat = new THREE.MeshStandardMaterial({ color: 0x0d0e10, roughness: 0.95, metalness: 0.0 });
+  const curtainMat = new THREE.MeshStandardMaterial({ color: BODY.curtain, roughness: 0.95, metalness: 0.0 });
   const edgeMatF = new THREE.MeshBasicMaterial({ color: glow(ORANGE, 0.4), toneMapped: false });
   const edgeMatR = new THREE.MeshBasicMaterial({ color: glow(CYAN, 0.4), toneMapped: false });
   function curtain(key, x, fromTop, edgeMat, dE, dP) {
@@ -272,12 +274,12 @@ export function buildRig(mount) {
   const curF = curtain('shutterF', -1.172, false, edgeMatF, V(-0.3), V(-0.12));
 
   // 卡口：镀铬环 + 4 颗螺丝 + 金色触点
-  const mountMat = new THREE.MeshStandardMaterial({ color: 0xd6dbe2, roughness: 0.18, metalness: 1.0 });
+  const mountMat = new THREE.MeshStandardMaterial({ color: BODY.mount, roughness: 0.18, metalness: 1.0 });
   {
     const g = new THREE.Group();
     const m = new THREE.Mesh(ringX(0.56, 0.46, 0.12, -0.56), mountMat);
     g.add(m);
-    const screws = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.022, 0.022, 0.02, 12), new THREE.MeshStandardMaterial({ color: 0x8b929c, roughness: 0.3, metalness: 1 }), 7);
+    const screws = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.022, 0.022, 0.02, 12), new THREE.MeshStandardMaterial({ color: BODY.screw, roughness: 0.3, metalness: 1 }), 7);
     const m4 = new THREE.Matrix4();
     const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), Math.PI / 2);
     for (let i = 0; i < 4; i++) {
@@ -288,17 +290,17 @@ export function buildRig(mount) {
     for (let i = 0; i < 3; i++) {
       m4.compose(V(-0.495, -0.505, -0.08 + i * 0.08), q, V(0.7, 0.6, 0.7));
       screws.setMatrixAt(4 + i, m4);
-      screws.setColorAt(4 + i, new THREE.Color(0xe0b048));
+      screws.setColorAt(4 + i, new THREE.Color(BODY.screwGold));
     }
-    for (let i = 0; i < 4; i++) screws.setColorAt(i, new THREE.Color(0xffffff));
+    for (let i = 0; i < 4; i++) screws.setColorAt(i, new THREE.Color(BODY.screwWhite));
     g.add(screws);
     reg('mount', g, V(-0.3), V(-0.1), V(-0.56, -0.62, 0), [mountMat]);
   }
 
   // 镜片：透射 + 清漆，青色主调
   const glassMat = () => new THREE.MeshPhysicalMaterial({
-    color: 0xe8fbff, transmission: 1, thickness: 0.25, roughness: 0.04, ior: 1.52,
-    clearcoat: 1, clearcoatRoughness: 0.05, attenuationColor: new THREE.Color(0x7fe7ff), attenuationDistance: 1.4,
+    color: BODY.glass, transmission: 1, thickness: 0.25, roughness: 0.04, ior: 1.52,
+    clearcoat: 1, clearcoatRoughness: 0.05, attenuationColor: new THREE.Color(BODY.glassTint), attenuationDistance: 1.4,
     envMapIntensity: 1.2, transparent: false,
   });
   const g2Mat = glassMat();
@@ -310,8 +312,8 @@ export function buildRig(mount) {
   }
 
   // 光圈：外筒 + 盖环 + 9 片叶片 + 暖色叶片边
-  const apMat = new THREE.MeshStandardMaterial({ color: 0x33373e, roughness: 0.4, metalness: 0.7 });
-  const bladeMat = new THREE.MeshStandardMaterial({ color: 0x1a1c20, roughness: 0.32, metalness: 0.9 });
+  const apMat = new THREE.MeshStandardMaterial({ color: BODY.apertureRing, roughness: 0.4, metalness: 0.7 });
+  const bladeMat = new THREE.MeshStandardMaterial({ color: BODY.bladeSteel, roughness: 0.32, metalness: 0.9 });
   const bladeEdgeMat = new THREE.MeshBasicMaterial({ color: glow(ORANGE, 0.5), toneMapped: false });
   const AP_X = 0.45;
   const blades = new THREE.InstancedMesh(new THREE.BoxGeometry(0.006, BLADE_D, BLADE_L), bladeMat, N_BLADES);
@@ -357,15 +359,15 @@ export function buildRig(mount) {
   {
     const g = new THREE.Group();
     const list = [
-      barrelShell(0.5, -0.5, 1.5, 0x2a2e35),
-      barrelShell(0.535, 0.08, 0.58, 0x15171a),
-      barrelShell(0.53, 0.82, 1.3, 0x15171a),
-      barrelShell(0.515, 1.36, 1.44, 0xff8a2a),
-      barrelShell(0.515, -0.1, -0.02, 0x3fe0ff),
+      barrelShell(0.5, -0.5, 1.5, BODY.barrelOuter),
+      barrelShell(0.535, 0.08, 0.58, BODY.barrelDark),
+      barrelShell(0.53, 0.82, 1.3, BODY.barrelDark),
+      barrelShell(0.515, 1.36, 1.44, ORANGE),
+      barrelShell(0.515, -0.1, -0.02, CYAN),
     ];
     g.add(new THREE.Mesh(merge(list), barrelMat));
     const perRing = 44;
-    const knurl = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 0.022, 0.022), new THREE.MeshStandardMaterial({ color: 0x0c0d0f, roughness: 0.7 }), perRing * 2);
+    const knurl = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 0.022, 0.022), new THREE.MeshStandardMaterial({ color: BODY.knurl, roughness: 0.7 }), perRing * 2);
     const q = new THREE.Quaternion();
     const rings = [[0.1, 0.56, 0.535], [0.84, 1.28, 0.53]];
     let k = 0;
@@ -391,7 +393,7 @@ export function buildRig(mount) {
   const rayGeo = new THREE.CylinderGeometry(0.006, 0.006, 1, 5, 1, true);
   rayGeo.translate(0, 0.5, 0);
   const rays = new THREE.InstancedMesh(rayGeo, new THREE.MeshBasicMaterial({ toneMapped: false, transparent: true, opacity: 0.9, depthWrite: false }), RAYS * SEG);
-  const pulses = new THREE.InstancedMesh(new THREE.SphereGeometry(0.022, 10, 8), new THREE.MeshBasicMaterial({ color: glow(0xffe2b0, 4), toneMapped: false }), RAYS);
+  const pulses = new THREE.InstancedMesh(new THREE.SphereGeometry(0.022, 10, 8), new THREE.MeshBasicMaterial({ color: glow(LIGHT.pulse, 4), toneMapped: false }), RAYS);
   rays.frustumCulled = false;
   pulses.frustumCulled = false;
   rig.add(rays, pulses);
@@ -400,7 +402,7 @@ export function buildRig(mount) {
   const tmpA = new THREE.Vector3();
   const tmpB = new THREE.Vector3();
   const tmpD = new THREE.Vector3();
-  const colLit = glow(0xffd9a0, 2.6);
+  const colLit = glow(LIGHT.columnLit, 2.6);
   const colDim = new THREE.Color(0.25, 0.22, 0.2);
   function seg(i, a, b, col, vis) {
     tmpD.subVectors(b, a);
@@ -511,7 +513,7 @@ export function buildRig(mount) {
         p.act = Math.max(0, p.act - dt * 0.6);
         for (const m of p.mats) {
           if (m.emissive) {
-            m.emissive.setHex(0xff9a4a);
+            m.emissive.setHex(LIGHT.partHot);
             m.emissiveIntensity = p.hot * 0.35;
           }
         }

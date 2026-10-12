@@ -101,8 +101,3 @@ export function rng(seed) {
   };
 }
 export const $ = (id) => document.getElementById(id);
-export const FONT = '"SF Pro Display", -apple-system, system-ui, "PingFang SC", sans-serif';
-export const MONO = '"SF Mono", ui-monospace, Menlo, monospace';
-export const ORANGE = 0xff8a2a;
-export const CYAN = 0x3fe0ff;
-export const GREEN = 0x7dffa8;

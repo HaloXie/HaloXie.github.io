@@ -1,6 +1,8 @@
 // 教学叠加层（只在主画面，不进照片）：景深板、进光锥、光束浮尘。
 import * as THREE from 'three';
-import { damp, glow, CYAN, ORANGE } from '../../../kit/util.js';
+import { damp, glow } from '../../../kit/util.js';
+import { CYAN, ORANGE } from '../../../kit/palette.js';
+import { LIGHT } from './palette.js';
 import { focusPlaneHalf, FOCUS_M, mToUnits } from './optics.js';
 import { AXIS, softDot } from './diorama.js';
 
@@ -74,7 +76,7 @@ export function buildLightCone(scene) {
   const geo = new THREE.CylinderGeometry(1, 0.0, 1, 40, 1, true);
   geo.translate(0, -0.5, 0);
   geo.rotateZ(Math.PI / 2); // 轴沿 +x：顶点在 x = 1（主体），底面在 x = 0（镜头）
-  const mat = new THREE.MeshBasicMaterial({ color: glow(0xffe2b0, 1.2), transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
+  const mat = new THREE.MeshBasicMaterial({ color: glow(LIGHT.beam, 1.2), transparent: true, opacity: 0.12, depthWrite: false, side: THREE.DoubleSide, blending: THREE.AdditiveBlending });
   const cone = new THREE.Mesh(geo, mat);
   cone.userData.noDepth = true;
   scene.add(cone);
@@ -112,7 +114,7 @@ export function buildDust(scene, box) {
   }
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-  const mat = new THREE.PointsMaterial({ size: 0.035, map: softDot(), color: glow(0xffe8c8, 1.6), transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending });
+  const mat = new THREE.PointsMaterial({ size: 0.035, map: softDot(), color: glow(LIGHT.dust, 1.6), transparent: true, opacity: 0.55, depthWrite: false, blending: THREE.AdditiveBlending });
   const pts = new THREE.Points(geo, mat);
   pts.frustumCulled = false;
   pts.userData.noDepth = true;

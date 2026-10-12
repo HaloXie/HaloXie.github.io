@@ -1,0 +1,11 @@
+/* camera 示例自己的颜色 token（kit 的通用 token 在 kit/theme.css）。 */
+:root {
+  --lab-screen: #000000;
+  --lab-screen-grid: rgba(255, 255, 255, 0.12);
+  --lab-paper: #f4efe6;
+  --lab-paper-ink: #3a3a3a;
+  --lab-under: #2f5fd0;
+}
+:root[data-exploded-scheme="dark"] {
+  --lab-under: #3f78ff;
+}

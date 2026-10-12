@@ -3,6 +3,7 @@
 // setTime(t) 让风车角度、灯泡亮度只由时间决定：主画面用真实时钟，副相机每个样本用「快门时间内的某一刻」。
 import * as THREE from 'three';
 import { paint, at, merge, prbox, rbox, glow, rng, canvasTexture } from '../../../kit/util.js';
+import { SCENE, FIGURE, LIGHT } from './palette.js';
 import { SUBJECT, WINDMILL_REV_PER_S } from './optics.js';
 
 export const PHOTO_LAYER = 1; // 副相机只看这一层：布景和灯光在，相机模型 / 景深板 / 标签不在
@@ -29,9 +30,9 @@ export function softDot() {
   if (dotTex) return dotTex;
   dotTex = canvasTexture(64, 64, (g) => {
     const r = g.createRadialGradient(32, 32, 0, 32, 32, 32);
-    r.addColorStop(0, 'rgba(255,255,255,1)');
-    r.addColorStop(0.35, 'rgba(255,255,255,0.55)');
-    r.addColorStop(1, 'rgba(255,255,255,0)');
+    r.addColorStop(0, LIGHT.dotCore);
+    r.addColorStop(0.35, LIGHT.dotMid);
+    r.addColorStop(1, LIGHT.dotEdge);
     g.fillStyle = r;
     g.fillRect(0, 0, 64, 64);
   }).tex;
@@ -49,46 +50,46 @@ export function buildDiorama(scene) {
 
   // ---------- 底座 + 草地 + 小路 + 篱笆 + 灌木 ----------
   const set = [];
-  set.push(prbox(0x5a3d29, 7.9, TOP - 0.02, 5.6, 4.7, (TOP - 0.02) / 2, 0, 0.04));
-  set.push(prbox(0x4f8a4a, 7.7, 0.03, 5.4, 4.7, TOP - 0.005, 0, 0.012));
+  set.push(prbox(SCENE.soil, 7.9, TOP - 0.02, 5.6, 4.7, (TOP - 0.02) / 2, 0, 0.04));
+  set.push(prbox(SCENE.grass, 7.7, 0.03, 5.4, 4.7, TOP - 0.005, 0, 0.012));
   // 草丛和小花：合并进同一个静态 mesh，不加 draw call
-  const FLOWER = [0xffe066, 0xff8fb8, 0xffffff, 0xff7a45, 0xb48cff];
+  const FLOWER = SCENE.flowers;
   for (let i = 0; i < 260; i++) {
     const x = 0.9 + R() * 7.2;
     const z = -2.6 + R() * 5.2;
     if (Math.abs(z - (-0.9 + Math.sin(((x - 1) / 6.6) * 5.2) * 0.55 + ((x - 1) / 6.6) * 0.5)) < 0.2) continue; // 让开小路
     const h = 0.05 + R() * 0.07;
-    set.push(at(paint(new THREE.ConeGeometry(0.018 + R() * 0.015, h, 4), [0x3f7d3a, 0x5a9a48, 0x6fae52][i % 3]), x, TOP + h / 2, z, (R() - 0.5) * 0.4, R() * 3, (R() - 0.5) * 0.4));
+    set.push(at(paint(new THREE.ConeGeometry(0.018 + R() * 0.015, h, 4), [SCENE.stem1, SCENE.stem2, SCENE.stem3][i % 3]), x, TOP + h / 2, z, (R() - 0.5) * 0.4, R() * 3, (R() - 0.5) * 0.4));
     if (i % 4 === 0) set.push(at(paint(new THREE.IcosahedronGeometry(0.016 + R() * 0.01, 0), FLOWER[i % FLOWER.length]), x + 0.01, TOP + h + 0.01, z));
   }
   // 路灯：人偶身后一盏暖色小灯（灯罩发光，照片里也是一个小光源）
-  set.push(at(paint(new THREE.CylinderGeometry(0.012, 0.016, 0.9, 8), 0x2b2f36), X_F + 0.55, TOP + 0.45, 0.55));
-  set.push(at(paint(new THREE.CylinderGeometry(0.05, 0.035, 0.07, 10), 0x2b2f36), X_F + 0.55, TOP + 0.93, 0.55));
+  set.push(at(paint(new THREE.CylinderGeometry(0.012, 0.016, 0.9, 8), SCENE.lampPost), X_F + 0.55, TOP + 0.45, 0.55));
+  set.push(at(paint(new THREE.CylinderGeometry(0.05, 0.035, 0.07, 10), SCENE.lampPost), X_F + 0.55, TOP + 0.93, 0.55));
   for (let i = 0; i < 26; i++) {
     const t = i / 25;
     const x = 1.0 + t * 6.6;
     const z = -0.9 + Math.sin(t * 5.2) * 0.55 + t * 0.5;
-    set.push(at(paint(new THREE.CylinderGeometry(0.07 + R() * 0.04, 0.09, 0.02, 7), 0xcdb89a), x, TOP + 0.02, z, 0, R() * 3));
+    set.push(at(paint(new THREE.CylinderGeometry(0.07 + R() * 0.04, 0.09, 0.02, 7), SCENE.stone), x, TOP + 0.02, z, 0, R() * 3));
   }
-  for (let z = -2.5; z <= 2.5; z += 0.36) set.push(prbox(0xe8dcc8, 0.04, 0.26, 0.04, 7.9, TOP + 0.13, z, 0.012));
-  set.push(prbox(0xe8dcc8, 0.03, 0.03, 5.1, 7.9, TOP + 0.2, 0, 0.01));
-  set.push(prbox(0xe8dcc8, 0.03, 0.03, 5.1, 7.9, TOP + 0.1, 0, 0.01));
+  for (let z = -2.5; z <= 2.5; z += 0.36) set.push(prbox(SCENE.fence, 0.04, 0.26, 0.04, 7.9, TOP + 0.13, z, 0.012));
+  set.push(prbox(SCENE.fence, 0.03, 0.03, 5.1, 7.9, TOP + 0.2, 0, 0.01));
+  set.push(prbox(SCENE.fence, 0.03, 0.03, 5.1, 7.9, TOP + 0.1, 0, 0.01));
   const bush = (x, z, s, c) => {
     for (let k = 0; k < 3; k++) set.push(at(paint(new THREE.IcosahedronGeometry(s * (0.8 - k * 0.15), 1), c), x + (k - 1) * s * 0.5, TOP + s * 0.6, z + (R() - 0.5) * s * 0.4, R(), R()));
   };
-  bush(2.6, -1.4, 0.28, 0x3f7d45);
-  bush(4.6, 1.9, 0.34, 0x4a8f50);
-  bush(5.6, -2.1, 0.3, 0x3a7440);
-  bush(1.4, 1.5, 0.22, 0x55994f);
+  bush(2.6, -1.4, 0.28, SCENE.bush1);
+  bush(4.6, 1.9, 0.34, SCENE.bush2);
+  bush(5.6, -2.1, 0.3, SCENE.bush3);
+  bush(1.4, 1.5, 0.22, SCENE.bush4);
   // 灯串的两根杆
   for (const [x, z, h] of [[X_B, -2.55, 1.95], [X_B, 2.55, 1.95], [X_B - 0.8, -2.45, 1.55], [X_B - 0.8, 1.3, 1.55]]) {
-    set.push(at(paint(new THREE.CylinderGeometry(0.025, 0.035, h, 8), 0x3b2c22), x, TOP + h / 2, z));
+    set.push(at(paint(new THREE.CylinderGeometry(0.025, 0.035, h, 8), SCENE.trunk), x, TOP + h / 2, z));
   }
   // 风车塔：八棱台 + 锥顶 + 门窗
-  set.push(at(paint(new THREE.CylinderGeometry(0.2, 0.3, 0.86, 8), 0xe9e1d2), X_W, TOP + 0.43, 0.8, 0, Math.PI / 8));
-  set.push(at(paint(new THREE.ConeGeometry(0.26, 0.26, 8), 0xb8452f), X_W, TOP + 0.99, 0.8, 0, Math.PI / 8));
-  set.push(prbox(0x6b4a33, 0.03, 0.2, 0.12, X_W - 0.27, TOP + 0.1, 0.8, 0.01));
-  set.push(prbox(0x2a3550, 0.03, 0.1, 0.08, X_W - 0.23, TOP + 0.5, 0.8, 0.01));
+  set.push(at(paint(new THREE.CylinderGeometry(0.2, 0.3, 0.86, 8), SCENE.windmillWall), X_W, TOP + 0.43, 0.8, 0, Math.PI / 8));
+  set.push(at(paint(new THREE.ConeGeometry(0.26, 0.26, 8), SCENE.windmillRoof), X_W, TOP + 0.99, 0.8, 0, Math.PI / 8));
+  set.push(prbox(SCENE.windmillDoor, 0.03, 0.2, 0.12, X_W - 0.27, TOP + 0.1, 0.8, 0.01));
+  set.push(prbox(SCENE.windmillWindow, 0.03, 0.1, 0.08, X_W - 0.23, TOP + 0.5, 0.8, 0.01));
   const setMesh = new THREE.Mesh(merge(set), std());
   setMesh.receiveShadow = true;
   setMesh.castShadow = true;
@@ -99,23 +100,23 @@ export function buildDiorama(scene) {
   const fx = X_F;
   const fz = -0.2;
   const y0 = TOP;
-  fig.push(at(paint(new THREE.CapsuleGeometry(0.035, 0.1, 4, 10), 0x2f3a55), fx, y0 + 0.09, fz - 0.045));
-  fig.push(at(paint(new THREE.CapsuleGeometry(0.035, 0.1, 4, 10), 0x2f3a55), fx, y0 + 0.09, fz + 0.045));
-  fig.push(prbox(0x3a2a20, 0.1, 0.035, 0.06, fx - 0.015, y0 + 0.018, fz - 0.045, 0.012));
-  fig.push(prbox(0x3a2a20, 0.1, 0.035, 0.06, fx - 0.015, y0 + 0.018, fz + 0.045, 0.012));
-  fig.push(at(paint(rbox(0.16, 0.24, 0.2, 0.06), 0xf2c230), fx, y0 + 0.28, fz));
-  fig.push(at(paint(new THREE.TorusGeometry(0.075, 0.025, 8, 20), 0xd83a2e), fx, y0 + 0.41, fz, Math.PI / 2));
-  fig.push(at(paint(new THREE.SphereGeometry(0.1, 24, 16), 0xf5d3b8), fx, y0 + 0.5, fz));
-  fig.push(at(paint(new THREE.SphereGeometry(0.103, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.45), 0x3a5fa8), fx, y0 + 0.52, fz));
-  fig.push(at(paint(new THREE.SphereGeometry(0.03, 10, 8), 0xf0f0f0), fx, y0 + 0.63, fz));
+  fig.push(at(paint(new THREE.CapsuleGeometry(0.035, 0.1, 4, 10), FIGURE.pants), fx, y0 + 0.09, fz - 0.045));
+  fig.push(at(paint(new THREE.CapsuleGeometry(0.035, 0.1, 4, 10), FIGURE.pants), fx, y0 + 0.09, fz + 0.045));
+  fig.push(prbox(FIGURE.shoes, 0.1, 0.035, 0.06, fx - 0.015, y0 + 0.018, fz - 0.045, 0.012));
+  fig.push(prbox(FIGURE.shoes, 0.1, 0.035, 0.06, fx - 0.015, y0 + 0.018, fz + 0.045, 0.012));
+  fig.push(at(paint(rbox(0.16, 0.24, 0.2, 0.06), FIGURE.jacket), fx, y0 + 0.28, fz));
+  fig.push(at(paint(new THREE.TorusGeometry(0.075, 0.025, 8, 20), FIGURE.scarf), fx, y0 + 0.41, fz, Math.PI / 2));
+  fig.push(at(paint(new THREE.SphereGeometry(0.1, 24, 16), FIGURE.skin), fx, y0 + 0.5, fz));
+  fig.push(at(paint(new THREE.SphereGeometry(0.103, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.45), FIGURE.hat), fx, y0 + 0.52, fz));
+  fig.push(at(paint(new THREE.SphereGeometry(0.03, 10, 8), FIGURE.pompom), fx, y0 + 0.63, fz));
   for (const s of [-1, 1]) {
-    fig.push(at(paint(new THREE.SphereGeometry(0.012, 8, 6), 0x1a1a1a), fx - 0.093, y0 + 0.51, fz + s * 0.035));
-    fig.push(at(paint(new THREE.SphereGeometry(0.016, 8, 6), 0xf09a8a), fx - 0.085, y0 + 0.475, fz + s * 0.06));
+    fig.push(at(paint(new THREE.SphereGeometry(0.012, 8, 6), FIGURE.eye), fx - 0.093, y0 + 0.51, fz + s * 0.035));
+    fig.push(at(paint(new THREE.SphereGeometry(0.016, 8, 6), FIGURE.cheek), fx - 0.085, y0 + 0.475, fz + s * 0.06));
     // 手臂：肩 → 手（伸向镜头方向捧相机）
-    fig.push(between(paint(new THREE.CapsuleGeometry(0.03, 0.14, 4, 8), 0xf2c230), V(fx, y0 + 0.37, fz + s * 0.1), V(fx - 0.1, y0 + 0.27, fz + s * 0.06)));
+    fig.push(between(paint(new THREE.CapsuleGeometry(0.03, 0.14, 4, 8), FIGURE.jacket), V(fx, y0 + 0.37, fz + s * 0.1), V(fx - 0.1, y0 + 0.27, fz + s * 0.06)));
   }
-  fig.push(prbox(0x22252b, 0.05, 0.07, 0.11, fx - 0.13, y0 + 0.28, fz, 0.012));
-  fig.push(at(paint(new THREE.CylinderGeometry(0.022, 0.022, 0.03, 14), 0x111111), fx - 0.165, y0 + 0.28, fz, 0, 0, Math.PI / 2));
+  fig.push(prbox(FIGURE.miniCamera, 0.05, 0.07, 0.11, fx - 0.13, y0 + 0.28, fz, 0.012));
+  fig.push(at(paint(new THREE.CylinderGeometry(0.022, 0.022, 0.03, 14), FIGURE.miniLens), fx - 0.165, y0 + 0.28, fz, 0, 0, Math.PI / 2));
   const figure = new THREE.Mesh(merge(fig), std({ roughness: 0.55 }));
   figure.castShadow = true;
   root.add(figure);
@@ -124,12 +125,12 @@ export function buildDiorama(scene) {
   const hub = new THREE.Group();
   hub.position.set(X_W - 0.3, TOP + 0.78, 0.8);
   const blade = [];
-  blade.push(paint(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 14).rotateZ(Math.PI / 2), 0x6b4a33));
+  blade.push(paint(new THREE.CylinderGeometry(0.05, 0.05, 0.08, 14).rotateZ(Math.PI / 2), SCENE.windmillWood));
   for (let k = 0; k < 4; k++) {
     const one = [];
-    one.push(at(paint(new THREE.BoxGeometry(0.02, 0.46, 0.022), 0x6b4a33), 0, 0.26, 0));
-    one.push(at(paint(new THREE.BoxGeometry(0.008, 0.34, 0.1), k % 2 ? 0xf1e7d6 : 0xd9553e), -0.006, 0.3, 0.06));
-    for (let j = 0; j < 4; j++) one.push(at(paint(new THREE.BoxGeometry(0.012, 0.012, 0.11), 0x6b4a33), -0.012, 0.16 + j * 0.09, 0.06));
+    one.push(at(paint(new THREE.BoxGeometry(0.02, 0.46, 0.022), SCENE.windmillWood), 0, 0.26, 0));
+    one.push(at(paint(new THREE.BoxGeometry(0.008, 0.34, 0.1), k % 2 ? SCENE.sailCream : SCENE.sailRed), -0.006, 0.3, 0.06));
+    for (let j = 0; j < 4; j++) one.push(at(paint(new THREE.BoxGeometry(0.012, 0.012, 0.11), SCENE.windmillWood), -0.012, 0.16 + j * 0.09, 0.06));
     const g = merge(one);
     g.rotateX((k * Math.PI) / 2);
     blade.push(g);
@@ -151,7 +152,7 @@ export function buildDiorama(scene) {
       const t = i / 24;
       pts.push(V(s.x, s.y0 - s.sag * 4 * t * (1 - t), s.z0 + (s.z1 - s.z0) * t));
     }
-    wires.push(paint(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.006, 4, false), 0x1a1410));
+    wires.push(paint(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 32, 0.006, 4, false), SCENE.wire));
     for (let i = 1; i < s.n; i++) {
       const t = i / s.n;
       bulbPos.push(V(s.x, s.y0 - s.sag * 4 * t * (1 - t) - 0.045, s.z0 + (s.z1 - s.z0) * t));
@@ -160,8 +161,8 @@ export function buildDiorama(scene) {
   const wireMesh = new THREE.Mesh(merge(wires), new THREE.MeshBasicMaterial({ vertexColors: true }));
   root.add(wireMesh);
   bulbPos.push(V(X_F + 0.55, TOP + 0.885, 0.55)); // 路灯灯泡
-  const PAL = [0xffc46b, 0xff7a45, 0xfff0c8, 0x7fd8ff, 0xff8fb8];
-  const bulbMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+  const PAL = SCENE.bulbs;
+  const bulbMat = new THREE.MeshBasicMaterial({ color: LIGHT.bulb });
   const bulbs = new THREE.InstancedMesh(new THREE.SphereGeometry(0.03, 10, 8), bulbMat, bulbPos.length);
   const baseCol = [];
   const m4 = new THREE.Matrix4();
@@ -179,9 +180,9 @@ export function buildDiorama(scene) {
   const skyGeo = new THREE.PlaneGeometry(6.4, 3.2, 24, 12);
   const pos = skyGeo.attributes.position;
   const col = new Float32Array(pos.count * 3);
-  const cTop = new THREE.Color(0x0d1640);
-  const cMid = new THREE.Color(0x3b3f8f);
-  const cLow = new THREE.Color(0xf08a4b);
+  const cTop = new THREE.Color(SCENE.skyTop);
+  const cMid = new THREE.Color(SCENE.skyMid);
+  const cLow = new THREE.Color(SCENE.skyLow);
   const c = new THREE.Color();
   for (let i = 0; i < pos.count; i++) {
     const t = (pos.getY(i) + 1.6) / 3.2;
@@ -209,13 +210,13 @@ export function buildDiorama(scene) {
     g.translate(x, TOP, 0);
     return paint(g, hex);
   };
-  hills.push(hillShape(-3.2, 3.2, 0.75, 24, 0x2a2350, X_B + 1.1));
-  hills.push(hillShape(-3.2, 1.5, 0.45, 18, 0x1a1a35, X_B + 0.9));
+  hills.push(hillShape(-3.2, 3.2, 0.75, 24, SCENE.hillFar, X_B + 1.1));
+  hills.push(hillShape(-3.2, 1.5, 0.45, 18, SCENE.hillNear, X_B + 0.9));
   for (let i = 0; i < 9; i++) {
     const z = -2.8 + i * 0.7 + R() * 0.2;
-    hills.push(at(paint(new THREE.ConeGeometry(0.1, 0.42 + R() * 0.2, 6), 0x141428), X_B + 0.85, TOP + 0.28, z));
+    hills.push(at(paint(new THREE.ConeGeometry(0.1, 0.42 + R() * 0.2, 6), SCENE.pine), X_B + 0.85, TOP + 0.28, z));
   }
-  hills.push(at(paint(new THREE.CircleGeometry(0.2, 32), glow(0xfff2d0, 1.6)), X_B + 1.05, TOP + 2.4, 1.6, 0, -Math.PI / 2));
+  hills.push(at(paint(new THREE.CircleGeometry(0.2, 32), glow(SCENE.moonDisc, 1.6)), X_B + 1.05, TOP + 2.4, 1.6, 0, -Math.PI / 2));
   root.add(new THREE.Mesh(merge(hills), new THREE.MeshBasicMaterial({ vertexColors: true, fog: false })));
   const starPos = [];
   for (let i = 0; i < 70; i++) starPos.push(X_B + 1.2, TOP + 1.7 + R() * 1.4, -3 + R() * 6);
@@ -225,12 +226,12 @@ export function buildDiorama(scene) {
   root.add(stars);
 
   // ---------- 布景灯：暖色主光打在人偶上，冷色月光轮廓 ----------
-  const spot = new THREE.SpotLight(0xffd6a8, 9, 6, 0.5, 0.6, 1.4);
+  const spot = new THREE.SpotLight(LIGHT.spot, 9, 6, 0.5, 0.6, 1.4);
   spot.position.set(X_F - 0.6, 1.9, -1.3);
   spot.target.position.set(X_F, TOP + 0.35, -0.2);
-  const moon = new THREE.PointLight(0x8fb4ff, 5, 7, 1.5);
+  const moon = new THREE.PointLight(LIGHT.moon, 5, 7, 1.5);
   moon.position.set(X_W + 1.2, 1.9, 1.2);
-  const bulbGlow = new THREE.PointLight(0xffb070, 3, 5, 1.5);
+  const bulbGlow = new THREE.PointLight(LIGHT.bulbGlow, 3, 5, 1.5);
   bulbGlow.position.set(X_B - 0.5, TOP + 1.2, 0);
   root.add(spot, spot.target, moon, bulbGlow);
   for (const l of [spot, moon, bulbGlow]) l.layers.enableAll();

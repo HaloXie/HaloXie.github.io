@@ -7,6 +7,7 @@ import { FullScreenQuad } from 'three/addons/postprocessing/Pass.js';
 import * as O from './optics.js';
 import { PHOTO_LAYER, AXIS } from './diorama.js';
 import { rng } from '../../../kit/util.js';
+import { LIGHT } from './palette.js';
 
 export const VF_W = 600;
 export const VF_H = 400; // 3:2，与 36×24mm 传感器同比例
@@ -108,7 +109,7 @@ export function createViewfinder(stage, dio) {
 
   function clear(rt) {
     renderer.setRenderTarget(rt);
-    renderer.setClearColor(0x000000, 0);
+    renderer.setClearColor(LIGHT.black, 0);
     renderer.clear(true, false, false);
   }
   // 在 job 上追加 n 个样本
@@ -123,7 +124,7 @@ export function createViewfinder(stage, dio) {
       for (let k = job.n; k < end; k++) {
         dio.setTime(setSample(k, job.p));
         renderer.setRenderTarget(sampleRT);
-        renderer.setClearColor(0x000000, 1);
+        renderer.setClearColor(LIGHT.black, 1);
         renderer.clear();
         renderer.render(scene, cam);
         renderer.setRenderTarget(job.rt);

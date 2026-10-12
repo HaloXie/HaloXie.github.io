@@ -1,6 +1,11 @@
 // kit 台面实体控件：挡位旋钮（段落感 + 回弹）、按压按钮（回弹）、指针表。统一的拾取器。
 import * as THREE from 'three';
-import { paint, at, merge, bouncy, canvasTexture, glow, FONT, MONO, ORANGE } from './util.js';
+import { paint, at, merge, bouncy, canvasTexture, glow } from './util.js';
+import { token } from './theme.js';
+import { ORANGE, RED, CONTROL as C } from './palette.js';
+
+const FONT = () => token('font');
+const MONO = () => token('mono');
 
 const ptr = new THREE.Vector2();
 const ray = new THREE.Raycaster();
@@ -77,14 +82,14 @@ export function knob(stage, picker, o) {
       const a = angleOf(i);
       const x = cx - Math.sin(a) * R * 1.13;
       const y = cx - Math.cos(a) * R * 1.13;
-      c.fillStyle = 'rgba(255,255,255,0.55)';
+      c.fillStyle = C.inkDim;
       c.fillRect(cx - Math.sin(a) * R * 0.92 - 3, cx - Math.cos(a) * R * 0.92 - 3, 6, 6);
-      c.font = `800 ${n > 7 ? 30 : 34}px ${MONO}`;
-      c.fillStyle = '#e8edf5';
+      c.font = `800 ${n > 7 ? 30 : 34}px ${MONO()}`;
+      c.fillStyle = C.ink;
       c.fillText(t, x, y);
     });
     if (title) {
-      c.font = `800 30px ${FONT}`;
+      c.font = `800 30px ${FONT()}`;
       c.fillStyle = `#${new THREE.Color(tone).getHexString()}`;
       c.fillText(title, cx, S - 22);
     }
@@ -96,17 +101,17 @@ export function knob(stage, picker, o) {
   g.add(faceMesh);
 
   const base = new THREE.Mesh(merge([
-    at(paint(new THREE.CylinderGeometry(r * 1.18, r * 1.24, 0.05, 48), 0x1a1e25), 0, 0.025, 0),
+    at(paint(new THREE.CylinderGeometry(r * 1.18, r * 1.24, 0.05, 48), C.base), 0, 0.025, 0),
     at(paint(new THREE.TorusGeometry(r * 1.15, 0.012, 6, 48), glow(tone, 1.4)), 0, 0.05, 0, Math.PI / 2),
   ]), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4, metalness: 0.6 }));
   g.add(base);
 
   // 旋转体：滚花圆柱 + 指示线（一个 mesh）
-  const parts = [at(paint(new THREE.CylinderGeometry(r, r * 1.02, 0.2, 40), 0x2c313a), 0, 0.15, 0)];
-  parts.push(at(paint(new THREE.CylinderGeometry(r * 0.9, r * 0.96, 0.03, 40), 0x444b57), 0, 0.265, 0));
+  const parts = [at(paint(new THREE.CylinderGeometry(r, r * 1.02, 0.2, 40), C.body), 0, 0.15, 0)];
+  parts.push(at(paint(new THREE.CylinderGeometry(r * 0.9, r * 0.96, 0.03, 40), C.cap), 0, 0.265, 0));
   for (let i = 0; i < 36; i++) {
     const a = (i / 36) * Math.PI * 2;
-    parts.push(at(paint(new THREE.BoxGeometry(0.018, 0.17, 0.03), 0x16191e), Math.sin(a) * r, 0.15, Math.cos(a) * r, 0, a));
+    parts.push(at(paint(new THREE.BoxGeometry(0.018, 0.17, 0.03), C.grip), Math.sin(a) * r, 0.15, Math.cos(a) * r, 0, a));
   }
   parts.push(at(paint(new THREE.BoxGeometry(0.035, 0.012, r * 0.8), glow(tone, 2.2)), 0, 0.285, -r * 0.45));
   const body = new THREE.Mesh(merge(parts), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.35, metalness: 0.55 }));
@@ -142,11 +147,11 @@ export function knob(stage, picker, o) {
 
 // 按压按钮：按下陷入 + 欠阻尼回弹
 export function pushButton(stage, picker, o) {
-  const { r = 0.22, color = 0xe0413a, onPress } = o;
+  const { r = 0.22, color = RED, onPress } = o;
   const g = new THREE.Group();
   g.position.copy(o.position);
   const base = new THREE.Mesh(merge([
-    at(paint(new THREE.CylinderGeometry(r * 1.45, r * 1.55, 0.08, 40), 0x1a1e25), 0, 0.04, 0),
+    at(paint(new THREE.CylinderGeometry(r * 1.45, r * 1.55, 0.08, 40), C.base), 0, 0.04, 0),
     at(paint(new THREE.TorusGeometry(r * 1.25, 0.015, 6, 40), glow(color, 1.6)), 0, 0.085, 0, Math.PI / 2),
   ]), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4, metalness: 0.5 }));
   const capMat = new THREE.MeshPhysicalMaterial({ color, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.15, emissive: color, emissiveIntensity: 0.15 });
@@ -184,43 +189,43 @@ export function gauge(stage, o) {
     const cx = S / 2;
     c.clearRect(0, 0, S, S);
     const bg = c.createRadialGradient(cx, cx, 10, cx, cx, cx);
-    bg.addColorStop(0, '#223044');
-    bg.addColorStop(1, '#0d131d');
+    bg.addColorStop(0, C.faceHi);
+    bg.addColorStop(1, C.faceLo);
     c.fillStyle = bg;
     c.beginPath(); c.arc(cx, cx, cx - 4, 0, Math.PI * 2); c.fill();
     c.lineWidth = 16;
     const seg = (a0, a1, col) => { c.strokeStyle = col; c.beginPath(); c.arc(cx, cx, cx * 0.78, a0, a1); c.stroke(); };
     const ang = (v) => -Math.PI / 2 + (v / range) * (sweep / 2);
-    seg(ang(-range), ang(-0.5), 'rgba(63,160,255,0.55)');
-    seg(ang(-0.5), ang(0.5), 'rgba(125,255,168,0.9)');
-    seg(ang(0.5), ang(range), 'rgba(255,120,80,0.6)');
+    seg(ang(-range), ang(-0.5), C.arcLow);
+    seg(ang(-0.5), ang(0.5), C.arcOk);
+    seg(ang(0.5), ang(range), C.arcHigh);
     c.textAlign = 'center';
     c.textBaseline = 'middle';
     for (const t of ticks) {
       const a = ang(t.v);
-      c.fillStyle = '#e8edf5';
-      c.font = `800 34px ${MONO}`;
+      c.fillStyle = C.ink;
+      c.font = `800 34px ${MONO()}`;
       c.fillText(t.label, cx + Math.cos(a) * cx * 0.56, cx + Math.sin(a) * cx * 0.56);
     }
-    c.font = `800 30px ${FONT}`;
-    c.fillStyle = '#9fb3c8';
+    c.font = `800 30px ${FONT()}`;
+    c.fillStyle = C.inkSoft;
     c.fillText(title, cx, cx * 1.34);
-    c.font = `800 44px ${MONO}`;
-    c.fillStyle = '#ffffff';
+    c.font = `800 44px ${MONO()}`;
+    c.fillStyle = C.inkStrong;
     c.fillText(readout || '', cx, cx * 1.62);
     face.tex.needsUpdate = true;
   };
   drawFace('');
   const bezel = new THREE.Mesh(merge([
-    at(paint(new THREE.CylinderGeometry(r * 1.1, r * 1.16, 0.08, 48), 0x1a1e25), 0, 0.04, 0),
-    at(paint(new THREE.TorusGeometry(r * 1.06, 0.018, 8, 48), 0x8a93a3), 0, 0.085, 0, Math.PI / 2),
+    at(paint(new THREE.CylinderGeometry(r * 1.1, r * 1.16, 0.08, 48), C.base), 0, 0.04, 0),
+    at(paint(new THREE.TorusGeometry(r * 1.06, 0.018, 8, 48), C.bezelRing), 0, 0.085, 0, Math.PI / 2),
   ]), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.3, metalness: 0.8 }));
   const dial = new THREE.Mesh(new THREE.CircleGeometry(r, 48), new THREE.MeshBasicMaterial({ map: face.tex }));
   dial.rotation.x = -Math.PI / 2;
   dial.position.y = 0.082;
   const needle = new THREE.Mesh(merge([
     at(paint(new THREE.BoxGeometry(0.018, 0.012, r * 0.82), glow(ORANGE, 3)), 0, 0, -r * 0.36),
-    at(paint(new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16), 0xdddddd), 0, 0, 0),
+    at(paint(new THREE.CylinderGeometry(0.035, 0.035, 0.02, 16), C.hub), 0, 0, 0),
   ]), new THREE.MeshBasicMaterial({ vertexColors: true }));
   needle.position.y = 0.095;
   g.add(bezel, dial, needle);

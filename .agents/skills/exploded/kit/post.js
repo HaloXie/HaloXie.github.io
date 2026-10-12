@@ -8,7 +8,8 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 export function createPost(renderer, scene, camera, opts = {}) {
-  const o = { gtao: true, bokeh: true, bloom: true, bloomStrength: 0.55, bloomThreshold: 0.92, ...opts };
+  // bloom 强度与阈值由主题 token 决定，stage 创建后立刻 setBloom
+  const o = { gtao: true, bokeh: true, bloom: true, ...opts };
   const w = innerWidth;
   const h = innerHeight;
   const composer = new EffectComposer(renderer);
@@ -31,7 +32,7 @@ export function createPost(renderer, scene, camera, opts = {}) {
   }
   let bloom = null;
   if (o.bloom) {
-    bloom = new UnrealBloomPass(new THREE.Vector2(w / 2, h / 2), o.bloomStrength, 0.5, o.bloomThreshold);
+    bloom = new UnrealBloomPass(new THREE.Vector2(w / 2, h / 2), 0, 0.5, 1);
     composer.addPass(bloom);
   }
   composer.addPass(new OutputPass());
@@ -60,6 +61,11 @@ export function createPost(renderer, scene, camera, opts = {}) {
       if (!bokeh) return;
       bokeh.uniforms.focus.value = dist;
       if (aperture !== undefined) bokeh.uniforms.aperture.value = aperture;
+    },
+    setBloom(strength, threshold) {
+      if (!bloom) return;
+      bloom.strength = strength;
+      bloom.threshold = threshold;
     },
     setStatic(still) {
       stillT = still ? stillT + 1 : 0;
