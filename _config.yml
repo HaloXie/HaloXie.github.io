@@ -40,6 +40,7 @@ exclude_from_localization:
   - assets/img/promptweave-routing-boundaries
   - assets/img/promptweave-fallback-observability
   - assets/img/promptweave-release-snapshots
+  - assets/img/prompt-cache-prefix
   - assets/img/favicons/apple-touch-icon
   - assets/img/favicons/favicon
   - assets/img/favicons/web-app-manifest
