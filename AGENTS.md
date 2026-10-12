@@ -192,7 +192,7 @@
 - 使用 SVG 时，文章仍引用由 SVG 导出的 WebP。SVG 与 WebP 同名并保存在同一文章目录。
 - 禁止声称调用了未实际调用的模型或工具。最终交付必须说明图片来源：`gpt-image-2`、确定性 SVG，或其他真实方式。
 - `.agents/skills/anatomy` 只用于明确需要交互解释图的文章，产物放 `labs/<slug>/`；正文用 `iframe` 嵌入其 `?embed=1` 模式，配色与 Light/Dark 由 `labs/shared/theme-bridge.{js,css}` 从 Base 映射，不另存配色；WebP 截图放 `<noscript>` 作回退并标明「确定性 SVG（anatomy）」；普通配图仍按上条用 `imagegen`，正文图片不包链接（保留弹出放大）。
-- 空间结构、光学、机械拆解这类平面图讲不清的主题用 `.agents/skills/exploded`（3D 拆解交互图）。kit 与 lab 代码只在 skill 里一份，经软链 `labs/exploded` 发布；博客页 `labs/<slug>/index.html` 只写壳（`theme-bridge.js` → kit `scheme.js` → kit.css → lab.css → `../lab-shell.css` → `theme-bridge.css` → importmap → lab `main.js`），参照 `labs/camera-exploded/`。
+- 空间结构、光学、机械拆解这类平面图讲不清的主题用 `.agents/skills/exploded`（3D 拆解交互图）。kit 只在 skill 里一份，经软链 `labs/exploded` 发布，lab 用相对路径 `../../exploded/kit/` 引用、不拷贝；博客自己的 lab 代码放 `labs/<slug>/lab/`（相机课例外，用 skill 的 `examples/camera/lab/`）。博客页 `labs/<slug>/index.html` 只写壳（`theme-bridge.js` → kit `scheme.js` → kit.css → lab.css → `../lab-shell.css` → `theme-bridge.css` → importmap → lab `main.js`），`<body>` 只有带 `data-host` 的导航外框和空 `#app`，参照 `labs/camera-exploded/`；交付前 `bundle exec jekyll build`（`theme-bridge.css` 由 scss 编译），再跑 `node .agents/skills/exploded/scripts/audit.ts _site/labs/<slug> --root _site` 到 `audit: OK`。
 
 ### 验收
 

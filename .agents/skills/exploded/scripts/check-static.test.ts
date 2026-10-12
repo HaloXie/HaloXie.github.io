@@ -42,6 +42,14 @@ test('HTML：<body> 里写了面板骨架报错', () => {
   assert.ok(checkHtml('index.html', bad).some((f) => f.rule.includes('只许一个空的')));
 });
 
+test('HTML：宿主外框（data-host 导航 + class 包层）放行，外框外写面板文字报错', () => {
+  const head = '<head><script src="kit/scheme.js"></script><link rel="stylesheet" href="kit/kit.css"></head>';
+  const ok = `${head}<body><div class="shell"><nav class="nav" data-host><a href="/">返回</a></nav><div class="content"><div id="app"></div></div></div></body>`;
+  assert.deepEqual(checkHtml('index.html', ok), []);
+  const bad = `${head}<body><div class="shell"><nav data-host><a href="/">返回</a></nav><div class="content"><h2>控制面板</h2><div id="app"></div></div></div></body>`;
+  assert.ok(checkHtml('index.html', bad).some((f) => f.rule.includes('只许一个空的')));
+});
+
 test('lab 里拷了一份 kit 文件、超体积预算都报错', () => {
   const root = mkdtempSync(join(tmpdir(), 'exploded-static-'));
   const kit = join(root, 'kit');

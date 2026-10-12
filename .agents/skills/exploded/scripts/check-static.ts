@@ -64,9 +64,15 @@ export function checkHtml(file: string, text: string): Finding[] {
   for (const m of text.matchAll(/\sstyle\s*=/gi)) found.push({ file, line: lineOf(text, m.index ?? 0), rule: 'HTML 里不许 style= 属性', text: m[0].trim() });
   if (!/<link[^>]+href="[^"]*kit\.css"/.test(text)) found.push({ file, line: 1, rule: '必须 <link> 引用 kit/kit.css', text: '' });
   if (!/<script[^>]+src="[^"]*kit\/scheme\.js"/.test(text)) found.push({ file, line: 1, rule: '必须在 <head> 用 <script src> 引用 kit/scheme.js', text: '' });
-  // index.html 只是壳：<body> 里只有一个空的 #app（可加 <noscript> 回退），面板 DOM 由 lab 的 markup.js 生成
+  // index.html 只是壳：<body> 里只有一个空的 #app（可加 <noscript> 回退），面板 DOM 由 lab 的 markup.js 生成。
+  // 宿主外框例外：带 data-host 的元素（如站点导航）整块放行，只含 class 的空 <div> 包层放行。
   const body = text.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] ?? '';
-  const rest = body.replace(/<noscript>[\s\S]*?<\/noscript>/gi, '').replace(/<div id="app"><\/div>/, '').trim();
+  const rest = body
+    .replace(/<noscript>[\s\S]*?<\/noscript>/gi, '')
+    .replace(/<(\w+)\b[^>]*\sdata-host\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+    .replace(/<div id="app"><\/div>/, '')
+    .replace(/<div(\s+class="[^"]*")?>|<\/div>/gi, '')
+    .trim();
   if (rest) found.push({ file, line: lineOf(text, text.indexOf(body)), rule: 'index.html 的 <body> 只许一个空的 <div id="app"></div>，面板写进 lab 的 markup.js', text: rest.slice(0, 40) });
   return found;
 }
