@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>STARTER · 改我</title>
+    <!--
+============================================================================
+starter.html —— 第二档 3D 课的起手文件。复制它，改标了「改我」的地方。
+
+用法：
+  1. cp -R <SKILL_DIR>/assets/kit ./kit        套件跟着 skill 走，不要重写
+  2. cp <SKILL_DIR>/assets/starter.html ./index.html
+  3. 先看 <SKILL_DIR>/assets/ref/*.jpg 两张参考帧，再动手
+  4. 规格见 references/visual-style.md；流程见 SKILL.md
+
+它替你写好了：房间 + 灯光 + 实验台 + 相机 + 后处理、自动构图、标签层、
+面板骨架、缓动、拾取器、一个旋钮。你只写「现象」本身。
+
+------------------------------------------------------------------ API 速查
+stage.js
+  createStage({ bench:{x0,x1,z0,z1,h}, container?, exposure?, envIntensity?, fov?, post? })
+    → { THREE, renderer, scene, camera, controls, lights, bench, post, views, bounds, stats,
+        onFrame(fn)    // 每帧、渲染前：改状态
+        onAfter(fn)    // 每帧、渲染后：依赖最终相机的东西
+        renderExtra(fn)// 副渲染（取景器等），draw call 单独计数
+        markShadows()  // 改了物体位置后叫一次
+        start() }
+   台面 y = 0；观众在 -z 侧看向 +z。  allLayers(obj) 让副相机也能照亮它。
+
+views.js —— 运镜 + 自动构图（主体占画面 fill，默认 60%，避开 [data-dock] 面板）
+  stage.views.define(name, { box, dir, target?, fill?, fov? })   // box 可以是 ()=>Box3
+  stage.views.go(name, instant?)
+
+labels.js —— 常驻胶囊标签 + 引线（CSS2D）
+  const labels = createLabels(stage)
+  labels.add(key, { anchor: ()=>Vector3, lift?, tone:'o'|'c'|'g'|'w', html? })
+      .set(html) / .show(bool)
+
+hud.js —— 面板控件（样式在 kit.css）
+  seg(el, [{label,title?}], i => {}) → { buttons, set(i) }     分段按钮
+  statCards(el, [{key,label,tone}]) → set(key, value, sub)     数字卡，值变了会闪
+  modal() → { open(node, caption), close, isOpen }             弹窗
+
+controls3d.js —— 长在台面上的 3D 操作件
+  const picker = createPicker(stage)
+  knob(stage, picker, { position, labels:[...], value?, sweep?, title?, tone?, onStep(i) }) → { group, set(i) }
+  pushButton(stage, picker, { position, r?, color?, onPress }) → { group, kick() }
+  gauge(stage, o) → { group, set(v, readout) }                 指针表
+
+util.js
+  paint(geo,hex) 上顶点色 · at(geo,x,y,z,rx,ry,rz,s) 摆位 · merge([geo...]) 合并成一次 draw call
+  rbox(w,h,d,r) 倒角盒 · prbox(hex,w,h,d,x,y,z,r,ry) 上色倒角盒
+  glow(hex,k) 发光色(k>1 进 bloom) · canvasTexture(w,h,draw) · rng(seed) 可复现随机
+  spring(s,target,dt,omega) 临界阻尼 · bouncy(s,target,dt,omega,zeta) 带回弹 · damp(x,target,k,dt)
+  clamp · smooth · $ · FONT · MONO · THEME · ORANGE · CYAN · GREEN
+
+kit.css 里现成的类：.kit-col .kit-title .kit-panel .kit-row .kit-seg .kit-btn .kit-stat
+  .kit-cap .kit-tray .kit-modal .tone-o/.tone-c/.tone-g/.tone-y/.tone-w .note .read
+  颜色变量：--o --c --g --bad --y --text --dim --glass --line --panel-w --font --mono
+============================================================================
+-->
+    <link rel="stylesheet" href="./kit/kit.css" />
+    <style>
+      /* 改我：本课自己的样式。骨架、面板、按钮都在 kit.css 里，不要重复写。 */
+      #app {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
+      #narration {
+        font-size: 12px;
+        line-height: 1.6;
+        color: #d9e0ea;
+        min-height: 54px;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 1px 7px;
+        border-radius: 99px;
+        margin-right: 5px;
+        background: rgba(63, 224, 255, 0.16);
+        color: var(--c);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div id="stage" class="kit-stage"></div>
+      <div id="loading" class="kit-loading">加载中…</div>
+
+      <!-- 左列：标题 + 数据面板。data-dock 让自动构图避开 -->
+      <div class="kit-col left" data-dock="left">
+        <div class="kit-title">
+          <div class="l1">改我 · 副标题</div>
+          <div class="l2">改我：问题式标题，不给结论</div>
+          <div class="l3">改我：一句话说明这课学什么。</div>
+        </div>
+        <div class="kit-panel">
+          <div class="kit-row"><div id="stats"></div></div>
+          <div class="kit-row" id="narration">
+            <span class="tag">改我</span>
+            <span id="narr-text"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右列：控制面板。主变量优先做成场景里的 3D 操作件，这里只放切换类 -->
+      <div class="kit-panel right" data-dock="right">
+        <div class="kit-row">
+          <h3><span>改我：主变量</span></h3>
+          <div id="seg-main"></div>
+        </div>
+        <div class="kit-row">
+          <h3><span>机位</span></h3>
+          <div id="seg-view"></div>
+        </div>
+        <div class="kit-row">
+          <div class="note">改我：说明哪些效果是按物理算的，哪些只是示意。</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from 'three';
+      import { createStage, allLayers } from './kit/stage.js';
+      import { paint, at, merge, prbox, glow, damp, rng, $, ORANGE, CYAN } from './kit/util.js';
+      import { createLabels } from './kit/labels.js';
+      import { seg, statCards } from './kit/hud.js';
+      import { createPicker, knob } from './kit/controls3d.js';
+
+      // ---- 舞台：房间、灯、台面、相机、后处理都是现成的 ----
+      const stage = createStage({ bench: { x0: -5, x1: 5, z0: -3, z1: 3, h: 2.2 } });
+      const labels = createLabels(stage);
+
+      // ---- 改我：主体。用 merge 合成一次 draw call，别一件件 add ----
+      const group = new THREE.Group();
+      const r = rng(1);
+      const parts = [];
+      for (let i = 0; i < 5; i++) {
+        parts.push(
+          prbox(i % 2 ? 0x3a4250 : 0x2a303b, 1.1, 0.5, 1.1, (i - 2) * 1.35, 0.25, 0, 0.06),
+        );
+      }
+      const body = new THREE.Mesh(
+        merge(parts),
+        new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.5, metalness: 0.35 }),
+      );
+      body.castShadow = true;
+      body.receiveShadow = true;
+      group.add(body);
+      // 常驻发光条：只有正在起作用的东西才发光
+      const stripMat = new THREE.MeshBasicMaterial({ vertexColors: true });
+      const strip = new THREE.Mesh(
+        paint(new THREE.BoxGeometry(6.8, 0.05, 0.05), glow(CYAN, 2.2)),
+        stripMat,
+      );
+      strip.position.set(0, 0.12, 1.0);
+      group.add(strip);
+      group.position.set(0, 0, 0);
+      stage.scene.add(group);
+      allLayers(group);
+
+      // ---- 状态：页面上的数字、画面、叙述全从这里派生。HTML 里不许写死数值 ----
+      const state = { level: 2 };
+      const LEVELS = [0.35, 0.6, 1, 1.6, 2.4];
+      // 改我：这是本课唯一的模型，页面和核验脚本共用它。纯函数，不碰 DOM。
+      function model(st) {
+        const k = LEVELS[st.level];
+        const height = 0.4 + k * 0.9;
+        const load = Math.round(k * 62);
+        return { k, height, load, tone: load < 40 ? 'c' : load < 90 ? 'g' : 'o' };
+      }
+
+      // ---- 数字卡 ----
+      const paintStats = statCards($('stats'), [
+        { key: 'load', label: 'LOAD', tone: 'c' },
+        { key: 'ht', label: 'HEIGHT', tone: 'g' },
+      ]);
+
+      // ---- 3D 操作件：主变量长在台面上 ----
+      const picker = createPicker(stage);
+      knob(stage, picker, {
+        position: new THREE.Vector3(3.6, 0, 1.9),
+        labels: ['1', '2', '3', '4', '5'],
+        value: state.level,
+        title: '档位',
+        tone: ORANGE,
+        onStep: (i) => {
+          state.level = i;
+          sync();
+        },
+      });
+
+      // ---- 标签：常驻，锚在 3D 点上 ----
+      labels.add('main', {
+        anchor: () => new THREE.Vector3(0, 1.05, 0),
+        lift: 44,
+        tone: 'c',
+        html: '改我：<b>主体</b>',
+      });
+
+      // ---- 机位 ----
+      stage.views.define('总览', {
+        box: () => new THREE.Box3().setFromObject(group),
+        dir: new THREE.Vector3(0.5, 0.42, 1),
+        fill: 0.6,
+      });
+      stage.views.define('近看', {
+        box: () =>
+          new THREE.Box3(new THREE.Vector3(-1.6, 0, -0.8), new THREE.Vector3(1.6, 1.4, 0.8)),
+        dir: new THREE.Vector3(0.25, 0.3, 1),
+        fill: 0.64,
+      });
+      const segView = seg($('seg-view'), [{ label: '总览' }, { label: '近看' }], (i) => {
+        stage.views.go(i === 0 ? '总览' : '近看');
+        segView.set(i);
+      });
+      stage.views.go('总览', true);
+      segView.set(0);
+
+      // ---- 同步：所有输出都从 model(state) 走 ----
+      let shown = null;
+      function sync() {
+        const m = model(state);
+        body.scale.y = m.height / 0.5 / 2 + 0.5; // 示意：主体跟着长高
+        strip.position.y = 0.12 + m.height * 0.55;
+        paintStats('load', `${m.load}`, '改我：单位');
+        paintStats('ht', m.height.toFixed(2), '改我：单位');
+        $('narr-text').textContent =
+          `档位 ${state.level + 1} → 载入 ${m.load} → 高度 ${m.height.toFixed(2)}`;
+        stage.markShadows();
+      }
+
+      // ---- 每帧：常驻微动，让画面不死 ----
+      stage.onFrame((dt) => {
+        body.rotation.y = damp(body.rotation.y, (state.level - 2) * 0.12, 6, dt);
+      });
+
+      sync();
+      stage.start();
+      // 加载层不能按时间撤（慢机器上会撤早了露出黑屏），首帧渲染后再撤
+      let revealed = false;
+      stage.onAfter(() => {
+        if (!revealed) {
+          revealed = true;
+          $('loading').classList.add('hide');
+        }
+      });
+    </script>
+  </body>
+</html>
