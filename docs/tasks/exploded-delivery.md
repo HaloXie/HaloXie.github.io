@@ -23,3 +23,18 @@ Spec：`docs/tasks/exploded-skill-spec.md`。每个子项单独提交，按最�
   - light / dark 各截总览与爆炸图：light 为浅色工作室、木台、深色机身，不发白；dark 与线上一致；
   - 运行时把 `data-exploded-theme` 从 light 改成 dark，场景和面板随之切换；在 `<html style>` 覆盖 `--exploded-wall`，墙面立即按新颜色重建；
   - 控制台 0 报错；主画面 draw call：总览 198、爆炸图 92–122（预算 200）。
+
+## 子项 3：审计脚本（2026-10-12）
+
+脚本都在 `.agents/skills/exploded/scripts/`，TypeScript，Node 24 直接运行，无依赖；Chrome 用本机安装（或环境变量 `CHROME`）。
+
+| 脚本 | 检查 | 坏输入测试 |
+| --- | --- | --- |
+| `check-static.ts` | ① 颜色字面量只能在 `theme.css` / `palette.js`（JS 的 `0x` 六位十六进制与字符串颜色；CSS 声明值的 hex / 颜色函数 / 颜色名）；HTML 不许 `<style>`、`style=`，必须 `<link>` kit.css、`<script src>` scheme.js；lab 里不许有 kit 副本；② 自写代码 ≤ 220 KB | `check-static.test.ts` 6 条 |
+| `capture.ts` | ③ 控制台报错、未捕获异常、资源加载失败；② 主画面 draw call ≤ 200 且 > 0；页面必须有 `window.__exploded`（走了 kit）；明暗与 `--theme` 一致；无横向滚动；④ 截图 | `capture.test.ts` 5 条（夹具在 `scripts/fixtures/`） |
+| `audit.ts` | 静态检查 + light / dark × 每个 `--view` 的浏览器检查，最后一行 `audit: OK` | 由上两者覆盖 |
+
+- 写测试时发现第一版 CSS 规则只匹配 `--` 开头的属性，普通属性全漏，此前对 camera 的「OK」是假通过；修正后又把 `var(--exploded-orange)` 误判为颜色名，加了边界。两处都有对应测试。
+- 顺带调了 light 主题：半球光 1.15→0.8、环境光 0.85→0.6、地面与墙面压深、雾起点推远；1280×800 下地面不再发白。
+- 验收：两个测试文件 11/11 通过；`node scripts/audit.ts examples/camera --root . --view "view=overview" --view "view=section&cut=exploded"` → `audit: OK`（静态 156.1 KB；draw call 总览 198、爆炸图 156）。
+- 已知：URL 直接打开 `view=section&cut=exploded` 时机位与点击进入不同（过渡未完成），沿用原示例行为，未改。

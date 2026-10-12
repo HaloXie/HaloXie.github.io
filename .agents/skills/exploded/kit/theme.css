@@ -36,10 +36,10 @@
   --exploded-on-primary: #ffffff;
 
   /* 3D 房间与实验台 */
-  --exploded-wall: #e4ddd2;
-  --exploded-wall-lo: #d8d0c3;
+  --exploded-wall: #ddd5c8;
+  --exploded-wall-lo: #cfc6b7;
   --exploded-trim: #c9bfb0;
-  --exploded-floor: #cfc8bd;
+  --exploded-floor: #b4ab9d;
   --exploded-wood: #8a5e3c;
   --exploded-steel: #a9b0b9;
   --exploded-steel-lo: #8f97a1;
@@ -53,16 +53,16 @@
   --exploded-key-color: #fff1e0;
   --exploded-fill-color: #dfe9ff;
   --exploded-rim-color: #ffcf9e;
-  --exploded-hemi: 1.15;
+  --exploded-hemi: 0.8;
   --exploded-key: 2.1;
   --exploded-fill: 0.7;
   --exploded-rim: 10;
-  --exploded-env: 0.85;
+  --exploded-env: 0.6;
   --exploded-exposure: 0.95;
   --exploded-bloom: 0.22;
   --exploded-bloom-threshold: 0.98;
-  --exploded-fog-near: 26;
-  --exploded-fog-far: 60;
+  --exploded-fog-near: 34;
+  --exploded-fog-far: 80;
 }
 
 :root[data-exploded-scheme="dark"] {
