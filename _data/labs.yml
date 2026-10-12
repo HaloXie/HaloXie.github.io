@@ -1,15 +1,15 @@
 labs:
   - id: gradient-descent
     path: /labs/gradient-descent/
-    format: 2D interactive
+    format: 3D terrain lab
     locales:
       zh-CN:
         title: 梯度下降为什么会卡住？
-        description: 先预测，再拖动学习率，看优化路径如何收敛、停在局部极小值，或直接发散。
+        description: 先预测，再拧学习率旋钮，看小球在损失地形上收敛、停在局部极小值、走不到底，或直接发散。
         action: 开始实验
       en:
         title: Why Does Gradient Descent Get Stuck?
-        description: Predict first, then change the learning rate and watch the path converge, settle, or diverge.
+        description: Predict first, then turn the learning-rate knob and watch the ball on a loss terrain converge, settle, stall, or diverge.
         action: Open experiment
   - id: depth-of-field
     path: /labs/depth-of-field/

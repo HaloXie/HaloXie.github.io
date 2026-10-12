@@ -1,0 +1,35 @@
+/* 本课内容样式（面板骨架、按钮、标签在 kit/kit.css）。颜色只取 kit 的 --exploded-* token。 */
+#app { position: relative; width: 100vw; height: 100vh; }
+.num { font-family: var(--exploded-mono); font-weight: 800; font-variant-numeric: tabular-nums; }
+#narration { font-size: 12px; line-height: 1.6; color: var(--exploded-text-soft); min-height: 78px; }
+.tag { display: inline-block; font-size: 10px; font-weight: 800; padding: 1px 7px; border-radius: 99px; margin-right: 5px; vertical-align: 1px; }
+.tag-o { background: color-mix(in srgb, var(--exploded-orange) 20%, transparent); color: var(--exploded-orange); }
+.tag-c { background: color-mix(in srgb, var(--exploded-cyan) 16%, transparent); color: var(--exploded-cyan); }
+.tag-y { background: color-mix(in srgb, var(--exploded-yellow) 16%, transparent); color: var(--exploded-yellow); }
+.tag-g { background: color-mix(in srgb, var(--exploded-green) 16%, transparent); color: var(--exploded-green); }
+.tag-r { background: color-mix(in srgb, var(--exploded-bad) 16%, transparent); color: var(--exploded-bad); }
+.tag-w { background: var(--exploded-hover); color: var(--exploded-text-soft); }
+.note { font-size: 10.5px; line-height: 1.5; color: var(--exploded-dim); margin-top: 5px; }
+.btns { display: flex; gap: 6px; }
+.btns .kit-btn { flex: 1; }
+#perf { font: 600 9.5px var(--exploded-mono); color: var(--exploded-dim); margin-top: 4px; }
+
+/* 预测 */
+#predict .q { font-size: 12px; color: var(--exploded-text-soft); margin-bottom: 6px; }
+#predict .opts { display: flex; flex-direction: column; gap: 4px; }
+#predict .opt { text-align: left; font-weight: 700; font-size: 11.5px; padding: 6px 9px; }
+#predict .opt.selected { border-color: var(--exploded-cyan); box-shadow: inset 0 0 0 1px var(--exploded-cyan); }
+#predict .opt.correct { border-color: var(--exploded-green); background: color-mix(in srgb, var(--exploded-green) 14%, transparent); }
+#predict .opt.wrong { border-color: var(--exploded-bad); background: color-mix(in srgb, var(--exploded-bad) 12%, transparent); }
+#predict.locked .opt:not(.selected) { opacity: .6; }
+#predict-result { font-size: 11.5px; line-height: 1.55; color: var(--exploded-text-soft); margin-top: 6px; }
+#predict-result:empty { display: none; }
+.ok { color: var(--exploded-green); } .bad { color: var(--exploded-bad); }
+
+/* loss 曲线 */
+#curve { width: 100%; height: auto; display: block; }
+.cv-bg { fill: var(--exploded-well); stroke: var(--exploded-line); }
+.cv-line { fill: none; stroke: var(--exploded-cyan); stroke-width: 1.6; stroke-linejoin: round; }
+.cv-g { stroke: var(--exploded-green); stroke-width: 1; stroke-dasharray: 3 3; }
+.cv-l { stroke: var(--exploded-orange); stroke-width: 1; stroke-dasharray: 3 3; }
+.cv-ax { font: 700 8.5px var(--exploded-mono); fill: var(--exploded-dim); }
