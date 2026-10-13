@@ -47,7 +47,7 @@
         --text-xs: 0.75rem;
         --text-sm: 0.875rem;
         --text-base: 1rem;
-        --text-body: 1.125rem;
+        --text-body: 1rem;
         --text-lead: clamp(1.125rem, 1.6vw, 1.25rem);
         --text-h6: 1rem;
         --text-h5: 1.125rem;
@@ -375,7 +375,7 @@
       .language-type header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
       .language-type header strong { color: var(--ink-strong); font-size: var(--text-sm); }
       .language-type header code { color: var(--ink-muted); font-size: 0.68rem; }
-      .language-type p { margin: 0; color: var(--ink); font-size: 1.125rem; }
+      .language-type p { margin: 0; color: var(--ink); font-size: var(--text-body); }
       .language-type--zh p { font-family: var(--font-body-zh); line-height: 1.8; }
       .language-type--en p { font-family: var(--font-body-en); font-optical-sizing: auto; line-height: 1.72; }
       .language-type-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.6; }
@@ -396,7 +396,7 @@
       .article-demo h6 { margin-top: 1rem; font-size: var(--text-h6); }
       .article-demo p, .article-demo li {
         font-family: var(--font-prose);
-        font-size: 1.125rem;
+        font-size: var(--text-body);
         line-height: var(--leading-prose);
         text-wrap: pretty;
       }
@@ -424,6 +424,7 @@
       .series-context-demo__eyebrow { margin-right: 0.65rem; color: var(--accent); font-size: var(--text-base); font-weight: 700; letter-spacing: 0; }
       .series-context-demo__progress { flex: 0 0 auto; color: var(--ink-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
       .article-demo strong { font-weight: 600; }
+      .article-demo .content-note { color: var(--ink-muted); font-size: var(--text-sm); font-weight: 400; line-height: 1.65; }
       .article-demo p { max-width: var(--measure-prose); }
       .article-demo li + li { margin-top: var(--space-2); }
       blockquote {
@@ -718,12 +719,12 @@
         .type-row { gap: var(--space-2); }
         .hero h1 { font-size: 2.35rem; }
         .article-demo { padding: var(--space-5); }
-        .article-demo p, .article-demo li { font-size: 1.0625rem; line-height: var(--leading-prose); }
+        .article-demo p, .article-demo li { font-size: var(--text-body); line-height: var(--leading-prose); }
         .spec-table { display: block; overflow-x: auto; }
       }
 
       @media (max-width: 575.98px) {
-        :root { --text-body: 1.0625rem; }
+        :root { --text-body: 1rem; }
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -806,11 +807,11 @@
             </div>
             <div class="language-type-pair" aria-label="中英文正文最终字体">
               <article class="language-type language-type--zh" lang="zh-CN">
-                <header><strong>中文正文 · PingFang SC</strong><code>18px / 1.80 / 48em</code></header>
+                <header><strong>中文正文 · PingFang SC</strong><code>16px / 1.80 / 48em</code></header>
                 <p>中文长文需要稳定的字面、足够的行间留白和不过长的行宽。中文正文、标题、导航和表格统一苹方，通过字号、字重和行距区分角色，代码保留等宽字体。</p>
               </article>
               <article class="language-type language-type--en" lang="en">
-                <header><strong>English body · Source Serif 4</strong><code>18px / 1.72 / 68ch</code></header>
+                <header><strong>English body · Source Serif 4</strong><code>16px / 1.72 / 68ch</code></header>
                 <p>English long-form prose uses its own rhythm, proportions, and optical sizing. The serif choice creates an editorial reading voice; research does not establish serif as universally faster than sans.</p>
               </article>
             </div>
@@ -820,7 +821,7 @@
               <tbody>
                 <tr><td>H1 / Display</td><td>PingFang SC 750</td><td>Source Sans 3 750–800</td><td>中文复用系统字体，英文按语言加载</td></tr>
                 <tr><td>H2–H3 / Heading</td><td>PingFang SC 650</td><td>Source Sans 3 650–700</td><td>中文与正文共用字体，英文与 Display 共用字体</td></tr>
-                <tr><td>正文 / Body</td><td>PingFang SC 400，强调 600；18px / 1.80 / 48em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>中文无需字体下载，英文按语言加载</td></tr>
+                <tr><td>正文 / Body</td><td>PingFang SC 400，强调 600；16px / 1.80 / 48em</td><td>Source Serif 4 400，强调 600；16px / 1.72 / 68ch</td><td>中文无需字体下载，英文按语言加载</td></tr>
                 <tr><td>Meta / UI</td><td>PingFang SC 400–600；辅助文字 14px</td><td>Source Sans 3 400–700</td><td>中文与正文共用字体；fallback 为平台 sans</td></tr>
                 <tr><td>Code / Kbd</td><td>GitLab Mono 400</td><td>GitLab Mono 400</td><td>约 77 KiB；ligature 默认关闭；CJK fallback</td></tr>
               </tbody>
@@ -848,13 +849,14 @@
             <p class="evidence-note">2026-10-12 暂定标准：中文统一苹方；本页为唯一设计记录，生产样式按此同步。</p>
             <div class="section-head">
               <h2>03 · Article prose</h2>
-              <p>宽内容随大屏从 55rem 增至最多 72rem；中文段落保持 48em，英文保持 68ch。正文 18px / 400 / 1.8；表格 16px / 400 / 1.65，表头 600 / 1.5；目录标题 18px / 600，条目 16px / 400；日期、作者、图片说明 14px / 400。</p>
+              <p>宽内容随大屏从 55rem 增至最多 72rem；中文段落保持 48em，英文保持 68ch。正文 16px / 400 / 1.8；表格 16px / 400 / 1.65，表头 600 / 1.5；目录标题 18px / 600，条目 16px / 400；日期、作者、图片说明及补充说明 14px / 400。</p>
             </div>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
               <h2>从一个最小循环开始</h2>
               <p class="article-meta">分类：AI Engineering · 主题：Agent、Harness</p>
               <p>一个可运行的 Agent 最少需要三件事：接收目标、选择动作、读取反馈。复杂系统只是在这个闭环上增加状态、边界和验收。</p>
+              <p class="content-note">补充说明：这里用最小闭环解释概念，具体工具和运行环境可以不同。灰色用于非关键的背景、声明和阅读提示，不承载必要步骤或风险条件。</p>
               <blockquote><p><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。没有稳定反馈的自治，只会把错误放大。</p></blockquote>
               <nav class="article-toc" aria-label="文章目录示例"><h2 class="article-toc-title">文章内容</h2><a href="#loop-structure">基础结构</a><a href="#role-table">角色与反馈</a></nav>
               <h3 id="loop-structure">基础结构</h3>
