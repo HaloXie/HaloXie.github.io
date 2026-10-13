@@ -7,10 +7,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..800&amp;family=Noto+Serif+SC:wght@400;600&amp;family=Source+Sans+3:wght@400..800&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400..800&amp;family=Source+Serif+4:opsz,wght@8..60,400..600&amp;display=swap" rel="stylesheet">
     <style>
       /*
-       * Proposal only — a single-file visual demo with external font assets,
+       * Canonical visual standard — a single-file visual demo with external font assets,
        * not production CSS.
        * Direction: warm editorial paper + restrained terracotta interaction.
        */
@@ -26,13 +26,13 @@
         color-scheme: light;
 
         /* Typography */
-        --font-display-zh: "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
-        --font-heading-zh: "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
-        --font-ui-zh: "Noto Sans SC", "PingFang SC", "Microsoft Yahei", sans-serif;
+        --font-display-zh: "PingFang SC", "Microsoft YaHei", sans-serif;
+        --font-heading-zh: "PingFang SC", "Microsoft YaHei", sans-serif;
+        --font-ui-zh: "PingFang SC", "Microsoft YaHei", sans-serif;
         --font-display-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --font-heading-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --font-ui-en: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        --font-body-zh: "Noto Serif SC", "Songti SC", "STSong", serif;
+        --font-body-zh: var(--font-ui-zh);
         --font-body-en: "Source Serif 4", Georgia, serif;
         --font-mono: "GitLab Mono", Consolas, monospace;
 
@@ -88,6 +88,7 @@
 
         /* Geometry */
         --measure-copy: 55rem;
+        --measure-wide: clamp(55rem, calc(100vw - 42rem), 72rem);
         --measure-readable: 44rem;
         --space-1: 0.25rem;
         --space-2: 0.5rem;
@@ -380,7 +381,7 @@
       .language-type-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.6; }
 
       .article-demo {
-        max-width: var(--measure-copy);
+        max-width: var(--measure-wide);
         padding: clamp(1.25rem, 4vw, 3rem);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
@@ -400,7 +401,14 @@
         text-wrap: pretty;
       }
       .article-demo:lang(en) p, .article-demo:lang(en) li { font-optical-sizing: auto; }
-      .article-demo .article-meta { font-family: var(--font-ui); }
+      .article-demo .article-meta, .article-demo figcaption { font-family: var(--font-ui); font-size: var(--text-sm); font-weight: 400; line-height: 1.45; }
+      .article-demo table { width: 100%; border-collapse: collapse; font-family: var(--font-ui); font-size: var(--text-base); line-height: 1.65; }
+      .article-demo :is(th, td) { padding: var(--space-3); border-bottom: 1px solid var(--border); text-align: left; overflow-wrap: anywhere; }
+      .article-demo td { font-weight: 400; }
+      .article-demo th { font-weight: 600; line-height: 1.5; }
+      .article-toc { margin-block: var(--space-5); font-family: var(--font-ui); }
+      .article-toc .article-toc-title { margin: 0 0 var(--space-3); font-size: 1.125rem; font-weight: 600; line-height: 1.5; }
+      .article-toc a { display: block; padding-block: var(--space-2); color: var(--ink); font-size: var(--text-base); font-weight: 400; }
       .series-context-demo {
         display: flex;
         align-items: baseline;
@@ -473,10 +481,10 @@
       .image-placeholder strong { position: relative; z-index: 1; color: var(--ink-strong); font-size: clamp(1.3rem, 3vw, 2.2rem); }
       figcaption { margin-top: var(--space-2); color: var(--ink-muted); font-size: var(--text-sm); text-align: center; }
 
-      .spec-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+      .spec-table { width: 100%; border-collapse: collapse; font-family: var(--font-ui); font-size: var(--text-base); line-height: 1.65; }
       .spec-table th, .spec-table td { padding: 0.8rem; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
-      .spec-table th { color: var(--ink-strong); font-weight: 650; }
-      .spec-table td { color: var(--ink-muted); }
+      .spec-table th { color: var(--ink-strong); font-weight: 600; line-height: 1.5; }
+      .spec-table td { color: var(--ink); font-weight: 400; }
       .spec-table code { color: var(--accent); }
       .evidence-level { white-space: nowrap; color: var(--ink-strong); font-weight: 650; }
       .evidence-note { margin-top: var(--space-4); color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.65; }
@@ -798,8 +806,8 @@
             </div>
             <div class="language-type-pair" aria-label="中英文正文最终字体">
               <article class="language-type language-type--zh" lang="zh-CN">
-                <header><strong>中文正文 · Noto Serif SC</strong><code>18px / 1.80 / 48em</code></header>
-                <p>中文长文需要稳定的字面、足够的行间留白和不过长的行宽。这里选择宋体风格是技术编辑气质与覆盖质量的决定，不宣称衬线天然比黑体更易读。</p>
+                <header><strong>中文正文 · PingFang SC</strong><code>18px / 1.80 / 48em</code></header>
+                <p>中文长文需要稳定的字面、足够的行间留白和不过长的行宽。中文正文、标题、导航和表格统一苹方，通过字号、字重和行距区分角色，代码保留等宽字体。</p>
               </article>
               <article class="language-type language-type--en" lang="en">
                 <header><strong>English body · Source Serif 4</strong><code>18px / 1.72 / 68ch</code></header>
@@ -810,14 +818,14 @@
             <table class="spec-table" style="margin-top: var(--space-5)">
               <thead><tr><th>排版角色</th><th>中文页面</th><th>英文页面</th><th>增量成本</th></tr></thead>
               <tbody>
-                <tr><td>H1 / Display</td><td>Noto Sans SC 750–800</td><td>Source Sans 3 750–800</td><td>按语言与实际字符 subset；不因标题短而降级 family</td></tr>
-                <tr><td>H2–H3 / Heading</td><td>Noto Sans SC 650–700</td><td>Source Sans 3 650–700</td><td>与 Display 共用 variable artifact，不新增 family</td></tr>
-                <tr><td>正文 / Body</td><td>Noto Serif SC 400，强调 600；18px / 1.80 / 48em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>只在对应语言文章页加载；中文 Google shards 实测约 0.25–1.30 MiB</td></tr>
-                <tr><td>Meta / UI</td><td>Noto Sans SC 400–700</td><td>Source Sans 3 400–700</td><td>与标题共用 artifact；fallback 为平台 sans</td></tr>
+                <tr><td>H1 / Display</td><td>PingFang SC 750</td><td>Source Sans 3 750–800</td><td>中文复用系统字体，英文按语言加载</td></tr>
+                <tr><td>H2–H3 / Heading</td><td>PingFang SC 650</td><td>Source Sans 3 650–700</td><td>中文与正文共用字体，英文与 Display 共用字体</td></tr>
+                <tr><td>正文 / Body</td><td>PingFang SC 400，强调 600；18px / 1.80 / 48em</td><td>Source Serif 4 400，强调 600；18px / 1.72 / 68ch</td><td>中文无需字体下载，英文按语言加载</td></tr>
+                <tr><td>Meta / UI</td><td>PingFang SC 400–600；辅助文字 14px</td><td>Source Sans 3 400–700</td><td>中文与正文共用字体；fallback 为平台 sans</td></tr>
                 <tr><td>Code / Kbd</td><td>GitLab Mono 400</td><td>GitLab Mono 400</td><td>约 77 KiB；ligature 默认关闭；CJK fallback</td></tr>
               </tbody>
             </table>
-            <p class="evidence-note"><strong>本 demo 冷缓存实测：</strong>为了在一个页面展示全部中文、英文、证据表和代码，它发起 34 个字体相关请求，加载了 Google Fonts CSS 91 KiB、Noto Sans SC 966 KiB、Noto Serif SC 853 KiB、Source Sans 3 28 KiB、Source Serif 4 119 KiB、GitLab Mono 78 KiB，合计约 2.09 MiB。这个数字不能直接当生产页预算；生产方案应按 <code>lang + layout</code> 条件加载，自托管带 hash 的 WOFF2，并在构建期按页面字符集 subset。首页不加载正文 serif，英文页不加载 CJK family。</p>
+            <p class="evidence-note">中文使用本机苹方，未安装时回退微软雅黑或系统 sans-serif，不分发苹方字体文件。英文与代码维持原方案。旧版 Noto 字体网络体积不适用于本版；当前载荷尚未重测。</p>
             <div class="callout"><strong>结论</strong><p><strong>这是一套“证据约束下的设计决定”，不是伪造的科学排名。</strong>论文提供约束与风险信号，帮助排除部分不稳妥参数，并证明个体差异显著；具体字体仍需以同内容、同字号、同宽度的页面验收收口。</p></div>
             <table class="spec-table" style="margin-top: var(--space-5)">
               <thead><tr><th>证据</th><th>研究能支持的结论</th><th>本方案如何使用</th><th>强度</th></tr></thead>
@@ -837,9 +845,10 @@
           </section>
 
           <section id="article">
+            <p class="evidence-note">2026-10-12 暂定标准：中文统一苹方；本页为唯一设计记录，生产样式按此同步。</p>
             <div class="section-head">
               <h2>03 · Article prose</h2>
-              <p>正文容器最大 55rem；中文段落约 48 字，英文段落约 68ch。代码、表格和 16:9 图片可占满正文容器。</p>
+              <p>宽内容随大屏从 55rem 增至最多 72rem；中文段落保持 48em，英文保持 68ch。正文 18px / 400 / 1.8；表格 16px / 400 / 1.65，表头 600 / 1.5；目录标题 18px / 600，条目 16px / 400；日期、作者、图片说明 14px / 400。</p>
             </div>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
@@ -847,12 +856,14 @@
               <p class="article-meta">分类：AI Engineering · 主题：Agent、Harness</p>
               <p>一个可运行的 Agent 最少需要三件事：接收目标、选择动作、读取反馈。复杂系统只是在这个闭环上增加状态、边界和验收。</p>
               <blockquote><p><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。没有稳定反馈的自治，只会把错误放大。</p></blockquote>
-              <h3>基础结构</h3>
+              <nav class="article-toc" aria-label="文章目录示例"><h2 class="article-toc-title">文章内容</h2><a href="#loop-structure">基础结构</a><a href="#role-table">角色与反馈</a></nav>
+              <h3 id="loop-structure">基础结构</h3>
               <ul>
                 <li><strong>Goal：</strong>当前闭环究竟要达成什么状态。</li>
                 <li><strong>Action：</strong>模型此刻可选择的有限动作集合。</li>
                 <li><strong>Evidence：</strong>系统如何证明动作真的产生了预期结果。</li>
               </ul>
+              <table id="role-table"><thead><tr><th>角色</th><th>职责</th><th>验证方式</th></tr></thead><tbody><tr><td>目标 Goal</td><td>定义当前闭环要达成的状态。</td><td>检查输出是否满足验收条件。</td></tr><tr><td>动作 Action</td><td>在允许的范围内执行操作。</td><td>记录实际结果，保留失败与恢复路径。</td></tr><tr><td>反馈 Evidence</td><td>为下一步判断提供依据。</td><td>区分已验证事实与尚未确认的假设。</td></tr></tbody></table>
               <pre><code>type Loop = {
   goal: Goal;
   act(state: State): Promise&lt;Action&gt;;

@@ -11,11 +11,10 @@
   color-scheme: light;
 
   /* Typography roles */
-  --font-display-zh: 'Noto Sans SC', 'PingFang SC', 'Microsoft Yahei',
-    sans-serif;
+  --font-display-zh: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-heading-zh: var(--font-display-zh);
   --font-ui-zh: var(--font-display-zh);
-  --font-body-zh: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-body-zh: var(--font-ui-zh);
   --font-display-en: 'Source Sans 3', 'Source Sans Pro', -apple-system,
     BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-heading-en: var(--font-display-en);
@@ -55,6 +54,7 @@
 
   /* Geometry and interaction */
   --measure-copy: 55rem;
+  --measure-wide: clamp(55rem, calc(100vw - 42rem), 72rem);
   --measure-readable: 44rem;
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -241,6 +241,7 @@ h1 {
 
 article[data-toc] > .content {
   font-family: var(--font-prose);
+  font-weight: 400;
   font-size: var(--text-body);
   line-height: var(--leading-prose);
 }
@@ -270,6 +271,24 @@ article[data-toc] > .content :where(code, kbd, pre) {
 
 article[data-toc] > .content > :where(p, ul, ol) {
   max-width: var(--measure-prose);
+}
+
+article[data-toc] > .content table:not(.rouge-table),
+article[data-toc] > .content table:not(.rouge-table) :is(th, td) {
+  font-size: var(--text-base);
+  font-weight: 400;
+  line-height: 1.65;
+}
+
+article[data-toc] > .content table:not(.rouge-table) th {
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+article[data-toc] :is(.post-meta, figcaption, .img-link + em) {
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: 1.45;
 }
 
 @media (max-width: 575.98px) {

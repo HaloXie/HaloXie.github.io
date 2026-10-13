@@ -141,12 +141,15 @@ end
 # Page geometry must remain tied to the approved demo, rather than growing
 # independent widths for each menu. Browser QA also checks computed bounds.
 demo_style = ROOT.join("docs/design/blog-base-style-demo.html").read
-%w[--measure-copy --measure-prose --text-h1].each do |token|
+%w[--measure-copy --measure-wide --measure-prose --text-h1].each do |token|
   declaration = /#{Regexp.escape(token)}:\s*([^;]+);/
   expected = demo_style.match(declaration)&.[](1)&.strip
   actual = base_style.match(declaration)&.[](1)&.strip
   errors << "Base #{token} must match demo (#{expected.inspect}), got #{actual.inspect}" unless expected && actual == expected
 end
+errors << "Chinese typography must use PingFang with system fallbacks" unless base_style.match?(/--font-display-zh:\s*'PingFang SC', 'Microsoft YaHei', sans-serif;/)
+errors << "Chinese prose must reuse the UI family" unless base_style.include?("--font-body-zh: var(--font-ui-zh);")
+errors << "Chinese pages must not request Noto fonts" if ROOT.join("_includes/head.html").read.match?(/family=Noto/)
 demo_page = demo_style[/\.page\s*\{([^}]+)\}/m, 1].to_s
 page_geometry = {
   "--page-width" => demo_page[/width:\s*min\(100%,\s*([^\)]+)\)/, 1],

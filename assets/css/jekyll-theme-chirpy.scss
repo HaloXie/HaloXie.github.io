@@ -419,7 +419,7 @@ body:has(#post-list) #topbar-wrapper {
 }
 
 article[data-toc] > header > h1 {
-  max-width: var(--post-copy-width);
+  max-width: var(--measure-copy);
   margin: clamp(1.8rem, 3vw, 2.6rem) 0 0.85rem;
   color: var(--heading-color);
   font-family: var(--font-display);
@@ -2059,6 +2059,10 @@ article[data-toc] > .content :is(p, li) {
   text-wrap: pretty;
 }
 
+article[data-toc] > .content > p:has(> .img-link) {
+  max-width: 100%;
+}
+
 /* Prose media follows the same measure as the text. Wide tables and code
    scroll inside their own wrapper instead of widening the page. */
 body:has(main article[data-toc])
@@ -2183,7 +2187,7 @@ body:has(main article[data-toc])
     margin-top: 0;
     padding-right: 0 !important;
     overscroll-behavior: contain;
-    font-size: 0.8125rem;
+    font-size: var(--text-base);
     transform: none;
   }
 
@@ -2197,17 +2201,29 @@ body:has(main article[data-toc])
     padding: 0 0 0.8rem 1rem !important;
     border-bottom: 1px solid var(--main-border-color);
     border-left: 0 !important;
-    color: var(--label-color);
+    color: var(--ink-strong);
     font-family: var(--font-ui);
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-label);
-    letter-spacing: 0.04em;
+    font-size: var(--text-body);
+    font-weight: 600;
+    letter-spacing: normal;
     line-height: var(--leading-ui);
   }
 
   body:has(main article[data-toc]) #panel-wrapper #toc-wrapper::after {
     width: var(--post-panel-width);
     max-width: 100%;
+  }
+
+  body:has(main article[data-toc]) #toc-wrapper nav > ul a {
+    font-size: var(--text-base);
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  body:has(main article[data-toc]) #toc-wrapper nav > ul a.is-active-link {
+    font-weight: 600;
+    color: var(--toc-highlight);
   }
 
   body:has(main article[data-toc]) #tail-wrapper {
@@ -2238,6 +2254,12 @@ body:has(main article[data-toc])
   body:has(main article[data-toc]) {
     --post-panel-width: 12rem;
     --post-layout-gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  body:has(main article[data-toc]) {
+    --post-copy-width: var(--measure-wide);
   }
 }
 

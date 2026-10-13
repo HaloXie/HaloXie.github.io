@@ -182,19 +182,7 @@
   <!-- Language-aware web fonts. Base owns the family roles; this layer only
        loads the faces required by the current language and page type. -->
   {% assign active_lang = site.active_lang | default: site.lang %}
-  {% if active_lang == 'zh-CN' %}
-    {% if page.layout == 'post' %}
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..800&amp;family=Noto+Serif+SC:wght@400;600&amp;display=swap"
-      >
-    {% else %}
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400..800&amp;display=swap"
-      >
-    {% endif %}
-  {% else %}
+  {% if active_lang != 'zh-CN' %}
     {% if page.layout == 'post' %}
       <link
         rel="stylesheet"
