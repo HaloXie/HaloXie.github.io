@@ -105,6 +105,12 @@ export async function capture(o: CaptureOptions): Promise<CaptureResult> {
     if (o.theme) await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: o.theme }] });
     const url = `http://127.0.0.1:${httpPort}/${relative(root, page).split(sep).join('/')}${o.query ? `?${o.query}` : ''}`;
     await cdp.send('Page.navigate', { url });
+    // three 走 CDN，单文件可能要 2–3 秒：先等舞台起来（上限 wait 的 5 倍），再等 wait 让运镜和后处理稳定
+    await new Promise((r) => setTimeout(r, 300));
+    await cdp.send('Runtime.evaluate', {
+      expression: `new Promise((done) => { const end = Date.now() + ${o.wait * 5}; (function poll() { window.__exploded || Date.now() > end ? done(0) : setTimeout(poll, 100); })(); })`,
+      awaitPromise: true,
+    });
     await new Promise((r) => setTimeout(r, o.wait));
     const { result } = await cdp.send('Runtime.evaluate', {
       expression: 'JSON.stringify({ stats: window.__exploded ?? null, overflowX: document.documentElement.scrollWidth > innerWidth })',
