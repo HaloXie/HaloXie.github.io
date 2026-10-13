@@ -121,6 +121,28 @@ function dispose(o) {
   });
 }
 
+// 窄屏（≤ 640px）：把带 data-dock 的面板按 DOM 顺序搬进底部抽屉，场景占上半屏；变宽时搬回原位。
+// 面板靠 id 取，搬动不影响 lab 逻辑。嵌入模式下抽屉整个隐藏（kit.css），只留台面操作件和「全屏打开」。
+function narrowSheet(views) {
+  const mq = matchMedia('(max-width: 640px)');
+  const sheet = Object.assign(document.createElement('div'), { className: 'kit-sheet' });
+  sheet.dataset.dock = 'bottom';
+  const homes = [...document.querySelectorAll('[data-dock]')].map((el) => ({ el, parent: el.parentNode, next: el.nextSibling }));
+  const apply = () => {
+    if (mq.matches) {
+      for (const h of homes) sheet.appendChild(h.el);
+      homes[0].parent.appendChild(sheet);
+    } else {
+      for (const h of [...homes].reverse()) h.parent.insertBefore(h.el, h.next); // 倒序：next 可能是另一块已搬走的面板
+      sheet.remove();
+    }
+    views.resize();
+  };
+  if (!homes.length) return;
+  mq.addEventListener('change', apply);
+  if (mq.matches) apply();
+}
+
 export function createStage(opts = {}) {
   const B = { x0: -4, x1: 10, z0: -3, z1: 3, h: 2.2, ...(opts.bench || {}) };
   const wrap = opts.container || document.body;
@@ -258,6 +280,7 @@ export function createStage(opts = {}) {
       stats.extraCalls += renderer.info.render.calls;
     },
     start() {
+      narrowSheet(views);
       const loop = () => {
         const dt = Math.min(0.05, clock.getDelta());
         const now = clock.elapsedTime;
@@ -268,6 +291,11 @@ export function createStage(opts = {}) {
         post.setStatic(views.isStill());
         renderer.info.reset();
         if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; }
+        // 雾随相机退远一起后移：1280×800 下最远机位约 32（相机课总览，2026-10-13 实测），
+        // 超出部分平移雾区，竖屏 / 小 iframe 退到 70–100 时主体不被雾吞掉
+        const fogShift = Math.max(0, views.focusDistance() - 32);
+        scene.fog.near = theme.fogNear + fogShift;
+        scene.fog.far = theme.fogFar + fogShift;
         post.setFocus(views.focusDistance());
         post.render(dt);
         stats.mainCalls = renderer.info.render.calls;

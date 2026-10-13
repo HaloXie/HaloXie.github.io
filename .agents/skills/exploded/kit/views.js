@@ -14,6 +14,7 @@ export function freeRect() {
   let b = innerHeight;
   document.querySelectorAll('[data-dock]').forEach((el) => {
     if (el.offsetParent === null && getComputedStyle(el).position !== 'fixed') return;
+    if (el.parentElement?.closest('.kit-sheet')) return; // 窄屏时面板收进底部抽屉，只算抽屉本身
     const q = el.getBoundingClientRect();
     if (q.width === 0 || q.height === 0) return;
     const side = el.dataset.dock;
@@ -98,6 +99,9 @@ export function createViews(camera, controls, renderer) {
     camera.lookAt(target);
     applyOffset(ox, oy);
     pr = projectBox(box);
+    // 竖屏要退得更远才框得下宽主体；放宽滚轮上限，否则 OrbitControls 会把相机拉回来、主体被裁
+    controls.maxDistance = Math.max(controls.maxDistance, D * 1.3);
+    camera.far = Math.max(camera.far, D * 1.3 + 40); // 房间纵深约 40，退远后背墙不被远裁面切掉
     const fov = camera.fov;
     camera.fov = saveFov;
     solved[name] = {
@@ -141,7 +145,7 @@ export function createViews(camera, controls, renderer) {
         camera.lookAt(controls.target);
         applyOffset(cur.ox.x, cur.oy.x);
         const err = camera.position.distanceTo(s.pos) + controls.target.distanceTo(s.target);
-        if (err < 1e-3 && Math.abs(cur.ox.x - s.ox) < 0.5) { flying = false; controls.enabled = true; }
+        if (err < 1e-3 && Math.abs(cur.ox.x - s.ox) < 0.5 && Math.abs(cur.oy.x - s.oy) < 0.5) { flying = false; controls.enabled = true; }
       }
       camera.updateMatrixWorld();
       const moved = !lastM.equals(camera.matrixWorld);

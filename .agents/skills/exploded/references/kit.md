@@ -24,6 +24,7 @@
 - `define(name, { dir, box, target?, fill? })`：`dir` 观察方向，`box` 主体包围盒（`Box3` 或返回 `Box3` 的函数），`fill` 主体占空白区的比例（默认 0.6）。
 - `go(name, instant?)`：运镜到机位；初始化时 `instant = true`。
 - 空白区从 DOM 读：带 `data-dock="left|right|top|bottom"` 的元素向内挤占画面，主体投在剩下区域的中心。
+- 窄屏（≤ 640px）：`stage.start()` 把所有 `data-dock` 面板按 DOM 顺序搬进底部抽屉 `.kit-sheet`（占下半屏、可滚动），场景占上半屏；变宽搬回。面板靠 id 取，lab 不用改。竖屏要退得更远才框得下主体，kit 会同步放宽滚轮上限、远裁面，并把雾区后移。
 - `solved[name]`：`{ fillW, fillH, inside }`，可用来核对主体是否完整落在空白区。
 
 ## 操作件 `controls3d.js`
@@ -36,7 +37,7 @@
 
 ## 标签 `labels.js`
 
-`createLabels(stage, parent)` → `{ add(key, { anchor, tone, lift, html, visible }) }`，每个标签返回 `{ set(html), show(bool), el }`。`anchor` 是返回世界坐标 `Vector3` 的函数，每帧取一次；`tone` 取 `o | c | g | w`，对应 token 里的橙 / 青 / 绿 / 白。
+`createLabels(stage, parent)` → `{ add(key, { anchor, tone, lift, html, visible }) }`，每个标签返回 `{ set(html), show(bool), el }`。胶囊自动避让：互相重叠时下方锚点的保持原高，其余拉长引线往上抬；出画的胶囊横向收回画面内，引线仍钉在锚点。`lift` 只是起始高度。`anchor` 是返回世界坐标 `Vector3` 的函数，每帧取一次；`tone` 取 `o | c | g | w`，对应 token 里的橙 / 青 / 绿 / 白。
 
 ## HUD `hud.js`
 

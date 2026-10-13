@@ -84,3 +84,13 @@ button { font-family: inherit; }
 .kit-modal-cap { font: 700 13px var(--exploded-mono); color: var(--exploded-text-soft); margin-top: 10px; line-height: 1.6; }
 .kit-modal-x { position: absolute; top: 8px; right: 10px; border: 0; background: var(--exploded-hover); color: var(--exploded-text-strong); width: 28px; height: 28px; border-radius: 50%; font-size: 18px; cursor: pointer; }
 @keyframes kitfade { from { opacity: 0; } to { opacity: 1; } }
+
+/* 窄屏（≤ 640px）：stage 把面板搬进底部抽屉，场景占上半屏 */
+.kit-sheet { display: none; }
+@media (max-width: 640px) {
+  .kit-sheet { display: flex; flex-direction: column; gap: 10px; position: absolute; left: 0; right: 0; bottom: 0; height: 48%; z-index: 4; overflow-y: auto; padding: 10px; background: var(--exploded-glass); border-top: 1px solid var(--exploded-line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .kit-sheet > [data-dock], .kit-sheet .kit-panel, .kit-sheet .kit-title { position: relative; inset: auto; width: auto; max-height: none; overflow: visible; flex: none; }
+  .kit-sheet .kit-col { gap: 10px; }
+  .kit-sheet .kit-title .l2 { font-size: 20px; }
+  :root[data-exploded-embed] .kit-sheet { display: none; }
+}
