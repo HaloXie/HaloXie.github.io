@@ -13,15 +13,15 @@ labs:
         action: Open experiment
   - id: depth-of-field
     path: /labs/depth-of-field/
-    format: parameter simulation
+    format: 3D rail lab
     locales:
       zh-CN:
         title: 光圈开大，背景为什么会糊？
-        description: 先判断景深怎么变化，再只改一个参数，看光圈、焦距和对焦距离如何改变清晰范围。
+        description: 先判断景深怎么变化，再在 3D 导轨上只拧一个旋钮，看光圈、焦距和对焦距离如何改变清晰范围。
         action: 开始实验
       en:
         title: Why Does a Wide Aperture Blur the Background?
-        description: Predict the depth of field, then change one parameter and compare the optical result.
+        description: Predict the depth of field, then turn one knob on a 3D rail and watch the sharp zone change.
         action: Open experiment
   - id: guess-exif
     path: /labs/guess-exif/

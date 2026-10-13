@@ -1,0 +1,34 @@
+/* 景深课内容样式（面板骨架、按钮、标签在 kit/kit.css）。颜色只取 kit 的 --exploded-* token。 */
+#app { position: relative; width: 100vw; height: 100vh; }
+.num { font-family: var(--exploded-mono); font-weight: 800; font-variant-numeric: tabular-nums; }
+#narration { font-size: 12px; line-height: 1.6; color: var(--exploded-text-soft); min-height: 80px; }
+.tag { display: inline-block; font-size: 10px; font-weight: 800; padding: 1px 7px; border-radius: 99px; margin-right: 5px; vertical-align: 1px; }
+.tag-o { background: color-mix(in srgb, var(--exploded-orange) 20%, transparent); color: var(--exploded-orange); }
+.tag-c { background: color-mix(in srgb, var(--exploded-cyan) 16%, transparent); color: var(--exploded-cyan); }
+.tag-g { background: color-mix(in srgb, var(--exploded-green) 16%, transparent); color: var(--exploded-green); }
+.tag-w { background: var(--exploded-hover); color: var(--exploded-text-soft); }
+.read { font-size: 11px; line-height: 1.5; color: var(--exploded-text-soft); margin-top: 4px; }
+.note { font-size: 10.5px; line-height: 1.5; color: var(--exploded-dim); margin-top: 5px; }
+.mini { border: 0; background: var(--exploded-hover); color: var(--exploded-text-soft); font: 700 10px var(--exploded-font); padding: 2px 8px; border-radius: 99px; cursor: pointer; letter-spacing: 0; text-transform: none; }
+#perf { font: 600 9.5px var(--exploded-mono); color: var(--exploded-dim); margin-top: 4px; }
+.kit-seg.locked { opacity: .45; pointer-events: none; }
+
+/* 模拟照片 */
+#photo-box { width: 100%; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; background: var(--exploded-well); cursor: zoom-in; box-shadow: inset 0 0 0 1px var(--exploded-line); }
+#photo-box canvas { width: 100%; height: 100%; display: block; }
+
+/* 先预测，再运行 */
+#quiz .q { font-size: 12px; line-height: 1.55; color: var(--exploded-text); margin-bottom: 6px; }
+#quiz .opts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+#quiz .opt { text-align: left; border: 1px solid var(--exploded-line); background: var(--exploded-well); color: var(--exploded-text); font: 700 12px var(--exploded-font); padding: 7px 9px; border-radius: 8px; cursor: pointer; }
+#quiz .opt:hover { background: var(--exploded-hover); }
+#quiz .opt:focus-visible { outline: 2px solid var(--exploded-cyan); outline-offset: 1px; }
+#quiz .opt.picked { border-color: var(--exploded-cyan); box-shadow: inset 0 0 0 1px var(--exploded-cyan); }
+#quiz .opt.right { border-color: var(--exploded-green); color: var(--exploded-green); }
+#quiz .opt.wrong { border-color: var(--exploded-orange); color: var(--exploded-orange); }
+#btn-run { width: 100%; }
+#btn-run:disabled { opacity: .45; cursor: default; }
+#quiz-result { font-size: 12px; line-height: 1.55; color: var(--exploded-text-soft); margin-top: 6px; }
+#quiz-result:empty { display: none; }
+.good { color: var(--exploded-green); }
+.bad { color: var(--exploded-orange); }
