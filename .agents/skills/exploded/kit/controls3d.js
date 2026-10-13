@@ -175,9 +175,12 @@ export function pushButton(stage, picker, o) {
   return { group: g, kick() { st.y.x = -0.07; st.y.v = 0; } };
 }
 
-// 指针表：value ∈ [-range, range]；face 画刻度
+// 指针表：value ∈ [-range, range]；face 画刻度。zones 是色弧分区 [from, to, 'low'|'ok'|'high']，
+// 默认为曝光表式「欠 / 准 / 过」，读数没有「准」这个概念的表要传自己的分区。
+const ARC = { low: 'arcLow', ok: 'arcOk', high: 'arcHigh' };
 export function gauge(stage, o) {
   const { r = 0.42, range = 3, sweep = (240 * Math.PI) / 180, title = '', ticks = [] } = o;
+  const zones = o.zones ?? [[-range, -0.5, 'low'], [-0.5, 0.5, 'ok'], [0.5, range, 'high']];
   const g = new THREE.Group();
   g.position.copy(o.position);
   g.rotation.y = Math.PI;
@@ -196,9 +199,7 @@ export function gauge(stage, o) {
     c.lineWidth = 16;
     const seg = (a0, a1, col) => { c.strokeStyle = col; c.beginPath(); c.arc(cx, cx, cx * 0.78, a0, a1); c.stroke(); };
     const ang = (v) => -Math.PI / 2 + (v / range) * (sweep / 2);
-    seg(ang(-range), ang(-0.5), C.arcLow);
-    seg(ang(-0.5), ang(0.5), C.arcOk);
-    seg(ang(0.5), ang(range), C.arcHigh);
+    for (const [from, to, tone] of zones) seg(ang(from), ang(to), C[ARC[tone]]);
     c.textAlign = 'center';
     c.textBaseline = 'middle';
     for (const t of ticks) {

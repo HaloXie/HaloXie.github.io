@@ -14,6 +14,7 @@
 - `stage.onFrame((dt, now) => …)`：渲染前更新状态。`stage.onAfter(fn)`：渲染后（标签层）。
 - `stage.renderExtra((renderer) => …)`：副渲染（取景器等），draw call 单独计入 `stats.extraCalls`。
 - `stage.markShadows()`：静态物体动过后重算一次阴影（阴影默认不每帧更新）。
+- `stage.setLamps(on)`：开关背墙灯带；正对背墙的平视机位里灯带会穿过主体，在这类机位关掉（景深课的侧视）。
 - `stage.onTheme((T) => …)`：明暗或 token 变了之后回调；房间、台子、灯光 kit 自己会重建，lab 只管自己随主题变的东西。
 - `stage.start()`：开帧循环。
 - `window.__exploded`：`{ mainCalls, extraCalls, fps, scheme }`，审计脚本读它。
@@ -30,7 +31,7 @@
 - `createPicker(stage)`：指针拾取，处理悬停、按下、拖动；操作件都挂在它上面。
 - `knob(stage, picker, { position, labels, title, tone, value, onStep })`：挡位旋钮，拖动或点击换挡，`set(i)` 同步外部状态。
 - `pushButton(stage, picker, { position, color?, onPress })`：按下回弹的按钮，`kick()` 播一次按下动画。
-- `gauge(stage, { position, r, range, title, ticks })`：指针表盘，`set(value, readout)`。
+- `gauge(stage, { position, r, range, title, ticks, zones? })`：指针表盘，`set(value, readout)`。`zones` 是色弧分区 `[[from, to, 'low'|'ok'|'high'], …]`，默认曝光表式「欠 / 准 / 过」；读数没有「准」的表（如 loss）要传自己的分区。
 - 底座、旋钮、表盘的颜色在 `kit/palette.js` 的 `CONTROL`，不随明暗变化。
 
 ## 标签 `labels.js`

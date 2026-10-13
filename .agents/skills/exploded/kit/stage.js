@@ -83,7 +83,9 @@ function buildRoom(T, B) {
   const wm = new THREE.Mesh(merge(wall), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, metalness: 0.1, flatShading: false }));
   wm.receiveShadow = true;
   room.add(wm);
-  room.add(new THREE.Mesh(merge(glows), new THREE.MeshBasicMaterial({ vertexColors: true })));
+  const lamps = new THREE.Mesh(merge(glows), new THREE.MeshBasicMaterial({ vertexColors: true }));
+  lamps.name = 'lamps';
+  room.add(lamps);
   return room;
 }
 
@@ -131,6 +133,13 @@ export function createStage(opts = {}) {
   renderer.shadowMap.autoUpdate = false;
   renderer.info.autoReset = false;
   wrap.appendChild(renderer.domElement);
+  // 嵌入模式：给一个去掉 embed 参数的「全屏打开」链接，新窗口打开，不把读者从文章里带走
+  if (document.documentElement.hasAttribute('data-exploded-embed')) {
+    const full = new URL(location.href);
+    full.searchParams.delete('embed');
+    const a = Object.assign(document.createElement('a'), { className: 'kit-open', href: full.href, target: '_blank', rel: 'noopener', textContent: '全屏打开 ↗' });
+    wrap.appendChild(a);
+  }
 
   const scene = new THREE.Scene();
   scene.fog = new THREE.Fog();
@@ -176,6 +185,7 @@ export function createStage(opts = {}) {
   let room = null;
   let benchBody = null;
   let theme = null;
+  let lampsOn = true;
 
   const camera = new THREE.PerspectiveCamera(opts.fov ?? 30, innerWidth / innerHeight, 0.1, 120);
   const controls = new OrbitControls(camera, renderer.domElement);
@@ -223,6 +233,7 @@ export function createStage(opts = {}) {
     if (benchBody) { bench.remove(benchBody); dispose(benchBody); }
     room = buildRoom(T, B);
     benchBody = buildBenchBody(T, B);
+    room.getObjectByName('lamps').visible = lampsOn;
     scene.add(room);
     bench.add(benchBody);
     shadowDirty = true;
@@ -238,6 +249,8 @@ export function createStage(opts = {}) {
     onFrame(fn) { frameFns.push(fn); }, // 渲染前：更新状态
     onAfter(fn) { afterFns.push(fn); }, // 渲染后：标签层等依赖最终相机的东西
     markShadows() { shadowDirty = true; },
+    // 墙上灯带开关：正对背墙的平视机位里灯带会穿过主体，lab 在这类机位关掉
+    setLamps(on) { lampsOn = on; room.getObjectByName('lamps').visible = on; },
     // 副渲染（取景器等）走这个入口，draw call 单独计数，不算进主画面
     renderExtra(fn) {
       renderer.info.reset();

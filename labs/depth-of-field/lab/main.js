@@ -140,7 +140,7 @@ function apply(changed) {
   }
   photo.shoot(d);
   if (changed === 'f' || changed === 'focal' || changed === 'focus') { board.pulse(); showNarration(['变化', 'c'], narrate(d)); }
-  if (changed === 'view' || changed === 'init') stage.views.go(st.view, changed === 'init');
+  if (changed === 'view' || changed === 'init') { stage.views.go(st.view, changed === 'init'); stage.setLamps(st.view !== 'side'); }
   if (changed !== 'view') stage.markShadows();
   const u = new URL(location.href);
   u.searchParams.set('view', st.view); u.searchParams.set('f', d.N); u.searchParams.set('focal', d.f); u.searchParams.set('focus', d.sM);

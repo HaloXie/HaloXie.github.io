@@ -13,6 +13,8 @@ button { font-family: inherit; }
 /* 嵌入模式（?embed=1）：lab 把次要面板标 data-embed="hide"，iframe 里只留场景和主控件 */
 :root[data-exploded-embed] [data-embed="hide"] { display: none; }
 :root[data-exploded-embed] { --exploded-panel-w: 208px; }
+.kit-open { position: absolute; left: 50%; top: 10px; transform: translateX(-50%); z-index: 5; background: var(--exploded-glass); border: 1px solid var(--exploded-line); border-radius: 99px; padding: 4px 11px; font: 700 11px var(--exploded-font); color: var(--exploded-text); text-decoration: none; }
+.kit-open:hover, .kit-open:focus-visible { color: var(--exploded-text-strong); border-color: var(--exploded-cyan); }
 
 /* 左 / 右列：标题和面板上下排，不会互相压 */
 .kit-col { position: absolute; top: 16px; z-index: 4; width: var(--exploded-panel-w); display: flex; flex-direction: column; gap: 10px; }

@@ -35,4 +35,4 @@ skill 不认识宿主。宿主只做两件事：
 - 用 iframe 打开 `?embed=1`：`scheme.js` 在 `<html>` 上加 `data-exploded-embed`，带 `data-embed="hide"` 的元素隐藏，面板宽度收到 208px，面板过高时内部滚动。
 - lab 自己决定哪些面板在嵌入时隐藏：保留主体、台面操作件和最关键的一块读数（camera 留取景画面与机位切换），其余标 `data-embed="hide"`。
 - 3D 场景没有「内容高度」，iframe 高度由宿主按宽高比给（例如 `aspect-ratio: 16 / 10`）；720×450 下要能看清主体和操作件。
-- 嵌入时不自动播放演示；给一个「全屏打开」链接指向不带 `embed` 的页面。
+- 嵌入时不自动播放演示；`createStage` 自动在顶部居中放「全屏打开 ↗」链接（新窗口打开不带 `embed` 的页面），lab 不用自己写。

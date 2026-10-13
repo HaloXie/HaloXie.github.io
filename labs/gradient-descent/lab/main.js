@@ -106,7 +106,9 @@ const bPlay = pushButton(stage, picker, { position: new THREE.Vector3(0.25, 0.06
 const bReset = pushButton(stage, picker, { position: new THREE.Vector3(-0.45, 0.06, CZ), color: RED, onPress: () => reset() });
 // loss 表：表盘范围 ±3 映射到 loss −0.95 … 1.75（全局最低在左端，起点附近在右半）
 const toG = (l) => (l - 0.4) / 0.45;
-const meter = gauge(stage, { position: new THREE.Vector3(-1.75, 0.06, CZ), r: 0.38, range: 3, title: 'LOSS', ticks: [{ v: toG(-0.9), label: '-0.9' }, { v: toG(0.4), label: '0.4' }, { v: toG(1.6), label: '1.6' }] });
+const meter = gauge(stage, { position: new THREE.Vector3(-1.75, 0.06, CZ), r: 0.38, range: 3, title: 'LOSS', ticks: [{ v: toG(-0.9), label: '-0.9' }, { v: toG(0.4), label: '0.4' }, { v: toG(1.6), label: '1.6' }],
+  // 绿 = 到了全局最低的坑底（局部极小 -0.47 不在里面），橙 = 比起点还高、在发散
+  zones: [[-3, toG(-0.8), 'ok'], [toG(-0.8), toG(1.6), 'low'], [toG(1.6), 3, 'high']] });
 
 // 按钮下方的印字：随主题重画（台面颜色会变）
 const caption = canvasTexture(512, 64);
