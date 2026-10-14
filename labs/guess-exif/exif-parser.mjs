@@ -125,7 +125,7 @@ function findExifTiffSegment(view, byteLength) {
     if (marker === 0xffe1) {
       // APP1 — check for "Exif\0\0" header
       const headerStart = offset + 4;
-      if (
+      if (segLen >= 8 && offset + 2 + segLen <= byteLength &&
         view.getUint8(headerStart) === 0x45 && // E
         view.getUint8(headerStart + 1) === 0x78 && // x
         view.getUint8(headerStart + 2) === 0x69 && // i
@@ -150,6 +150,15 @@ function findExifTiffSegment(view, byteLength) {
  *            focalLengthIn35mm?:number, hasExif:boolean}}
  */
 export function parseExif(arrayBuffer) {
+  try {
+    return readExif(arrayBuffer);
+  } catch (error) {
+    if (error instanceof RangeError) return { hasExif: false };
+    throw error;
+  }
+}
+
+function readExif(arrayBuffer) {
   const view = new DataView(arrayBuffer);
   const seg = findExifTiffSegment(view, arrayBuffer.byteLength);
   if (!seg) return { hasExif: false };
@@ -194,11 +203,12 @@ export function parseExif(arrayBuffer) {
  * (FocalLengthIn35mm substitutes for focalLength when present, so only one of the two is required.)
  */
 export function hasEnoughExifForQuiz(exif) {
+  const positiveFinite = (value) => Number.isFinite(value) && value > 0;
   return (
     exif.hasExif &&
-    exif.fNumber !== undefined &&
-    exif.exposureTime !== undefined &&
-    exif.iso !== undefined &&
-    (exif.focalLength !== undefined || exif.focalLengthIn35mm !== undefined)
+    positiveFinite(exif.fNumber) &&
+    positiveFinite(exif.exposureTime) &&
+    positiveFinite(exif.iso) &&
+    positiveFinite(exif.focalLengthIn35mm ?? exif.focalLength)
   );
 }

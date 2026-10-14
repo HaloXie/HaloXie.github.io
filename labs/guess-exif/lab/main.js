@@ -122,11 +122,11 @@ async function handleFiles(files) {
   const usable = [];
 
   for (const file of jpegs) {
-    const buf = await file.arrayBuffer();
-    const exif = parseExif(buf);
-    if (hasEnoughExifForQuiz(exif)) {
-      usable.push({ file, exif });
-    } else {
+    try {
+      const exif = parseExif(await file.arrayBuffer());
+      if (hasEnoughExifForQuiz(exif)) usable.push({ file, exif });
+      else skipped.push(file.name);
+    } catch {
       skipped.push(file.name);
     }
   }
@@ -136,7 +136,7 @@ async function handleFiles(files) {
 
   const notes = [];
   if (rejected > 0) notes.push(`${rejected} 个文件不是 JPEG，已忽略（HEIC 请先导出为 JPEG）`);
-  if (skipped.length > 0) notes.push(`${skipped.length} 张没有完整参数，无法出题，已跳过：${skipped.join('、')}`);
+  if (skipped.length > 0) notes.push(`${skipped.length} 张损坏或缺少有效参数，无法出题，已跳过：${skipped.join('、')}`);
   if (notes.length > 0) {
     skipNote.textContent = notes.join('；');
     skipNote.hidden = false;
@@ -212,9 +212,9 @@ function apertureExplain(guessF, realF, diff) {
   if (absDiff <= 1 / 3) return `光圈猜得很准（差 ${absDiff.toFixed(1)} 挡）。`;
   const guessedWider = guessF < realF; // wider aperture = smaller f-number
   const dir = guessedWider
-    ? '你猜的光圈比实际更大（数字更小），如果背景虚化程度和你猜的不符，说明看走眼了'
-    : '你猜的光圈比实际更小（数字更大），如果背景其实很模糊，那通常意味着实际光圈比你猜的大得多';
-  return `真实是 f/${realF}，你猜 f/${guessF}，差 ${absDiff.toFixed(1)} 挡。${dir}——大光圈（小 f 值）背景虚化明显，小光圈（大 f 值）前后景都清晰，这是最直接的视觉线索。`;
+    ? '你猜的光圈比实际更大（数字更小）；背景虚化程度只能作为线索，还会受焦距、对焦距离和背景距离影响'
+    : '你猜的光圈比实际更小（数字更大）；背景是否模糊只能作为线索，不能单独反推出光圈';
+  return `真实是 f/${realF}，你猜 f/${guessF}，差 ${absDiff.toFixed(1)} 挡。${dir}。`;
 }
 
 function shutterExplain(guessLabel, realLabel, guessT, realT, diff) {
@@ -222,9 +222,9 @@ function shutterExplain(guessLabel, realLabel, guessT, realT, diff) {
   if (absDiff <= 1 / 3) return `快门猜得很准（差 ${absDiff.toFixed(1)} 挡）。`;
   const guessedSlower = guessT > realT;
   const dir = guessedSlower
-    ? '你猜的快门比实际更慢，如果画面里的运动物体其实是清晰凝固的，说明实际快门比你猜的快得多'
-    : '你猜的快门比实际更快，如果画面里有明显的运动模糊或手抖虚，说明实际快门比你猜的慢得多';
-  return `真实是 ${realLabel} 秒，你猜 ${guessLabel} 秒，差 ${absDiff.toFixed(1)} 挡。${dir}——快门快能凝固运动，快门慢会留下模糊轨迹，看画面里动态元素的清晰度就是线索。`;
+    ? '你猜的快门更慢'
+    : '你猜的快门更快';
+  return `真实是 ${realLabel} 秒，你猜 ${guessLabel} 秒，差 ${absDiff.toFixed(1)} 挡。${dir}；运动模糊可作线索，但也取决于主体速度、相机移动和防抖。`;
 }
 
 function isoExplain(guessIso, realIso, diff) {
@@ -232,9 +232,9 @@ function isoExplain(guessIso, realIso, diff) {
   if (absDiff <= 1 / 3) return `ISO 猜得很准（差 ${absDiff.toFixed(1)} 挡）。`;
   const guessedHigher = guessIso > realIso;
   const dir = guessedHigher
-    ? '你猜的 ISO 比实际更高，如果画面其实很干净没什么噪点，说明实际 ISO 比你猜的低'
-    : '你猜的 ISO 比实际更低，如果暗部或整体噪点其实很明显，说明实际 ISO 比你猜的高得多';
-  return `真实是 ISO ${realIso}，你猜 ISO ${guessIso}，差 ${absDiff.toFixed(1)} 挡。${dir}——ISO 越高噪点越明显，尤其在暗部和阴影区域，放大看颗粒感是最直接的线索。`;
+    ? '你猜的 ISO 更高；噪点还会受光线、曝光和降噪处理影响'
+    : '你猜的 ISO 更低；噪点还会受光线、曝光和降噪处理影响';
+  return `真实是 ISO ${realIso}，你猜 ISO ${guessIso}，差 ${absDiff.toFixed(1)} 挡。${dir}。`;
 }
 
 function focalExplain(guessMm, realMm, diff) {
@@ -242,9 +242,9 @@ function focalExplain(guessMm, realMm, diff) {
   if (absDiff <= 1 / 3) return `焦距猜得很准（差 ${absDiff.toFixed(1)} 挡）。`;
   const guessedLonger = guessMm > realMm;
   const dir = guessedLonger
-    ? '你猜的焦距比实际更长，如果画面透视其实很宽广、背景压缩感不强，说明实际用的是更广的焦距'
-    : '你猜的焦距比实际更短，如果背景被明显压缩、视角很窄，说明实际用的是更长的焦距';
-  return `真实是 ${realMm}mm，你猜 ${guessMm}mm，差 ${absDiff.toFixed(1)} 挡。${dir}——长焦压缩空间、放大远处主体，广角视角宽、透视感强，画面的透视压缩程度是线索。`;
+    ? '你猜的焦距更长；同一传感器下，焦距改变视角，透视关系由拍摄位置决定'
+    : '你猜的焦距更短；同一传感器下，焦距改变视角，透视关系由拍摄位置决定';
+  return `真实是 ${realMm}mm，你猜 ${guessMm}mm，差 ${absDiff.toFixed(1)} 挡。${dir}；裁切也会改变构图，不能仅凭压缩感反推焦距。`;
 }
 
 /* ---------------------------------------------------------------

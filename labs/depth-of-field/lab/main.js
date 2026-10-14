@@ -90,7 +90,7 @@ $('photo-zoom').addEventListener('click', openPhoto);
 $('photo-box').addEventListener('click', openPhoto);
 const opts = [...document.querySelectorAll('#quiz .opt')];
 for (const b of opts) b.addEventListener('click', () => {
-  if (st.settled) return;
+  if (st.settled || runTimer) return;
   st.pick = b.dataset.choice;
   opts.forEach((x) => x.classList.toggle('picked', x === b));
   $('btn-run').disabled = false;
@@ -103,10 +103,22 @@ const pct = (mm) => `${((mm / O.SENSOR_H_MM) * 100).toFixed(1)}%`;
 const blurText = (mm) => (mm <= O.C_MM ? '清晰' : `光斑 ⌀${mm < 1 ? mm.toFixed(2) : mm.toFixed(1)}mm`);
 function set(k, i) {
   if (st[k] === i) return;
+  if (runTimer) {
+    segF.set(st.f); segL.set(st.focal); segD.set(st.focus);
+    kF.set(st.f); kL.set(st.focal); kD.set(st.focus);
+    return;
+  }
   if (st.guided && (k === 'focal' || k === 'focus')) {
     showNarration(['锁定', 'w'], '引导模式下焦距和对焦距离锁定，只看光圈一个变量。想三个一起调，把「调哪些参数」切到「三个都调」。');
     if (k === 'focal') kL.set(st.focal); else kD.set(st.focus);
     return;
+  }
+  if (st.settled) {
+    st.settled = false;
+    st.pick = null;
+    opts.forEach((b) => b.classList.remove('picked', 'right', 'wrong'));
+    $('quiz-result').textContent = '';
+    $('btn-run').disabled = true;
   }
   st[k] = i;
   apply(k);
@@ -116,8 +128,9 @@ function apply(changed) {
   segF.set(st.f); segL.set(st.focal); segD.set(st.focus);
   segV.set(VIEWS.indexOf(st.view)); segM.set(st.guided ? 0 : 1);
   kF.set(st.f); kL.set(st.focal); kD.set(st.focus);
-  $('seg-focal').classList.toggle('locked', st.guided);
-  $('seg-focus').classList.toggle('locked', st.guided);
+  $('seg-focal').classList.toggle('locked', st.guided || !!runTimer);
+  $('seg-focus').classList.toggle('locked', st.guided || !!runTimer);
+  $('seg-f').classList.toggle('locked', !!runTimer);
   $('mode-hint').textContent = st.guided
     ? '引导模式：只有光圈能调，方便只看一个变量的效果。'
     : '自由模式：三个参数都能调，看它们如何一起影响清晰范围。';
@@ -175,8 +188,6 @@ function run() {
   const frozen = { focal: st.focal, focus: st.focus };
   const before = O.derive({ ...frozen, f: 0 });
   const after = O.derive({ ...frozen, f: O.F_STOPS.length - 1 });
-  st.f = 0;
-  apply('f');
   runTimer = setTimeout(() => {
     runTimer = 0;
     st.f = O.F_STOPS.length - 1;
@@ -195,6 +206,9 @@ function run() {
       : `<b class="bad">预测不对。</b>你选的是「${name[st.pick]}」，实际景深从 ${O.fmtDof(before.dof)} 变到 ${O.fmtDof(after.dof)}，是「${name[actual]}」。`;
     showNarration([ok ? '预测正确' : '再看一眼', ok ? 'g' : 'o'], `${narrate(d)} 收光圈让入瞳变小，每个点打到传感器上的光锥变细，离对焦面更远的点也能落进 0.03mm 的容许圆里。`);
   }, 900);
+  $('btn-run').disabled = true;
+  st.f = 0;
+  apply('f');
 }
 
 // ---------- 帧循环 ----------
