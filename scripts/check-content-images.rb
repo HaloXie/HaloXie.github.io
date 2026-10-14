@@ -36,7 +36,10 @@ FROZEN_LEGACY_DIMENSION_PATHS = %w[
   /assets/img/language-choose/1_vOZL0UKIE3TZxyrPaVX9IA.webp
   /assets/img/language-choose/Programming-languages-in-blockchain-industry.webp
 ].freeze
-NON_ARTICLE_WEBP_PATHS = %w[/assets/img/avatar.webp].freeze
+NON_ARTICLE_WEBP_PATHS = %w[
+  /assets/img/avatar.webp
+  /assets/img/identity/justin-anamnesis-cats-avatar.webp
+].freeze
 
 def load_yaml(path, source)
   YAML.safe_load(source, permitted_classes: [Date, Time], aliases: true) || {}
@@ -225,14 +228,16 @@ references.each do |reference, locations|
 end
 
 # Dimension-check every article asset, including a newly added file that has
-# not been referenced yet. The site avatar is UI chrome, not a blog image.
+# not been referenced yet. Avatars are square UI assets, not article images.
 ASSETS.glob("**/*.webp").sort.each do |asset|
   reference = "/#{asset.relative_path_from(ROOT)}"
-  next if NON_ARTICLE_WEBP_PATHS.include?(reference)
-
   errors << "#{reference}: #{asset.size} bytes exceeds 150 KiB" if asset.size > MAX_WEBP_BYTES
   begin
     dimensions = webp_dimensions(asset)
+    if NON_ARTICLE_WEBP_PATHS.include?(reference)
+      errors << "#{reference}: expected 512x512 avatar" unless dimensions == [512, 512]
+      next
+    end
     if dimensions != TARGET_DIMENSIONS && legacy_by_path[reference] != dimensions
       errors << "#{reference}: expected 1200x675, got #{dimensions.join('x')} (not an approved historical exception)"
     end

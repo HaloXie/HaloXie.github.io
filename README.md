@@ -11,6 +11,24 @@ bundle install
 bundle exec jekyll serve
 ```
 
+## 图片压缩
+
+`scripts/compress-images.py` 将 PNG、JPEG、TIFF 和 WebP 转为 WebP 副本，依赖 Python 3、`cwebp` 与 ImageMagick（macOS 安装：`brew install webp imagemagick`）。
+
+```bash
+# 单张或多张：输出到独立目录，不覆盖原图或已有输出
+python3 scripts/compress-images.py assets/img/identity/justin-anamnesis-cats-avatar.png --output /tmp/blog-webp
+
+# 也可传入目录，递归处理并保留目录结构
+python3 scripts/compress-images.py assets/img/hindsight-shared-memory --output /tmp/blog-webp-hindsight
+
+python3 scripts/test-compress-images.py
+```
+
+脚本保留尺寸和透明度，转换时校正 EXIF 方向、转为 sRGB 并移除元数据。目标为 100 KiB，质量依次尝试 90 / 85 / 80 / 75；降至 75 后仍超过 150 KiB 则报错，不输出该批次。100–150 KiB 会明确提示。已达目标的 WebP 原样复制，避免重复有损压缩；同名输入冲突、覆盖已有文件、动画转换和解码失败均报错。只支持静态位图，SVG 保留为可编辑源文件。
+
+脚本不裁切或强制缩放：新文章配图仍须先准备为 1200×675。打开最终 WebP 检查文字与边缘后，再替换发布资源及引用，并运行 `ruby scripts/check-content-images.rb`。头像和徽章属于 UI 资源，不应为了套用文章规格拉伸为 16:9；批量处理时遇到同名 PNG/WebP，请明确选择源文件。此脚本不自动修改文章、配置或线上资源。
+
 ## URL 与 SEO 约定
 
 URL 是公开内容身份的一部分，发布后必须保持稳定。文章文件名负责 Git 中的日期与 slug，真正的公开地址以 front matter 的 `permalink` 为单一事实源。

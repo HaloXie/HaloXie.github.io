@@ -76,7 +76,7 @@ analytics:
 theme_mode:
 
 # the avatar on sidebar, support local or CORS resources
-avatar: /assets/img/avatar.png
+avatar: /assets/img/avatar.webp
 
 # boolean type, the global switch for TOC in posts.
 toc: true

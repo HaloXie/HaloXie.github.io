@@ -1,0 +1,9 @@
+<nav id="post-pagination" class="mt-4 text-center" aria-label="{% if site.active_lang == 'zh-CN' %}更多文章{% else %}More posts{% endif %}">
+  {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path | relative_url }}" rel="prev">{% if site.active_lang == 'zh-CN' %}上一页{% else %}Previous page{% endif %}</a>
+  {% endif %}
+  {% if paginator.next_page_path %}
+    <a href="{{ paginator.next_page_path | relative_url }}" rel="next">{% if site.active_lang == 'zh-CN' %}加载更多文章{% else %}Load more posts{% endif %}</a>
+  {% endif %}
+</nav>
+<script defer src="{{ '/assets/js/post-scroll.js' | relative_url }}"></script>
