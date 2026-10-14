@@ -7,7 +7,7 @@ export const MARKUP = `
   <div class="kit-title">
     <div class="l1">Gradient Descent · 损失地形模型</div>
     <div class="l2">梯度下降为什么会卡住？学习率怎么选？</div>
-    <div class="l3">小球代表当前参数 (x, y)，地形高度是损失值。每一步小球沿最陡下降方向挪一点，挪多远由学习率决定。右上的深坑是全局最低点，左下的浅坑是局部极小值，小球未必找得到深的那个。</div>
+    <div class="l3">小球代表当前参数 (x, y)，地形高度是损失值。每一步按当前位置的负梯度更新参数，步长由学习率决定；它不是受重力滚动的实物，步子太大会跨过坑底。右上的深坑是全局最低点，左下的浅坑是局部极小值，小球未必找得到深的那个。</div>
   </div>
 
   <div class="kit-panel">
@@ -21,7 +21,7 @@ export const MARKUP = `
       <h3><span>先预测，再运行</span></h3>
       <div class="q">按当前设置运行，小球最终会怎样？</div>
       <div class="opts">
-        <button type="button" class="kit-btn opt" data-choice="global">会滚到全局最低点</button>
+        <button type="button" class="kit-btn opt" data-choice="global">会收敛到全局最低点</button>
         <button type="button" class="kit-btn opt" data-choice="local">会卡在某个局部极小值</button>
         <button type="button" class="kit-btn opt" data-choice="diverge">会发散 / 跳来跳去不收敛</button>
         <button type="button" class="kit-btn opt" data-choice="slow">方向对，但太慢，走不到坑底</button>

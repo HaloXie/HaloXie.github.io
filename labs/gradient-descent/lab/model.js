@@ -53,14 +53,14 @@ export function step(s, lr, momentum) {
   return n;
 }
 
-// 结局：'global' | 'local' | 'diverge' | 'slow'（步子太小，上限内没走到底）| null（还在走）
+// 结局：'global' | 'local' | 'diverge' | 'oscillate' | 'slow'（步子太小，上限内没走到底）| null（还在走）
 export function outcome(s) {
   if (!Number.isFinite(s.x) || !Number.isFinite(s.y) || Math.abs(s.x) > OUT || Math.abs(s.y) > OUT) return 'diverge';
   const recent = s.history.slice(-8);
   const stable = recent.length >= 6 && Math.max(...recent) - Math.min(...recent) < 0.0008;
   if (Math.hypot(...grad(s.x, s.y)) < 0.01 && stable) return Math.hypot(s.x - GLOBAL_MIN.x, s.y - GLOBAL_MIN.y) < 0.35 ? 'global' : 'local';
   // 步数到上限：loss 还在单调下降是走得慢，否则是在坑两侧来回震荡
-  if ((s.step >= 120 && stable) || s.step >= 180) return recent.every((l, i) => i === 0 || l <= recent[i - 1]) ? 'slow' : 'diverge';
+  if ((s.step >= 120 && stable) || s.step >= 180) return recent.every((l, i) => i === 0 || l <= recent[i - 1]) ? 'slow' : 'oscillate';
   return null;
 }
 

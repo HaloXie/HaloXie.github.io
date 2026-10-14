@@ -33,7 +33,18 @@ test('一步更新 = 位置 − 学习率 × 梯度', () => {
 test('四种结局都能复现', () => {
   assert.equal(M.run(M.start(2.5, 2.5), 0.1, false).outcome, 'global');
   assert.equal(M.run(M.start(-2.5, -2.5), 0.1, false).outcome, 'local');
-  assert.equal(M.run(M.start(2.5, 2.5), 1.2, false).outcome, 'diverge');
+  assert.equal(M.run(M.start(2.5, 2.5), 1.2, false).outcome, 'oscillate');
   assert.equal(M.run(M.start(2.5, 2.5), 0.01, false).outcome, 'slow');
   assert.equal(M.run(M.start(-2.5, -2.5), 0.2, true).outcome, 'global'); // 动量冲出浅坑
+});
+
+
+test('等高的两点间震荡不等于收敛或无界发散', () => {
+  const s = M.run(M.start(2.5, 2.5), 1.2, false);
+  const next = M.step(s, 1.2, false);
+  assert.ok(Math.abs(next.history.at(-1) - s.history.at(-1)) < 0.0001);
+  assert.ok(Math.hypot(next.x - s.x, next.y - s.y) > 1);
+  assert.ok(Math.hypot(...M.grad(s.x, s.y)) > 1);
+  assert.equal(s.outcome, 'oscillate');
+  assert.equal(M.outcome(M.start(M.OUT + 1, 0)), 'diverge');
 });

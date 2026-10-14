@@ -5,7 +5,7 @@ import { createStage } from '../../exploded/kit/stage.js';
 import { createPicker, knob, pushButton, gauge } from '../../exploded/kit/controls3d.js';
 import { createLabels } from '../../exploded/kit/labels.js';
 import { seg, statCards } from '../../exploded/kit/hud.js';
-import { $, paint, at, merge, glow, springVec, canvasTexture } from '../../exploded/kit/util.js';
+import { $, paint, at, merge, glow, canvasTexture } from '../../exploded/kit/util.js';
 import { color } from '../../exploded/kit/theme.js';
 import { ORANGE, CYAN, GREEN, RED } from '../../exploded/kit/palette.js';
 import * as M from './model.js';
@@ -78,7 +78,8 @@ arrow.cone.material.color.copy(glow(ORANGE, 2));
 scene.add(arrow);
 
 const lift = (v) => v.setY(v.y + BALL_R); // 球心在曲面上方一个半径
-const ballPos = { x: lift(toWorld(st.x0, st.y0)), v: new THREE.Vector3() };
+const ballFrom = lift(toWorld(st.x0, st.y0));
+let moveProgress = 1;
 const mtx = new THREE.Matrix4();
 function syncPath() {
   // 轨迹只画模型状态里还保留的位置：起点 + 每一步
@@ -142,7 +143,7 @@ const L = {
 // ---------- 机位 ----------
 const V3 = (x, y, z) => new THREE.Vector3(x, y, z);
 const tb = terrain.box;
-stage.views.define('overview', { dir: V3(-0.32, 0.78, -1), box: tb.clone().expandByPoint(V3(2.6, 0, CZ - 0.6)).expandByPoint(V3(-2.3, 0, CZ - 0.6)), fill: 0.66 });
+stage.views.define('overview', { dir: V3(-0.32, 0.78, -1), box: tb.clone().expandByPoint(V3(2.6, 0, CZ - 0.6)).expandByPoint(V3(-2.3, 0, CZ - 0.6)), fill: 0.84 });
 stage.views.define('top', { dir: V3(0, 1, -0.05), box: tb.clone(), fill: 0.72 });
 stage.views.define('side', { dir: V3(1, 0.42, -0.5), box: tb.clone(), fill: 0.7 });
 
@@ -174,6 +175,8 @@ function setLr(i) {
 function reset() {
   st.s = M.start(st.x0, st.y0);
   st.running = false;
+  ball.position.copy(lift(toWorld(st.x0, st.y0)));
+  moveProgress = 1;
   pathPts = [[st.x0, st.y0]];
   bReset.kick();
   refresh();
@@ -181,6 +184,8 @@ function reset() {
 function doStep(manual) {
   if (st.s.outcome) return;
   if (manual) { st.running = false; bStep.kick(); }
+  ballFrom.copy(ball.position);
+  moveProgress = 0;
   st.s = M.step(st.s, lr(), st.momentum);
   pathPts.push([Math.max(-M.OUT, Math.min(M.OUT, st.s.x)), Math.max(-M.OUT, Math.min(M.OUT, st.s.y))]);
   if (pathPts.length > MAX) pathPts.shift();
@@ -196,8 +201,8 @@ function togglePlay() {
 
 // ---------- 叙述（只从状态派生） ----------
 const n = (v, tone) => `<b class="num tone-${tone}">${v}</b>`;
-const LABEL = { global: '全局最低点', local: '局部极小值', diverge: '发散 / 不收敛', slow: '还没走到底' };
-const SHORT = { global: '全局最低', local: '局部极小', diverge: '发散', slow: '太慢' };
+const LABEL = { global: '全局最低点', local: '局部极小值', diverge: '发散 / 不收敛', oscillate: '震荡未收敛', slow: '还没走到底' };
+const SHORT = { global: '全局最低', local: '局部极小', diverge: '超出范围', oscillate: '震荡', slow: '太慢' };
 function narrate() {
   const s = st.s;
   const l = s.history.at(-1);
@@ -206,16 +211,13 @@ function narrate() {
   const r = lr().toFixed(2);
   const pos = `(${s.x.toFixed(2)}, ${s.y.toFixed(2)})`;
   if (s.step === 0) return { tag: ['未开始', 'w'], html: `学习率 ${n(r, 'y')}${st.momentum ? '，带动量' : ''}，起点 ${pos}，loss = ${n(l.toFixed(3), 'c')}。先在左下选一个预测，再按播放或单步。橙色箭头是下一步要跳的位置。` };
-  if (s.outcome === 'diverge') {
-    return Math.abs(s.x) > M.OUT || Math.abs(s.y) > M.OUT || !Number.isFinite(l)
-      ? { tag: ['发散', 'r'], html: `学习率 ${n(r, 'y')} 太大，第 ${s.step} 步后坐标冲出了地形（约 ${pos}），loss 不降反升：每一步都迈过了坡底，越走越远。` }
-      : { tag: ['震荡', 'r'], html: `学习率 ${n(r, 'y')} 太大，第 ${s.step} 步仍在坑两侧来回跳，loss 起伏但梯度仍有 ${n(g.toFixed(4), 'o')}，没有真正收敛。` };
-  }
+  if (s.outcome === 'diverge') return { tag: ['超出范围', 'r'], html: `第 ${s.step} 步坐标超出演示范围（约 ${pos}），停止演示。请减小学习率后重置。` };
+  if (s.outcome === 'oscillate') return { tag: ['震荡未收敛', 'r'], html: `第 ${s.step} 步仍未收敛：最近几步 loss ${Math.max(...s.history.slice(-8)) - Math.min(...s.history.slice(-8)) < 0.0008 ? '几乎相同，但等高不等于同一点' : '仍在变化'}。本步参数移动 ${n(Math.hypot(s.vx, s.vy).toFixed(3), 'y')}，梯度仍有 ${n(g.toFixed(4), 'o')}。离散更新会跨过坑底；这不是重力滚球。` };
   if (s.outcome === 'slow') return { tag: ['太慢', 'y'], html: `学习率 ${n(r, 'y')} 太小，走了 ${s.step} 步 loss 还在一点点降（${n(l.toFixed(4), 'c')}），梯度 ${n(g.toFixed(4), 'o')}。方向是对的，只是每步挪得太少，演示到上限也没走到坑底。` };
   if (s.outcome === 'global') return { tag: ['收敛到全局最低', 'g'], html: `第 ${s.step} 步收敛，loss 稳定在 ${n(l.toFixed(4), 'g')}，就是右上那个最深的坑。梯度降到 ${n(g.toFixed(4), 'o')}，小球不再移动。` };
   if (s.outcome === 'local') return { tag: ['卡在局部极小', 'o'], html: `第 ${s.step} 步不再移动，loss 停在 ${n(l.toFixed(4), 'o')}，但全局最低是 ${n(M.GLOBAL_MIN.loss.toFixed(4), 'g')}，还低 ${(l - M.GLOBAL_MIN.loss).toFixed(4)}。小球掉进了左下较浅的坑，这里梯度也接近 0（${g.toFixed(4)}），它以为到底了。` };
   const d = prev - l;
-  const trend = d > 0.0001 ? '在下降' : d < -0.0001 ? '在上升（越过坑底又爬回坡上）' : '几乎不变（接近平坦区）';
+  const trend = d > 0.0001 ? '在下降' : d < -0.0001 ? '在上升（越过坑底又爬回坡上）' : '几乎不变（不代表位置不变）';
   return { tag: ['下降中', 'c'], html: `学习率 ${n(r, 'y')}，第 ${s.step} 步，loss 从 ${prev.toFixed(4)} 到 ${n(l.toFixed(4), 'c')}，${trend}。梯度模长 ${n(g.toFixed(4), 'o')}，当前坐标 ${pos}。` };
 }
 
@@ -258,7 +260,7 @@ function refresh() {
   $('narr-tag').className = `tag tag-${nar.tag[1]}`;
   $('narr-text').innerHTML = nar.html;
   // 预测
-  const res = s.outcome;
+  const res = s.outcome === 'oscillate' ? 'diverge' : s.outcome;
   $('predict').classList.toggle('locked', s.step > 0);
   opts.forEach((b) => {
     b.classList.toggle('selected', b.dataset.choice === st.predicted);
@@ -321,8 +323,11 @@ stage.onFrame((dt, now) => {
   if (st.running && now * 1000 - lastStep > STEP_MS) { lastStep = now * 1000; doStep(false); }
   const s = st.s;
   lift(toWorld(Math.max(-M.OUT, Math.min(M.OUT, s.x)), Math.max(-M.OUT, Math.min(M.OUT, s.y)), undefined, target));
-  springVec(ballPos, target, dt, 16);
-  ball.position.copy(ballPos.x);
+  // 动画只插值参数平面；高度重新取 loss，避免三维弦线穿过地形。
+  moveProgress = Math.min(1, moveProgress + dt / 0.1);
+  ball.position.lerpVectors(ballFrom, target, moveProgress);
+  const [x, y] = toModel(ball.position);
+  lift(toWorld(x, y, undefined, ball.position));
   if (now - logT > 1) {
     logT = now;
     const p = stage.stats;
@@ -332,7 +337,9 @@ stage.onFrame((dt, now) => {
 
 // URL 带 steps=N：先跑 N 步（截图与分享直接看到结果）
 for (let i = 0, k = Number(q.get('steps')) || 0; i < k && !st.s.outcome; i++) doStep(false);
-ball.position.copy(ballPos.x.copy(lift(toWorld(Math.max(-M.OUT, Math.min(M.OUT, st.s.x)), Math.max(-M.OUT, Math.min(M.OUT, st.s.y))))));
+ball.position.copy(lift(toWorld(Math.max(-M.OUT, Math.min(M.OUT, st.s.x)), Math.max(-M.OUT, Math.min(M.OUT, st.s.y)))));
+ballFrom.copy(ball.position);
+moveProgress = 1;
 refresh();
 stage.views.go(st.view, true);
 stage.start();
