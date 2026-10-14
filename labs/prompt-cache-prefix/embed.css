@@ -8,6 +8,8 @@
 }
 .iso[data-embed="true"] { font-family:var(--anatomy-font-prose, inherit) }
 [data-embed="true"] main { max-width:100%;padding:4px 4px 12px }
+/* Keep the live announcement inside the measured content height. */
+[data-embed="true"] #announcement { top:0;left:0;margin:0 }
 [data-embed="true"] .topbar,
 [data-embed="true"] header,
 [data-embed="true"] .assumptions { display:none }

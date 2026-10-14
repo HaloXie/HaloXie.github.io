@@ -15,12 +15,6 @@ lang-exclusive: [zh-CN]
 
 @use 'custom/base';
 
-body:not(:has(main article[data-toc])) {
-  --home-canvas-width: 100rem;
-  --home-panel-width: clamp(14rem, 15vw, 16rem);
-  --home-layout-gap: clamp(1.5rem, 2.2vw, 2.75rem);
-}
-
 /* The demo's page canvas applies to every route. !important only replaces
    Chirpy/Bootstrap padding utilities and vendor container sizing. */
 #main-wrapper > .container {
@@ -57,7 +51,6 @@ main .dynamic-title {
 }
 
 body:has(main article[data-toc]) {
-  --post-copy-width: var(--measure-copy);
   --post-panel-width: 15rem;
   --post-layout-gap: 2.5rem;
 }
@@ -317,8 +310,7 @@ body:has(#post-list) #topbar-wrapper {
 @media (min-width: 1200px) {
   body:not(:has(main article[data-toc])) #main-wrapper > .container > .row {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) var(--home-panel-width);
-    gap: var(--home-layout-gap);
+    grid-template-columns: minmax(0, 1fr);
     margin-right: 0 !important;
     margin-left: 0 !important;
     align-items: start;
@@ -329,10 +321,7 @@ body:has(#post-list) #topbar-wrapper {
   }
 
   body:not(:has(main article[data-toc])) #panel-wrapper {
-    grid-column: 2;
-    width: 100%;
-    max-width: none;
-    padding-left: 0 !important;
+    display: none;
   }
 }
 
@@ -419,7 +408,7 @@ body:has(#post-list) #topbar-wrapper {
 }
 
 article[data-toc] > header > h1 {
-  max-width: var(--measure-copy);
+  max-width: 100%;
   margin: clamp(1.8rem, 3vw, 2.6rem) 0 0.85rem;
   color: var(--heading-color);
   font-family: var(--font-display);
@@ -431,14 +420,15 @@ article[data-toc] > header > h1 {
 }
 
 article > header .post-desc {
-  max-width: 48rem;
+  max-width: 100%;
   margin: 1rem 0 1.1rem;
   padding-left: 1rem;
   border-left: 3px solid var(--link-color);
   color: var(--text-color);
-  font-size: clamp(1.08rem, 1.4vw, 1.24rem);
+  font-family: var(--font-prose);
+  font-size: var(--text-body);
   font-weight: 400;
-  line-height: 1.7;
+  line-height: var(--leading-prose);
   text-wrap: pretty;
 }
 
@@ -533,7 +523,7 @@ article > header .post-desc {
 
   article > header .post-desc {
     padding-left: 0.8rem;
-    font-size: 1.05rem;
+    font-size: var(--text-body);
   }
 
   .post-taxonomy {
@@ -2159,9 +2149,9 @@ body:has(main article[data-toc])
   }
 
   body:has(main article[data-toc]) main:has(> article[data-toc]) {
-    flex: 0 1 var(--post-copy-width) !important;
+    flex: 0 1 100% !important;
     width: 100% !important;
-    max-width: var(--post-copy-width) !important;
+    max-width: 100% !important;
     padding-right: 0 !important;
     padding-left: 0 !important;
   }
@@ -2247,22 +2237,6 @@ body:has(main article[data-toc])
   }
 }
 
-/* Keep the compact TOC until the canvas can accommodate the wider prose and
-   full panel together; this avoids a width drop at an intermediate desktop
-   breakpoint. */
-@media (min-width: 1200px) and (max-width: 1535.98px) {
-  body:has(main article[data-toc]) {
-    --post-panel-width: 12rem;
-    --post-layout-gap: 1.5rem;
-  }
-}
-
-@media (min-width: 1536px) {
-  body:has(main article[data-toc]) {
-    --post-copy-width: var(--measure-wide);
-  }
-}
-
 /* Centring the prose + TOC group inside the space beside the fixed sidebar
    keeps the prose close to the physical viewport centre. */
 @media (min-width: 1200px) {
@@ -2272,7 +2246,7 @@ body:has(main article[data-toc])
       minmax(0, 1fr)
       var(--post-panel-width);
     width: 100%;
-    max-width: calc(var(--post-copy-width) + var(--post-layout-gap) + var(--post-panel-width));
+    max-width: 100%;
     margin-right: auto;
     margin-left: auto;
     align-items: center;
@@ -2300,7 +2274,7 @@ body:has(main article[data-toc])
       var(--post-layout-gap)
       var(--post-panel-width);
     width: 100%;
-    max-width: calc(var(--post-copy-width) + var(--post-layout-gap) + var(--post-panel-width));
+    max-width: 100%;
     margin-right: auto !important;
     margin-left: auto !important;
     justify-content: center;
@@ -2319,6 +2293,32 @@ body:has(main article[data-toc])
     max-width: var(--post-panel-width);
     align-self: stretch;
     padding-left: 0 !important;
+  }
+
+  body:has(main article[data-toc]):not(:has(#toc-wrapper)) {
+    #main-wrapper > .container > .row:has(> main > article[data-toc]) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    #topbar { display: flex !important; }
+
+    #panel-wrapper { display: none; }
+  }
+}
+
+@media (max-width: 1199.98px) {
+  /* Chirpy hides the panel on narrow screens; the demo places its TOC below content. */
+  body:has(main article[data-toc]) #panel-wrapper:has(#toc-wrapper) {
+    display: block !important;
+    width: 100%;
+    padding-inline: 0;
+  }
+
+  body:has(main article[data-toc]) #panel-wrapper #toc-wrapper {
+    display: block;
+    position: static;
+    max-height: none;
+    margin-top: var(--space-6);
   }
 }
 
