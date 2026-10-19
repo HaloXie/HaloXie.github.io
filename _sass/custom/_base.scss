@@ -270,7 +270,7 @@ article[data-toc] > .content :where(code, kbd, pre) {
 }
 
 article[data-toc] > .content > :where(p, ul, ol) {
-  max-width: var(--measure-prose);
+  max-width: 100%;
 }
 
 article[data-toc] > .content table:not(.rouge-table),

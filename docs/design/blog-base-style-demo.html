@@ -245,7 +245,7 @@
       .layout-preview__bar { display: flex; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-3); border-bottom: 1px solid var(--border); color: var(--ink-muted); font-size: var(--text-sm); }
       .layout-preview__card { margin-top: var(--space-5); padding: clamp(1.25rem, 3vw, 3rem); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
       .layout-preview__card h3 { font-size: var(--text-h3); color: var(--ink-strong); }
-      .layout-preview__card p { max-width: var(--measure-prose); }
+      .layout-preview__card p { max-width: 100%; }
       .layout-preview__toc a { display: block; padding-block: var(--space-2); }
       .layout-preview__metrics { color: var(--ink-muted); font-size: var(--text-sm); margin-top: var(--space-4); }
       @media (min-width: 1200px) {
@@ -396,8 +396,8 @@
       .language-type-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.6; }
 
       .article-demo {
-        /* Article samples keep their reading width inside the wider specification gallery. */
-        max-width: var(--measure-wide);
+        /* One content column for headings, media, prose, tables and code. */
+        max-width: var(--measure-copy);
         padding: clamp(1.25rem, 4vw, 3rem);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
@@ -441,7 +441,8 @@
       .series-context-demo__progress { flex: 0 0 auto; color: var(--ink-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
       .article-demo strong { font-weight: 600; }
       .article-demo .content-note { color: var(--ink-muted); font-size: var(--text-sm); font-weight: 400; line-height: 1.65; }
-      .article-demo p { max-width: var(--measure-prose); }
+      .article-demo p { max-width: 100%; }
+      .article-demo > img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
       .article-demo li + li { margin-top: var(--space-2); }
       blockquote {
         margin: var(--space-6) 0;
@@ -1005,13 +1006,14 @@
             <p class="evidence-note">基础排版参考：中文统一苹方。原版与 Ant Design 版均保留，后续控件采用 Ant Design 方向；生产迁移尚未完成。</p>
             <div class="section-head">
               <h2>03 · Article prose</h2>
-              <p>文章标题、摘要及宽内容随容器从 55rem 增至最多 72rem；标题与摘要不另设窄宽度。摘要与正文统一字体、16px / 400，中文行高 1.8、英文 1.72；标题保留原有标题层级。普通中文段落保持 48em，英文保持 68ch；表格 16px / 400 / 1.65，表头 600 / 1.5；目录标题 18px / 600，条目 16px / 400；日期、作者、图片说明及补充说明 14px / 400。</p>
+              <p>文章内容列最大 55rem，窄屏随可用空间收缩。标题、摘要、封面、正文、表格和代码共用这一列，不再给中英文段落另设行宽。摘要与正文统一字体、16px / 400，中文行高 1.8、英文 1.72；表格 16px / 400 / 1.65，表头 600 / 1.5；日期、作者和图片说明 14px / 400。</p>
             </div>
-            <p class="evidence-note">宽度说明：上方规范说明使用 demo 的展示区域；下方卡片模拟文章内容区，最大宽度由 <code>--measure-wide</code> 控制（55–72rem，窄屏时收缩至可用宽度）。两者左对齐，大屏右侧留白是样例宽度限制的结果，不是预留目录栏。卡片内普通段落另按中文 48em、英文 68ch 限制行长。这里用于比较排版，不代表完整文章页布局；完整布局请看<a href="#layout">「动态布局对比」</a>。</p>
+            <p class="evidence-note">宽度契约（2026-10-19）：文章内部只有一个内容宽度，中英文一致；目录位于内容列外。上方是组件库说明区，下方是文章样例。文章样例中的图片和段落必须左右对齐；卡片边框与内边距不计入内容宽度。此规则替代此前的 48em / 68ch 段落限宽与 55–72rem 宽内容规则。</p>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
               <h2>从一个最小循环开始</h2>
               <p class="article-meta">分类：AI Engineering · 主题：Agent、Harness</p>
+              <img src="../../assets/img/agent-patterns-with-pi/cover-image2.webp" alt="指令、路由、工具和循环展示不同的决策权限" width="1200" height="675">
               <p>一个可运行的 Agent 最少需要三件事：接收目标、选择动作、读取反馈。复杂系统只是在这个闭环上增加状态、边界和验收。</p>
               <p class="content-note">补充说明：这里用最小闭环解释概念，具体工具和运行环境可以不同。灰色用于非关键的背景、声明和阅读提示，不承载必要步骤或风险条件。</p>
               <blockquote><p><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。没有稳定反馈的自治，只会把错误放大。</p></blockquote>
@@ -1036,6 +1038,7 @@
               <span class="eyebrow">READING SAMPLE · ENGLISH</span>
               <h2>Start with the smallest verifiable loop</h2>
               <p class="article-meta">Category: AI Engineering · Topics: Agent, Harness</p>
+              <img src="../../assets/img/agent-patterns-with-pi/cover-image2.webp" alt="Instructions, routing, tools and a loop illustrate decision authority" width="1200" height="675">
               <p>An agent needs three things before it needs a framework: a goal it can interpret, a bounded set of actions, and evidence that tells it whether those actions worked. More elaborate systems add memory, recovery, and delegation, but they do not replace this loop.</p>
               <blockquote><p><strong>Design rule:</strong> increase autonomy only after the feedback path is observable and recoverable.</p></blockquote>
               <h3>Why the distinction matters</h3>

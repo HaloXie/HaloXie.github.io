@@ -12,7 +12,7 @@ const css = `
 #antd-demo .lab-controls { display:flex; flex-wrap:wrap; align-items:center; gap:var(--space-4); padding:var(--space-4); background:var(--surface-soft); border-radius:var(--radius-md); margin-bottom:var(--space-5); }
 #antd-demo .lab-stage { min-width:0; max-width:100%; margin:auto; }
 #antd-demo .narrow { max-width:360px; }
-#antd-demo .reader-copy { font-family:var(--font-prose); font-size:1.125rem; line-height:var(--leading-prose); max-width:var(--measure-prose); }
+#antd-demo .reader-copy { font-family:var(--font-prose); font-size:1.125rem; line-height:var(--leading-prose); max-width:100%; }
 #antd-demo .board { display:grid; grid-template-columns:11rem minmax(0,1fr); gap:var(--space-5); }
 #antd-demo .board-index { border-right:1px solid var(--border); padding-right:var(--space-4); }
 #antd-demo .material-nav { justify-content:flex-start; white-space:normal; height:auto; min-height:2.75rem; padding:var(--space-3); text-align:left; }

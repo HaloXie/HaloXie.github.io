@@ -160,6 +160,9 @@ page_geometry.each do |token, expected|
   errors << "Base #{token} must match demo page (#{expected.inspect}), got #{actual.inspect}" unless expected && actual == expected
 end
 errors << "shared page canvas must consume Base width" unless style_entry.match?(/#main-wrapper > \.container\s*\{[^}]*max-width:\s*var\(--page-width\)/m)
+errors << "article prose must fill its shared content column" unless base_style.match?(/article\[data-toc\] > \.content > :where\(p, ul, ol\)\s*\{\s*max-width: 100%;/)
+errors << "article canvas must be bounded by the shared copy measure" unless style_entry.include?("max-width: calc(var(--measure-copy) + 2 * var(--page-gutter));")
+errors << "demo prose must fill its content column" unless demo_style.include?(".article-demo p { max-width: 100%; }")
 errors << "page titles must consume Base type scale" unless style_entry.match?(/main \.dynamic-title\s*\{[^}]*font-size:\s*var\(--text-h1\)/m)
 override_styles = {
   "page override Sass" => style_entry,
