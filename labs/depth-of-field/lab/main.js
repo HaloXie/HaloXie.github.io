@@ -4,7 +4,8 @@ import * as THREE from 'three';
 import { createStage } from '../../exploded/kit/stage.js';
 import { createPicker, knob, pushButton } from '../../exploded/kit/controls3d.js';
 import { createLabels } from '../../exploded/kit/labels.js';
-import { seg, statCards, modal } from '../../exploded/kit/hud.js';
+import { statCards, modal } from '../../exploded/kit/hud.js';
+import { seg, mountButton } from '../../shared/antd-controls.mjs';
 import { $ } from '../../exploded/kit/util.js';
 import { ORANGE, CYAN, YELLOW } from '../../exploded/kit/palette.js';
 import * as O from './optics.js';
@@ -82,20 +83,24 @@ const segM = seg($('seg-mode'), [{ label: '只改光圈' }, { label: '三个都�
 const photo = createPhoto(stage, [board.group, fov.lines]);
 $('photo-box').appendChild(photo.canvas);
 const photoModal = modal();
+const oldModalClose = document.querySelector('.kit-modal-x');
+const modalClose = oldModalClose.cloneNode(true);
+oldModalClose.replaceWith(modalClose);
+mountButton(modalClose, () => photoModal.close());
 const photoBig = document.createElement('canvas');
 photoBig.width = PHOTO_W;
 photoBig.height = PHOTO_H;
 const openPhoto = () => { photoBig.getContext('2d').drawImage(photo.canvas, 0, 0); photoModal.open(photoBig, $('photo-read').innerHTML); };
-$('photo-zoom').addEventListener('click', openPhoto);
+mountButton($('photo-zoom'), openPhoto);
 $('photo-box').addEventListener('click', openPhoto);
 const opts = [...document.querySelectorAll('#quiz .opt')];
-for (const b of opts) b.addEventListener('click', () => {
+const predictionControls = opts.map((b) => mountButton(b, () => {
   if (st.settled || runTimer) return;
   st.pick = b.dataset.choice;
-  opts.forEach((x) => x.classList.toggle('picked', x === b));
-  $('btn-run').disabled = false;
-});
-$('btn-run').addEventListener('click', run);
+  predictionControls.forEach((control, i) => control.update({ pressed: opts[i] === b }));
+  runControl.update({ disabled: false });
+}));
+const runControl = mountButton($('btn-run'), run);
 
 // ---------- 派生与联动 ----------
 let d = O.derive(st);
@@ -116,9 +121,9 @@ function set(k, i) {
   if (st.settled) {
     st.settled = false;
     st.pick = null;
-    opts.forEach((b) => b.classList.remove('picked', 'right', 'wrong'));
+    predictionControls.forEach(control => control.update({ pressed: false, disabled: false, className: 'opt' }));
     $('quiz-result').textContent = '';
-    $('btn-run').disabled = true;
+    runControl.update({ disabled: true });
   }
   st[k] = i;
   apply(k);
@@ -131,6 +136,7 @@ function apply(changed) {
   $('seg-focal').classList.toggle('locked', st.guided || !!runTimer);
   $('seg-focus').classList.toggle('locked', st.guided || !!runTimer);
   $('seg-f').classList.toggle('locked', !!runTimer);
+  segL.disable(st.guided || !!runTimer); segD.disable(st.guided || !!runTimer); segF.disable(!!runTimer);
   $('mode-hint').textContent = st.guided
     ? '引导模式：只有光圈能调，方便只看一个变量的效果。'
     : '自由模式：三个参数都能调，看它们如何一起影响清晰范围。';
@@ -196,17 +202,17 @@ function run() {
     const ok = st.pick === actual;
     const name = { wider: '变宽', narrower: '变窄', same: '基本不变' };
     st.settled = true;
-    $('btn-run').disabled = true;
-    opts.forEach((b) => {
-      b.classList.toggle('right', b.dataset.choice === actual);
-      b.classList.toggle('wrong', b.dataset.choice === st.pick && !ok);
+    runControl.update({ disabled: true });
+    opts.forEach((b, i) => {
+      predictionControls[i].update({ disabled: true, className: ['opt', b.dataset.choice === actual ? 'right' : '', b.dataset.choice === st.pick && !ok ? 'wrong' : ''].join(' ') });
     });
     $('quiz-result').innerHTML = ok
       ? `<b class="good">预测正确。</b>景深从 ${O.fmtDof(before.dof)} 变到 ${O.fmtDof(after.dof)}，确实是「${name[actual]}」。`
       : `<b class="bad">预测不对。</b>你选的是「${name[st.pick]}」，实际景深从 ${O.fmtDof(before.dof)} 变到 ${O.fmtDof(after.dof)}，是「${name[actual]}」。`;
     showNarration([ok ? '预测正确' : '再看一眼', ok ? 'g' : 'o'], `${narrate(d)} 收光圈让入瞳变小，每个点打到传感器上的光锥变细，离对焦面更远的点也能落进 0.03mm 的容许圆里。`);
   }, 900);
-  $('btn-run').disabled = true;
+  runControl.update({ disabled: true });
+  predictionControls.forEach(control => control.update({ disabled: true }));
   st.f = 0;
   apply('f');
 }

@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, pi, tool-calling, routing, agent-loop]
 image:
-  path: /assets/img/agent-patterns-with-pi/cover-en.webp
+  path: /assets/img/agent-patterns-with-pi/cover-image2.webp
+  alt: "Instructions, routing, tools, and a bounded loop illustrate different amounts of runtime decision authority"
 toc: true
 ---
 

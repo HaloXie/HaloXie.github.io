@@ -3,6 +3,7 @@
 <dialog
   id="command-search-dialog"
   class="command-search-dialog"
+  data-pagefind-url="{{ '/pagefind/pagefind.js' | relative_url }}"
   aria-label="{{ site.data.locales[include.lang].search.hint | capitalize }}"
 >
   <div class="command-search-panel">
@@ -47,13 +48,3 @@
     </footer>
   </div>
 </dialog>
-
-<template id="command-search-result-template">
-  <div class="command-search-result" role="listitem">
-    <a href="{{ '/' | relative_url }}">
-      <span class="command-search-result-title"></span>
-      <span class="command-search-result-excerpt"></span>
-      <i class="fas fa-arrow-right command-search-result-arrow" aria-hidden="true"></i>
-    </a>
-  </div>
-</template>

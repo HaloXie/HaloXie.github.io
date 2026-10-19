@@ -20,9 +20,9 @@
 /* 先预测，再运行 */
 #quiz .q { font-size: 12px; line-height: 1.55; color: var(--exploded-text); margin-bottom: 6px; }
 #quiz .opts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
-#quiz .opt { text-align: left; border: 1px solid var(--exploded-line); background: var(--exploded-well); color: var(--exploded-text); font: 700 12px var(--exploded-font); padding: 7px 9px; border-radius: 8px; cursor: pointer; }
-#quiz .opt:hover { background: var(--exploded-hover); }
-#quiz .opt:focus-visible { outline: 2px solid var(--exploded-cyan); outline-offset: 1px; }
+#quiz .opt:not(.ant-btn) { text-align: left; border: 1px solid var(--exploded-line); background: var(--exploded-well); color: var(--exploded-text); font: 700 12px var(--exploded-font); padding: 7px 9px; border-radius: 8px; cursor: pointer; }
+#quiz .opt:not(.ant-btn):hover { background: var(--exploded-hover); }
+#quiz .opt:not(.ant-btn):focus-visible { outline: 2px solid var(--exploded-cyan); outline-offset: 1px; }
 #quiz .opt.picked { border-color: var(--exploded-cyan); box-shadow: inset 0 0 0 1px var(--exploded-cyan); }
 #quiz .opt.right { border-color: var(--exploded-green); color: var(--exploded-green); }
 #quiz .opt.wrong { border-color: var(--exploded-orange); color: var(--exploded-orange); }

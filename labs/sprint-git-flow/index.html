@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>一起测试，分别上线 · Sprint Git Flow</title>
+  <script src="/labs/shared/theme-bridge.js"></script>
+  <link rel="stylesheet" href="/labs/shared/theme-bridge.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="/labs/shared/antd-controls.css">
+  <script src="https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.13/dayjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/antd@6.5.0/dist/antd.min.js"></script>
+</head>
+<body>
+  <main>
+    <header><a href="/posts/general/sprint-git-flow/">返回文章</a><h1>一起测试，分别上线</h1></header>
+    <section class="flow" aria-label="Sprint Git Flow 场景演示">
+      <div class="eyebrow">SPRINT GIT FLOW · 可分步演示</div>
+      <nav id="scenarios" aria-label="选择场景"></nav>
+      <h2 id="question"></h2>
+      <p class="hint">先想一个答案，再点「下一步」。每个场景独立开始；卡片展示当前内容，A、B、H、F 代表改动。</p>
+      <div class="controls"><button id="previous" type="button">上一步</button><button id="play" type="button" aria-pressed="false">播放</button><button id="next" type="button">下一步</button><button id="reset" type="button">重来</button><span id="progress"></span></div>
+      <div class="narration" aria-live="polite" aria-atomic="true"><h3 id="step-title"></h3><p id="explanation"></p></div>
+      <p id="action" class="action"></p>
+      <div class="board">
+        <section class="code"><h3>代码 · 分支内容</h3><div id="branches"></div></section>
+        <section class="runtime"><h3>运行 · 环境版本</h3><div id="environments"></div></section>
+      </div>
+      <div class="controls bottom-controls"><button id="previous-bottom" type="button">上一步</button><button id="next-bottom" type="button">下一步</button><button id="pause-bottom" type="button">暂停播放</button><span id="progress-bottom"></span></div>
+      <p id="explanation-bottom" class="mobile-explanation"></p>
+      <p class="boundary"><strong>develop 不整体合回 main。</strong>描边变化表示本步更新；点击卡片就地展开职责说明。</p>
+      <details><summary>图的边界与术语</summary><p>这是文章流程的确定性演示，不执行 Git 或部署。卡片是内容清单，不是提交祖先图；省略 merge commit、CI 耗时和实际版本命名。MR 是合并请求，CI 是自动流水线，tag 固定候选提交，构建产物是可部署的程序包或镜像。Sprint 是一轮开发周期。gray 是发布前验证环境，不是长期分支，也不是流量灰度。</p></details>
+      <noscript><p>需要 JavaScript 才能操作；下图保留主路径。</p><img src="/assets/img/sprint-git-flow/flow.webp" alt="原开发分支进入 develop 测试，通过后由原分支回主干，再打 tag 验证发布"><p>JavaScript is required for the interactive demo. <a href="/assets/img/sprint-git-flow/flow-en.webp">Read the English flow diagram</a> or <a href="/en/posts/general/sprint-git-flow/">return to the English article</a>.</p></noscript>
+      <footer><span>确定性 HTML · 版本编号仅作示例</span><a href="/labs/sprint-git-flow/" target="_blank" rel="noopener">全屏打开</a></footer>
+    </section>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>

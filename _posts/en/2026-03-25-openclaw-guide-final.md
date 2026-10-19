@@ -10,7 +10,8 @@ redirect_from:
 categories: [OpenClaw]
 tags: [ai-agent, openclaw, mcp, open-source]
 image:
-  path: /assets/img/openclaw-guide/cover-en.webp
+  path: /assets/img/openclaw-guide/cover-image2.webp
+  alt: "A controller connects conversation, a model, and tools within an explicit safety boundary"
 toc: true
 ---
 

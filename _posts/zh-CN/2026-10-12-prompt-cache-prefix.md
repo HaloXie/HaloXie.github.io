@@ -3,10 +3,8 @@ title: "Prompt caching：为什么只改一个 token，后面就不能复用？"
 description: "从带前文的 KV 状态理解提示缓存，用一台交互式前缀校验机观察命中边界，再区分 OpenAI 与 Anthropic 的断点、TTL 和计费规则。"
 date: 2026-10-12 12:00:00 +0800
 lang: zh-CN
-lang-exclusive: [zh-CN]
 page_id: prompt-cache-prefix
 permalink: /posts/general/prompt-cache-prefix/
-translation_status: pending
 categories: [AI]
 tags: [llm, prompt-caching, ai-agent]
 image:

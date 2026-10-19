@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, workflow, chat, router, automation]
 image:
-  path: /assets/img/chat-workflow-agent-guide/cover-en.webp
+  path: /assets/img/chat-workflow-agent-guide/cover-image2.webp
+  alt: "Conversation, a fixed workflow, and a dynamically selected path pursue the same goal"
 toc: true
 ---
 

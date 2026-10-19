@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Halo's Blog · Base Style Demo</title>
+    <title>Halo's Blog · 组件与阅读实验室</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -396,6 +396,7 @@
       .language-type-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.6; }
 
       .article-demo {
+        /* Article samples keep their reading width inside the wider specification gallery. */
         max-width: var(--measure-wide);
         padding: clamp(1.25rem, 4vw, 3rem);
         border: 1px solid var(--border);
@@ -742,6 +743,116 @@
         :root { --text-body: 1rem; }
       }
 
+      /* Demo-only catalog; all visual roles inherit the established Base palette. */
+      [hidden] { display: none !important; }
+      .catalog-nav, .demo-controls, .reader-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+      .catalog-nav a { padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-md); text-decoration: none; }
+      .catalog-nav { margin-block: var(--space-5); }
+      .specimen { margin-block: var(--space-6); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); scroll-margin-top: var(--space-5); }
+      .specimen > header, .demo-controls, .specimen > footer { padding: var(--space-4) var(--space-5); }
+      .specimen h3 { margin: var(--space-2) 0; font-size: var(--text-h3); }
+      .specimen header p, .specimen footer { margin: 0; color: var(--ink-muted); font-size: var(--text-sm); }
+      .demo-controls { border-block: 1px solid var(--border); background: var(--surface-soft); font-size: var(--text-sm); }
+      .demo-controls label { display: flex; align-items: center; gap: var(--space-2); }
+      .outcome-options { display: flex; gap: var(--space-2); margin: 0; padding: 0; border: 0; }
+      .outcome-options legend { margin-bottom: var(--space-1); color: var(--ink-muted); }
+      .outcome-options label { padding: var(--space-2) var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; }
+      .outcome-options label:has(input:checked) { background: var(--surface-accent); color: var(--accent); border-color: var(--accent); }
+      .outcome-options input { accent-color: var(--accent); }
+      .specimen button, .specimen select, .specimen input, .specimen textarea { font: inherit; }
+      .specimen button, .specimen select { cursor: pointer; }
+      .specimen button:not(.button), .specimen select, .specimen input[type="search"], .specimen textarea { padding: var(--space-2) var(--space-3); color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+      .specimen button[aria-pressed="true"] { color: var(--accent); background: var(--surface-accent); border-color: var(--accent); }
+      .specimen button:disabled { cursor: not-allowed; opacity: 0.55; }
+      .specimen .button { margin-top: 0; }
+      .demo-stage { width: 100%; min-width: 0; margin-inline: auto; padding: var(--space-5); overflow-wrap: anywhere; }
+      .specimen[data-narrow="true"] .demo-stage { max-width: 360px; border-inline: 1px dashed var(--border-strong); }
+      .demo-stage > :first-child { margin-top: 0; }
+      .demo-stage > :last-child { margin-bottom: 0; }
+      .reader-tools { justify-content: flex-end; padding-bottom: var(--space-4); border-bottom: 1px solid var(--border); }
+      .reader-language { position: relative; }
+      .reader-language summary { cursor: pointer; padding: var(--space-2); }
+      .reader-language nav { position: absolute; z-index: 2; right: 0; width: 10rem; padding: var(--space-3); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-menu); }
+      .reader-language nav button { display: block; width: 100%; text-align: left; }
+      #reader-search { margin-top: var(--space-4); }
+      #reader-search input { width: 100%; }
+      .result-link { display: block; padding-block: var(--space-3); border-bottom: 1px solid var(--border); }
+      .result-link small { display: block; color: var(--ink-muted); }
+      #lesson-specimen .demo-stage { max-width: 48rem; padding: clamp(1.25rem, 4vw, 3rem); container-type: inline-size; }
+      #lesson-specimen[data-narrow="true"] .demo-stage { max-width: 360px; }
+      .lesson-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-2); margin: 0 0 var(--space-7); padding: 0; list-style: none; counter-reset: lesson-step; color: var(--ink-muted); font-size: var(--text-sm); }
+      .lesson-steps li { display: flex; align-items: center; gap: var(--space-2); padding-block: var(--space-3); border-bottom: 2px solid var(--border); counter-increment: lesson-step; }
+      .lesson-steps li::before { content: '0' counter(lesson-step); color: var(--ink-muted); font-family: var(--font-mono); font-size: var(--text-xs); }
+      .lesson-steps [aria-current="step"] { color: var(--accent); border-color: var(--accent); font-weight: 700; }
+      .lesson-steps [aria-current="step"]::before { color: inherit; }
+      .prediction { min-width: 0; margin: 0; padding: 0; border: 0; }
+      .prediction legend { width: 100%; margin-bottom: var(--space-5); padding: 0; font-size: var(--text-h4); font-weight: 650; line-height: var(--leading-heading); color: var(--ink-strong); }
+      .prediction label { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); cursor: pointer; transition: border-color var(--motion-fast), background var(--motion-fast); }
+      .prediction label:has(input:not(:disabled)):hover { border-color: var(--accent); }
+      .prediction label:has(input:checked) { border-color: var(--accent); background: var(--surface-accent); color: var(--ink-strong); }
+      .prediction label:has(input:focus-visible) { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
+      .prediction label:has(input:disabled) { cursor: default; }
+      .prediction input { flex: 0 0 auto; width: 1.1rem; height: 1.1rem; margin: 0; accent-color: var(--accent); }
+      #prediction-form > .button { margin-top: var(--space-3); }
+      #prediction-form:has(input:disabled) > .button { display: none; }
+      #prediction-feedback { margin: var(--space-5) 0; padding: var(--space-4); border-left: 3px solid var(--accent); background: var(--surface-soft); color: var(--ink); font-size: var(--text-sm); }
+      .observation { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-4) var(--space-5); align-items: center; margin-block: var(--space-5); padding: var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface-soft); }
+      .observation > label { grid-column: 1; color: var(--ink-label); font-size: var(--text-sm); }
+      .observation input[type="range"] { grid-column: 1; grid-row: 2; width: 100%; min-width: 0; height: 1.5rem; margin: 0; accent-color: var(--accent); cursor: pointer; }
+      .observation output { grid-column: 2; grid-row: 1 / 3; padding-left: var(--space-5); border-left: 1px solid var(--border-strong); color: var(--ink-strong); font-size: var(--text-h2); font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+      .observation > p { grid-column: 1 / -1; margin: 0; padding-top: var(--space-4); border-top: 1px solid var(--border); color: var(--ink-muted); font-size: var(--text-sm); }
+      #lesson-observation > details { padding: var(--space-4) 0; border-bottom: 1px solid var(--border); font-size: var(--text-sm); }
+      #lesson-observation summary { cursor: pointer; color: var(--accent); }
+      #lesson-observation > p:has(label) { margin: var(--space-6) 0 var(--space-3); font-weight: 650; color: var(--ink-strong); }
+      #lesson-specimen textarea { min-height: 8rem; padding: var(--space-4); line-height: var(--leading-body); background: var(--canvas); }
+      #compare-explanation { margin-top: var(--space-3); }
+      #explanation-reference { margin-top: var(--space-5); padding: var(--space-4); border-radius: var(--radius-md); background: var(--success-soft); }
+      #explanation-reference > :first-child { margin-top: 0; }
+      #explanation-reference > :last-child { margin-bottom: 0; }
+      #lesson-specimen > footer { border-top: 1px solid var(--border); }
+      @container (max-width: 380px) {
+        .lesson-steps li { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+        .observation { grid-template-columns: minmax(0, 1fr); padding: var(--space-4); }
+        .observation output { grid-column: 1; grid-row: 3; padding: var(--space-3) 0 0; border-left: 0; border-top: 1px solid var(--border); }
+      }
+      .whiteboard-workspace { display: grid; grid-template-columns: 13rem minmax(0, 1fr); overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+      .source-panel { min-width: 0; padding: var(--space-4); border-right: 1px solid var(--border); background: var(--surface-soft); }
+      .source-panel__label { display: block; margin-bottom: var(--space-2); color: var(--ink-muted); font-size: var(--text-xs); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      .source-panel h4 { margin: 0 0 var(--space-4); color: var(--ink-strong); }
+      .source-preview { display: grid; gap: .35rem; height: 7rem; margin-bottom: var(--space-4); padding: .75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); }
+      .source-preview span { display: block; width: 82%; height: .35rem; border-radius: 999px; background: var(--border-strong); }
+      .source-preview span:nth-child(2) { width: 62%; }
+      .source-preview span:nth-child(3) { width: 74%; }
+      .source-preview span:last-child { width: 42%; margin-top: .4rem; background: var(--accent-soft); }
+      .source-item { display: block; width: 100%; margin-bottom: var(--space-2); padding: .65rem .75rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); text-align: left; font: inherit; font-size: .875rem; line-height: 1.45; cursor: pointer; }
+      .source-item[aria-current="true"] { border-color: var(--accent); background: var(--surface-accent); color: var(--accent); }
+      .board-panel { position: relative; min-width: 0; padding: clamp(1.5rem, 3vw, 2.75rem); background-color: var(--surface); background-image: radial-gradient(color-mix(in srgb, var(--border-strong) 35%, transparent) 1px, transparent 1px); background-size: 1.2rem 1.2rem; }
+      .board-panel h4 { max-width: 30rem; margin: .35rem 0 var(--space-2); color: var(--success); font-size: clamp(1.35rem, 2vw, 1.8rem); line-height: 1.25; }
+      .board-panel > p { max-width: 42rem; margin: 0 0 var(--space-5); color: var(--ink-muted); font-size: 1rem; line-height: 1.65; }
+      .board-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+      .board-note { min-height: 7rem; padding: var(--space-4); border: 1px solid var(--border); border-radius: var(--radius-md); background: color-mix(in srgb, var(--surface) 88%, transparent); }
+      .board-note strong { display: block; margin-bottom: var(--space-2); color: var(--ink-strong); }
+      .board-note p { margin: 0; font-size: var(--text-sm); line-height: 1.65; }
+      .board-note--accent { border-left: 3px solid var(--highlight); }
+      .board-question { max-width: 36rem; margin: var(--space-5) 0 0 auto; padding: var(--space-4); border: 1px solid var(--border-strong); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-menu); }
+      .board-question p { margin: 0 0 var(--space-3); color: var(--ink-strong); font-weight: 650; }
+      .board-question__actions { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+      .board-question__actions button { padding: var(--space-2) var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+      .board-question__actions button[aria-pressed="true"] { border-color: var(--success); background: var(--success-soft); color: var(--success); }
+      .workspace-followup { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2); max-width: 36rem; margin: var(--space-5) 0 0 auto; }
+      .workspace-followup input { min-width: 0; padding: var(--space-3); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font: inherit; }
+      .workspace-followup button { padding: var(--space-3) var(--space-4); border: 0; border-radius: var(--radius-sm); background: var(--accent); color: var(--accent-contrast); font: inherit; cursor: pointer; }
+      .workspace-status { margin-top: var(--space-2); color: var(--ink-muted); font-size: var(--text-xs); }
+      .voice-deferred { display: none; }
+      @media (max-width: 700px) { .whiteboard-workspace { grid-template-columns: 1fr; } .source-panel { border-right: 0; border-bottom: 1px solid var(--border); } .source-item { display: inline-block; width: auto; margin-right: var(--space-2); } .board-columns { grid-template-columns: 1fr; } .workspace-followup { grid-template-columns: 1fr; } }
+      .lesson-note { color: var(--ink-muted); font-size: var(--text-sm); }
+      .demo-stage textarea { width: 100%; min-height: 6rem; resize: vertical; }
+      .teaching-mark { background: var(--highlight-soft); color: inherit; border-bottom: 2px solid var(--highlight); padding-inline: var(--space-1); }
+      .component-source { overflow-wrap: anywhere; }
+      @media (max-width: 900px) {
+        .sidebar nav { display: block; margin-top: var(--space-4); }
+        .sidebar nav a { display: inline-block; margin-right: var(--space-3); }
+      }
       @media (prefers-reduced-motion: reduce) {
         *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
       }
@@ -753,16 +864,18 @@
         <div class="brand">
           <div class="brand-mark">H</div>
           <strong>Halo's Blog</strong>
-          <small>Base Style Proposal</small>
+          <small>阅读 · 交互 · 学习</small>
         </div>
         <nav aria-label="Demo sections">
           <span class="nav-label">CONTENTS</span>
+          <a href="#overview">总览与组件索引</a>
           <a href="#layout">00 · 动态布局对比</a>
           <a href="#colors">01 · Color roles</a>
           <a href="#type">02 · Typography</a>
           <a href="#article">03 · Article prose</a>
           <a href="#media">04 · Media rules</a>
           <a href="#components">05 · Components</a>
+          <a href="#teaching">教学实验</a>
           <a href="#extraction">06 · CSS extraction</a>
         </nav>
         <button class="theme-toggle" id="theme-toggle" type="button">切换深色模式</button>
@@ -771,10 +884,19 @@
       <main>
         <div class="topbar">
           <span>Git 内独立 demo，不修改生产 CSS</span>
-          <code>base-style / evidence-backed-v2</code>
+          <code>blog / component-lab</code>
         </div>
 
         <div class="page">
+          <section id="overview">
+            <span class="eyebrow">HALO / COMPONENT LAB</span>
+            <h1>让阅读自然走向理解</h1>
+            <p class="lead">一套阅读基线，两种使用情境：安静地读文章，主动地做实验。</p>
+            <nav class="catalog-nav" aria-label="组件索引">
+              <a href="#colors">基础规范</a><a href="#reader-specimen">阅读工具</a><a href="#loading-specimen">加载与反馈</a><a href="#teaching">教学实验</a><a href="#layout">页面组合</a>
+            </nav>
+            <p class="evidence-note">本页为设计验收入口。基础样式沿用现有博客；交互样例在本地运行，教学实验尚未接入生产。文案、结构与实现独立设计，未使用 Solvely 的源码、素材、图标或字体资源。</p>
+          </section>
           <section id="layout">
             <div class="section-head"><h2>00 · 动态布局对比</h2><p>在左侧导航之外的可用区域内居中。左右使用相同的动态留白，容器最大 100rem；无右侧目录时，内容占满容器，有目录时才分配目录列与间距。缩小窗口可查看窄屏效果。</p></div>
             <div class="layout-options" role="group" aria-label="布局场景">
@@ -880,11 +1002,12 @@
           </section>
 
           <section id="article">
-            <p class="evidence-note">2026-10-12 暂定标准：中文统一苹方；本页为唯一设计记录，生产样式按此同步。</p>
+            <p class="evidence-note">基础排版参考：中文统一苹方。原版与 Ant Design 版均保留，后续控件采用 Ant Design 方向；生产迁移尚未完成。</p>
             <div class="section-head">
               <h2>03 · Article prose</h2>
               <p>文章标题、摘要及宽内容随容器从 55rem 增至最多 72rem；标题与摘要不另设窄宽度。摘要与正文统一字体、16px / 400，中文行高 1.8、英文 1.72；标题保留原有标题层级。普通中文段落保持 48em，英文保持 68ch；表格 16px / 400 / 1.65，表头 600 / 1.5；目录标题 18px / 600，条目 16px / 400；日期、作者、图片说明及补充说明 14px / 400。</p>
             </div>
+            <p class="evidence-note">宽度说明：上方规范说明使用 demo 的展示区域；下方卡片模拟文章内容区，最大宽度由 <code>--measure-wide</code> 控制（55–72rem，窄屏时收缩至可用宽度）。两者左对齐，大屏右侧留白是样例宽度限制的结果，不是预留目录栏。卡片内普通段落另按中文 48em、英文 68ch 限制行长。这里用于比较排版，不代表完整文章页布局；完整布局请看<a href="#layout">「动态布局对比」</a>。</p>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
               <h2>从一个最小循环开始</h2>
@@ -943,20 +1066,67 @@
 
           <section id="components">
             <div class="section-head">
-              <h2>05 · Components</h2>
-              <p>组件可以保留不同布局，但共用 typography、color、radius、focus、motion 五组基础 token。</p>
+              <h2>05 · 阅读组件</h2>
+              <p>先看真实交互，再检查边界。窄屏与异常状态开关属于演示环境，不进入读者界面。<br><a href="#teaching">直接体验教学实验：预测 → 观察 → 讲回来 →</a></p>
             </div>
+            <article class="specimen" id="reader-specimen">
+              <header><span class="eyebrow">阅读 / 交互提案</span><h3>文章工具与搜索</h3><p>高亮、语言、搜索依次排列。当前语言有明确标记；待译文章仅提供中文。</p></header>
+              <div class="demo-controls"><label><input type="checkbox" data-narrow-toggle>窄屏预览</label><label><input type="checkbox" id="translation-pending">模拟待译文章</label><button type="button" data-reset="reader">重置样例</button></div>
+              <div class="demo-stage">
+                <div class="reader-tools" role="group" aria-label="文章工具">
+                  <button type="button" id="highlight-toggle" aria-pressed="true">重点高亮</button>
+                  <details class="reader-language"><summary>语言</summary><nav aria-label="预览语言"><button type="button" data-reader-lang="zh-CN" aria-pressed="true">简体中文 ✓</button><button type="button" data-reader-lang="en" aria-pressed="false">English</button><small id="pending-note" hidden>英文尚未发布</small></nav></details>
+                  <button type="button" id="search-toggle" aria-expanded="false" aria-controls="reader-search">搜索</button>
+                </div>
+                <div id="reader-copy" lang="zh-CN"><h3>从一个小实验开始</h3><p>读完解释之后，试着改变一个条件，观察结果是否符合预期。</p><p class="reading-highlight"><strong>先写下预测，再用观察修正理解。</strong></p></div>
+                <div id="reader-search" hidden><label for="article-query">搜索本页样例</label><input type="search" id="article-query" placeholder="输入：实验、Agent、阅读"><div id="demo-search-results"><a class="result-link" href="#teaching">一次小实验<small>先预测，再观察，再讲回来</small></a><a class="result-link" href="#article">Agent 的最小循环<small>正文排版与代码示例</small></a><a class="result-link" href="#reader-specimen">阅读工具<small>高亮、语言与搜索</small></a></div><p id="search-status" role="status">3 条示例结果</p></div>
+              </div>
+              <footer class="component-source">生产对应：<code>assets/css/jekyll-theme-chirpy.scss</code> · <code>#topbar-actions</code>；此处为独立交互样例，非生产组件挂载。语言切换只改变样例正文。</footer>
+            </article>
+            <article class="specimen" id="loading-specimen">
+              <header><span class="eyebrow">反馈 / 交互提案</span><h3>让等待与失败都有下一步</h3><p>保留已有内容，失败时给重试，结束时明确告知。</p></header>
+              <div class="demo-controls"><label><input type="checkbox" data-narrow-toggle>窄屏预览</label><fieldset class="outcome-options"><legend>模拟结果</legend><label><input type="radio" name="load-outcome" id="load-success" value="success" checked>成功</label><label><input type="radio" name="load-outcome" id="load-error" value="error">失败</label></fieldset><button type="button" data-reset="loading">重置样例</button></div>
+              <div class="demo-stage"><ul id="loaded-posts"><li>从一个小实验开始</li></ul><button type="button" class="button" id="load-more">加载更多文章</button><p id="load-status" role="status">还有 2 篇示例文章</p></div>
+              <footer>演示延迟为 600ms，无网络请求。失败不会删除已有内容；重试读取当前选择的模拟结果。</footer>
+            </article>
             <div class="component-grid">
-              <article class="card"><span class="eyebrow">CONTINUOUS POST LIST</span><h3>滚动加载文章</h3><p>首页接近列表底部时追加下一批卡片，不显示页码。保留手动加载入口；失败可重试，加载完成后显示终点。</p><button class="button" type="button">加载更多文章</button><p role="status">正在加载… / 加载失败，点击重试 / 已显示全部文章</p></article>
               <article class="card"><div class="archive-preview" aria-hidden="true"></div><span class="eyebrow">ARCHIVE CARD</span><h3>Agent 架构地图</h3><p>首页卡片共用 surface、border、radius 与 16:9 media token。</p><a class="button" href="#extraction">阅读文章 →</a></article>
               <article class="card"><span class="status">已发布 6/8</span><h3>从 Skills 到 Abilities</h3><p>学习路线保留专属结构，颜色改为 core semantic token alias。</p><a class="button" href="#extraction">查看路线 →</a></article>
-              <article class="card"><span class="eyebrow">COMMAND SEARCH</span><h3>搜索文章</h3><div class="search-demo"><div class="search-field">⌕ agent architecture</div><div class="search-result"><strong>Agent 架构地图</strong><small>从控制权与反馈链理解系统边界</small></div></div></article>
-              <article class="card"><span class="eyebrow">LANGUAGE MENU</span><h3>语言切换</h3><p>菜单使用同一 focus、surface、radius 与 active accent。</p><div class="language-demo"><span class="active">简体中文 <b>✓</b></span><span>English</span></div></article>
               <article class="card"><span class="eyebrow">ORG IDENTITY</span><h3>开源组织徽章</h3><p>徽章复用 warning、surface、border 与 motion token，在侧栏中提供紧凑的第二身份层。</p><div class="identity-demo" aria-label="开源组织徽章"><a class="identity-demo__badge" href="https://github.com/Justin-Anamnesis" aria-label="Justin-Anamnesis"><span class="identity-demo__medal"><img src="../../assets/img/identity/justin-anamnesis-cats-avatar.webp" alt=""></span></a><a class="identity-demo__badge" href="https://github.com/cognirail" aria-label="Cognirail"><span class="identity-demo__medal"><img src="../../assets/img/identity/cognirail.png" alt=""></span></a></div></article>
-              <article class="card"><span class="eyebrow">POST TOPBAR TOOLS</span><h3>语言与重点高亮</h3><p>文章页右上角将语言切换和高亮开关并排放置，搜索保持紧凑图标形态。</p><div class="reading-highlight-demo"><p class="reading-highlight"><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。</p><div class="topbar-tools-demo" aria-label="文章页右上工具"><span class="reading-highlight-toggle" aria-label="语言切换">文</span><span class="reading-highlight-toggle active" aria-label="重点高亮已开启">▰</span></div></div></article>
               <article class="card"><span class="eyebrow">ARTICLE CONTEXT</span><h3>学习路线入口与目录基准</h3><p>学习路线标签与路线标题统一为 16px；通过颜色和字重区分角色。目录标题移除左侧竖线，并与学习路线下横线共享同一首屏基准线。</p><div class="series-context-demo"><span class="series-context-demo__title"><span class="series-context-demo__eyebrow">学习路线</span>从 0 到 1 学习 Agent</span><span class="series-context-demo__progress">第 04 课 · 已发布 4/28</span></div></article>
               <article class="card"><span class="eyebrow">TOC READING MODE</span><h3>目录滚动吸顶</h3><p>首屏目录标题从容器顶部开始，不保留渐变遮罩空白；文章头部滚出后，目录通过 sticky 固定在顶部安全距离，保持首次吸顶位置，不再垂直移动。</p><div class="toc-motion-demo"><div class="toc-motion-demo__track" aria-label="目录从首屏位置进入顶部吸顶"><span class="toc-motion-demo__label toc-motion-demo__label--top">首屏：顶边对齐</span><span class="toc-motion-demo__label toc-motion-demo__label--sticky">滚动后：顶部吸顶</span></div><p class="toc-motion-demo__caption">桌面端启用；目录标题前无额外占位，移动端不显示固定目录。</p></div></article>
             </div>
+          </section>
+
+          <section id="teaching">
+            <div class="section-head"><h2>教学实验</h2><p>主方向改为白板学习工作区：材料、讲解、互动题和追问在同一个上下文里。语音暂缓，先验证白板对理解是否真的有帮助。</p></div>
+            <article class="specimen" id="whiteboard-specimen">
+              <header><span class="eyebrow">学习 / 白板工作区提案</span><h3>把一份材料拆成可追问的讲解</h3><p>左侧保留来源，中央持续累积讲解，题卡只在需要判断的节点出现。这里使用原创示例，不复刻 Tutor 的素材、人物、手写字体或具体布局。</p></header>
+              <div class="demo-controls"><label><input type="checkbox" data-narrow-toggle>窄屏预览</label><button type="button" data-reset="workspace">重置白板</button></div>
+              <div class="demo-stage">
+                <div class="whiteboard-workspace">
+                  <aside class="source-panel"><span class="source-panel__label">学习材料</span><h4>本次课的来源</h4><div class="source-preview" aria-label="讲义缩略预览"><span></span><span></span><span></span><span></span></div><button class="source-item" type="button" aria-current="true" data-source="mechanism">反应步骤 · 讲义摘录</button><button class="source-item" type="button" aria-current="false" data-source="question">问题 · 我的标记</button><p class="workspace-status" id="source-status">当前正在讲解：反应步骤</p></aside>
+                  <section class="board-panel" aria-label="白板讲解区"><span class="eyebrow">WHITEBOARD / 01</span><h4 id="board-title">先找出发生变化的连接</h4><p id="board-intro">不要先背结论。先圈出材料里发生变化的部分，再决定下一步需要哪条证据。</p><div class="board-columns"><div class="board-note"><strong>观察</strong><p id="board-observation">连接 A 断开，连接 B 形成。先记录变化，再解释原因。</p></div><div class="board-note board-note--accent"><strong>暂存问题</strong><p id="board-question-note">为什么这一步只能从另一侧进入？</p></div></div><div class="board-question"><p>哪一条描述最接近当前观察？</p><div class="board-question__actions"><button type="button" data-answer="evidence" aria-pressed="false">需要更多证据</button><button type="button" data-answer="structure" aria-pressed="false">结构已经改变</button><button type="button" data-answer="guess" aria-pressed="false">直接套结论</button></div><p class="workspace-status" id="answer-status" role="status">先选一个判断，白板会保留你的选择。</p></div><form class="workspace-followup" id="workspace-followup"><input id="workspace-question" type="text" placeholder="继续追问这一步，例如：为什么？" aria-label="继续追问"><button type="submit">加入白板</button></form><p class="voice-deferred">语音讲解：暂缓。当前版本先保留文字、板书、题卡和追问的闭环。</p></section>
+                </div>
+              </div>
+              <footer>适合先落地的产品能力：材料引用、板书节点、题卡状态、追问上下文。暂不包含 TTS、麦克风权限和实时音频状态。</footer>
+            </article>
+            <article class="specimen" id="lesson-specimen">
+              <header><span class="eyebrow">学习 / 原创实验 · 未接入 TUTOR</span><h3>同样的路，换一种速度？</h3><p>用一个固定路程的小样例，检查预测、证据与自我解释的组件关系。</p></header>
+              <div class="demo-controls"><label><input type="checkbox" data-narrow-toggle>窄屏预览</label><button type="button" data-reset="lesson">重新预测</button></div>
+              <div class="demo-stage">
+                <ol class="lesson-steps"><li aria-current="step">预测</li><li>观察</li><li>讲回来</li></ol>
+                <form id="prediction-form"><fieldset class="prediction"><legend>路程不变，匀速从 3 km/h 变为 6 km/h，用时会怎样？</legend><label><input type="radio" name="prediction" value="half" required>变成原来的一半</label><label><input type="radio" name="prediction" value="same">保持不变</label><label><input type="radio" name="prediction" value="double">变成原来的两倍</label></fieldset><button type="submit" class="button">锁定预测，查看观察</button></form>
+                <div id="lesson-observation" hidden>
+                  <p id="prediction-feedback" role="status"></p>
+                  <div class="observation"><label for="travel-speed">匀速 <span id="speed-label">6</span> km/h</label><input type="range" id="travel-speed" min="1" max="6" step="1" value="6"><output id="travel-time" for="travel-speed"></output><p>固定路程 <mark class="teaching-mark">6 km</mark>；用时 = 路程 ÷ 速度。基准速度 3 km/h，用时 120 分钟。</p></div>
+                  <details><summary>需要一点提示</summary><p>速度描述每小时走多远。把 6 km 按每小时走的距离分组，看看需要几小时。</p></details>
+                  <p><label for="teach-back">用自己的话解释：哪一个量保持不变？为什么用时改变了？</label></p><textarea id="teach-back" placeholder="路程保持……当速度……"></textarea><button type="button" id="compare-explanation" disabled>对照解释</button>
+                  <div id="explanation-reference" hidden><p><strong>参考解释：</strong>路程固定为 6 km。速度从 3 增加到 6 km/h，每小时走的距离翻倍，用时从 2 小时变成 1 小时。</p><p class="lesson-note">请自行检查有没有说明“路程不变”和“每小时走得更远”。此处不自动判断你是否理解。</p></div>
+                </div>
+              </div>
+              <footer>适用边界：固定路程、全程匀速，不包含停留。输入仅留在当前页面，刷新即清空；这里没有 AI 对话、学习记录或自动评分。</footer>
+            </article>
           </section>
 
           <section id="extraction">
@@ -1030,6 +1200,171 @@
         root.dataset.theme = next;
         toggle.textContent = next === 'light' ? '切换深色模式' : '切换浅色模式';
       });
+
+      const byId = id => document.getElementById(id);
+      document.querySelectorAll('[data-narrow-toggle]').forEach(input => {
+        input.addEventListener('change', () => { input.closest('.specimen').dataset.narrow = String(input.checked); });
+      });
+      const readerCopy = {
+        'zh-CN': ['从一个小实验开始', '读完解释之后，试着改变一个条件，观察结果是否符合预期。', '先写下预测，再用观察修正理解。'],
+        en: ['Start with a small experiment', 'After reading, change one condition and observe whether the result matches your prediction.', 'Write your prediction first. Let observations refine your understanding.']
+      };
+      function setReaderLanguage(language) {
+        const copy = byId('reader-copy');
+        copy.lang = language;
+        copy.querySelector('h3').textContent = readerCopy[language][0];
+        copy.querySelector('p').textContent = readerCopy[language][1];
+        copy.querySelector('strong').textContent = readerCopy[language][2];
+        document.querySelectorAll('[data-reader-lang]').forEach(button => {
+          const active = button.dataset.readerLang === language;
+          button.setAttribute('aria-pressed', String(active));
+          button.textContent = (button.dataset.readerLang === 'en' ? 'English' : '简体中文') + (active ? ' ✓' : '');
+        });
+      }
+      document.querySelectorAll('[data-reader-lang]').forEach(button => button.addEventListener('click', () => setReaderLanguage(button.dataset.readerLang)));
+      document.querySelector('.reader-language').addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          event.currentTarget.open = false;
+          event.currentTarget.querySelector('summary').focus();
+        }
+      });
+      byId('translation-pending').addEventListener('change', event => {
+        const pending = event.target.checked;
+        document.querySelector('[data-reader-lang="en"]').hidden = pending;
+        byId('pending-note').hidden = !pending;
+        if (pending) setReaderLanguage('zh-CN');
+      });
+      byId('highlight-toggle').addEventListener('click', event => {
+        const active = event.currentTarget.getAttribute('aria-pressed') !== 'true';
+        event.currentTarget.setAttribute('aria-pressed', String(active));
+        root.dataset.readingHighlights = active ? 'on' : 'off';
+      });
+      function setSearchOpen(open) {
+        byId('reader-search').hidden = !open;
+        byId('search-toggle').setAttribute('aria-expanded', String(open));
+        if (open) byId('article-query').focus();
+      }
+      byId('search-toggle').addEventListener('click', () => setSearchOpen(byId('reader-search').hidden));
+      byId('reader-search').addEventListener('keydown', event => {
+        if (event.key === 'Escape') { setSearchOpen(false); byId('search-toggle').focus(); }
+      });
+      function filterExamples() {
+        const query = byId('article-query').value.trim().toLocaleLowerCase();
+        let count = 0;
+        document.querySelectorAll('#demo-search-results a').forEach(link => {
+          link.hidden = !link.textContent.toLocaleLowerCase().includes(query);
+          if (!link.hidden) count++;
+        });
+        byId('search-status').textContent = count ? `${count} 条示例结果` : '没有匹配的示例。试试“实验”或“Agent”。';
+      }
+      byId('article-query').addEventListener('input', filterExamples);
+      let loadTimer;
+      byId('load-more').addEventListener('click', () => {
+        const outcome = byId('load-error').checked ? 'error' : 'success';
+        byId('load-more').disabled = true;
+        byId('loaded-posts').setAttribute('aria-busy', 'true');
+        byId('load-status').textContent = '正在加载示例文章…';
+        loadTimer = setTimeout(() => {
+          byId('loaded-posts').setAttribute('aria-busy', 'false');
+          if (outcome === 'error') {
+            byId('load-more').disabled = false;
+            byId('load-more').textContent = '重试加载';
+            byId('load-status').textContent = '加载失败，已有文章仍可阅读。请重试。';
+            return;
+          }
+          ['把观察写成解释', '为下一次实验留下问题'].forEach(title => {
+            const item = document.createElement('li'); item.textContent = title; byId('loaded-posts').append(item);
+          });
+          byId('load-more').textContent = '已全部加载';
+          byId('load-status').textContent = '已显示全部 3 篇示例文章';
+        }, 600);
+      });
+      function travelMinutes(speed) { return 6 / speed * 60; }
+      function updateObservation() {
+        const speed = Number(byId('travel-speed').value);
+        byId('speed-label').textContent = String(speed);
+        byId('travel-time').textContent = `${travelMinutes(speed)} 分钟`;
+      }
+      byId('travel-speed').addEventListener('input', updateObservation);
+      byId('prediction-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const answer = new FormData(event.currentTarget).get('prediction');
+        if (!answer) return;
+        byId('prediction-feedback').textContent = answer === 'half' ? '预测与观察一致：用时从 120 分钟变成 60 分钟。' : '这次预测与观察不同：用时从 120 分钟变成 60 分钟。试着调整速度，检查它们的关系。';
+        event.currentTarget.querySelectorAll('input, button').forEach(control => { control.disabled = true; });
+        byId('lesson-observation').hidden = false;
+        document.querySelector('.lesson-steps [aria-current]').removeAttribute('aria-current');
+        document.querySelectorAll('.lesson-steps li')[1].setAttribute('aria-current', 'step');
+        updateObservation();
+        byId('travel-speed').focus();
+      });
+      byId('teach-back').addEventListener('input', event => {
+        byId('compare-explanation').disabled = !event.target.value.trim();
+        byId('explanation-reference').hidden = true;
+      });
+      byId('compare-explanation').addEventListener('click', () => {
+        byId('explanation-reference').hidden = false;
+        document.querySelector('.lesson-steps [aria-current]').removeAttribute('aria-current');
+        document.querySelectorAll('.lesson-steps li')[2].setAttribute('aria-current', 'step');
+      });
+      const workspaceCopy = {
+        mechanism: { title: '先找出发生变化的连接', intro: '不要先背结论。先圈出材料里发生变化的部分，再决定下一步需要哪条证据。', observation: '连接 A 断开，连接 B 形成。先记录变化，再解释原因。', question: '为什么这一步只能从另一侧进入？' },
+        question: { title: '把自己的标记变成问题', intro: '你的标记不是答案，它是下一轮讲解的入口。先说清楚你看见了什么。', observation: '标记落在连接 B 附近，当前证据还不足以判断方向。', question: '我需要补哪一个中间步骤？' }
+      };
+      document.querySelectorAll('[data-source]').forEach(button => button.addEventListener('click', () => {
+        const copy = workspaceCopy[button.dataset.source];
+        document.querySelectorAll('[data-source]').forEach(item => item.setAttribute('aria-current', String(item === button)));
+        byId('board-title').textContent = copy.title; byId('board-intro').textContent = copy.intro;
+        byId('board-observation').textContent = copy.observation; byId('board-question-note').textContent = copy.question;
+        byId('source-status').textContent = `当前正在讲解：${button.textContent.trim()}`;
+      }));
+      document.querySelectorAll('[data-answer]').forEach(button => button.addEventListener('click', () => {
+        document.querySelectorAll('[data-answer]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+        byId('answer-status').textContent = button.dataset.answer === 'structure' ? '已记录：结构已经改变。下一步可以追问证据。' : '已记录你的判断。继续追问，白板会保留这一步。';
+      }));
+      byId('workspace-followup').addEventListener('submit', event => {
+        event.preventDefault();
+        const question = byId('workspace-question').value.trim();
+        if (!question) return;
+        byId('board-question-note').textContent = question;
+        byId('source-status').textContent = '已加入白板：等待下一步讲解';
+        byId('workspace-question').value = '';
+      });
+      document.querySelectorAll('[data-reset]').forEach(button => button.addEventListener('click', () => {
+        const specimen = button.closest('.specimen');
+        specimen.dataset.narrow = 'false';
+        specimen.querySelector('[data-narrow-toggle]').checked = false;
+        if (button.dataset.reset === 'reader') {
+          setReaderLanguage('zh-CN');
+          byId('translation-pending').checked = false;
+          document.querySelector('[data-reader-lang="en"]').hidden = false;
+          byId('pending-note').hidden = true;
+          root.dataset.readingHighlights = 'on';
+          byId('highlight-toggle').setAttribute('aria-pressed', 'true');
+          setSearchOpen(false); byId('article-query').value = ''; filterExamples();
+          document.querySelector('.reader-language').open = false;
+        } else if (button.dataset.reset === 'loading') {
+          clearTimeout(loadTimer);
+          byId('loaded-posts').replaceChildren(Object.assign(document.createElement('li'), { textContent: '从一个小实验开始' }));
+          byId('loaded-posts').setAttribute('aria-busy', 'false');
+          byId('load-more').disabled = false; byId('load-more').textContent = '加载更多文章';
+          byId('load-status').textContent = '还有 2 篇示例文章';
+          byId('load-error').checked = false; byId('load-success').checked = true;
+        } else if (button.dataset.reset === 'workspace') {
+          document.querySelector('[data-source="mechanism"]').click();
+          document.querySelectorAll('[data-answer]').forEach(item => item.setAttribute('aria-pressed', 'false'));
+          byId('answer-status').textContent = '先选一个判断，白板会保留你的选择。';
+          byId('workspace-question').value = '';
+        } else {
+          byId('prediction-form').reset();
+          byId('prediction-form').querySelectorAll('input, button').forEach(control => { control.disabled = false; });
+          byId('lesson-observation').hidden = true; byId('explanation-reference').hidden = true;
+          byId('travel-speed').value = '6'; byId('teach-back').value = ''; byId('compare-explanation').disabled = true;
+          byId('lesson-observation').querySelector('details').open = false;
+          document.querySelector('.lesson-steps [aria-current]').removeAttribute('aria-current');
+          document.querySelectorAll('.lesson-steps li')[0].setAttribute('aria-current', 'step');
+        }
+      }));
     </script>
   </body>
 </html>

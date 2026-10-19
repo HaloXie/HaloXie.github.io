@@ -4,8 +4,6 @@ description: "以 hindsight 设计一套跨 harness 的公共经验记忆，说�
 date: 2026-09-28 12:00:00 +0800
 lang: zh-CN
 page_id: hindsight-shared-memory
-translation_status: pending
-lang-exclusive: [zh-CN]
 categories: [AI]
 tags: [agent, memory, hindsight, architecture, retrieval]
 permalink: /posts/general/hindsight-shared-memory/

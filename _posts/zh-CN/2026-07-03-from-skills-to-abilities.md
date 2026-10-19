@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
 image:
-  path: /assets/img/from-skills-to-abilities/ability-hero.webp
+  path: /assets/img/from-skills-to-abilities/cover-image2.webp
+  alt: "操作说明和工具经过证据与验证，形成决定何时及为何行动的判断能力"
 toc: true
 ---
 

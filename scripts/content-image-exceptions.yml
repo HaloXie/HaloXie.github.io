@@ -7,9 +7,6 @@ english_cjk_allowlist: []
 # Frozen historical set. Entries may be removed after an image is replaced,
 # but the gate rejects paths outside the original 15-image inventory.
 legacy_image_dimensions:
-  - path: /assets/img/chezmoi-secure-dotfiles/cover.webp
-    width: 1600
-    height: 900
   - path: /assets/img/harness-engineering/chart_codex.webp
     width: 1200
     height: 750

@@ -1,0 +1,14 @@
+/* Native controls remain the CDN-failure fallback; Ant buttons own their visual states. */
+.lab-control { display: inline-flex; }
+.lab-select { display: block; width: 100%; }
+.lab-control:has(.wide) { display: flex; width: 100%; }
+.lab-control .wide { width: 100%; }
+.lab-seg { display: flex; flex-wrap: wrap; gap: var(--space-1); }
+.btns > .lab-control { flex: 1; }
+.opts > .lab-control, .opts > .lab-control > .ant-btn { width: 100%; }
+.lab-control .ant-btn { height: auto; min-height: 2.5rem; white-space: normal; font-family: var(--font-ui); }
+.lab-control .ant-btn:focus-visible { outline: var(--focus-width) solid var(--accent); outline-offset: var(--focus-offset); }
+@media (max-width: 600px) {
+  .buttons > .lab-control, #scenarios > .lab-control { flex: 1 1 auto; }
+  .lab-control .ant-btn { width: 100%; }
+}

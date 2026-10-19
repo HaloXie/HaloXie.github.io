@@ -15,6 +15,13 @@ lang-exclusive: [zh-CN]
 
 @use 'custom/base';
 
+@media (max-width: 991.98px) {
+  /* The CDN-failure drawer overlays content; Chirpy's push transform creates horizontal overflow. */
+  body[data-navigation-fallback][sidebar-display] #main-wrapper {
+    transform: none;
+  }
+}
+
 /* The demo's page canvas applies to every route. !important only replaces
    Chirpy/Bootstrap padding utilities and vendor container sizing. */
 #main-wrapper > .container {

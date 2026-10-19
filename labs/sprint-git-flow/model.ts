@@ -1,0 +1,57 @@
+// Source: the Sprint Git Flow article. IDs are illustrative versions, not real commits.
+export type Candidate = { tag: string; artifact: string; contents: string[]; verified: boolean };
+export type State = {
+  main: string[]; develop: string[]; branches: string[];
+  test: string; candidate: Candidate | null; production: Candidate;
+};
+export type Step = { title: string; explanation: string; action: string; patch: Partial<State> };
+export type Scenario = { id: string; label: string; question: string; steps: Step[] };
+
+export const BASE: Candidate = { tag: 'v1', artifact: 'build-1', contents: ['基线'], verified: true };
+
+export function stateAt(scenario: Scenario, index: number): State {
+  if (!Number.isInteger(index) || index < 0 || index >= scenario.steps.length) {
+    throw new RangeError('Step outside scenario');
+  }
+  let state: State = { main: ['基线'], develop: ['基线'], branches: [], test: '尚未部署本轮组合', candidate: null, production: BASE };
+  for (const step of scenario.steps.slice(0, index + 1)) state = { ...state, ...step.patch };
+  return state;
+}
+
+export const SCENARIOS: Scenario[] = [
+  { id: 'normal', label: '正常功能', question: '一起测过的 A、B，可以只发布 A 吗？', steps: [
+    { title: '从主干分别开发', action: 'main → 原开发分支', explanation: 'A 是导出，B 是查询。两条分支都从 main 创建；生产仍运行 v1。', patch: { branches: ['A · 导出', 'B · 查询'] } },
+    { title: '一起测试 A + B', action: '原分支 → develop → 测试环境', explanation: '自动流水线（CI）部署组合 T1。即使 T1 通过，也不能证明不含 B 的 A 可以独立工作。', patch: { develop: ['基线', 'A', 'B'], test: 'T1 · A + B · 组合测试通过' } },
+    { title: '只放行 A 的原分支', action: 'A 原分支 → MR → main', explanation: '确认 A 不依赖 B，集成测试覆盖的是 A 的最终提交，代码审查通过，再以合并请求（MR）把 A 原分支合回 main。仅含 A 的发布组合还要在 gray 验证。', patch: { main: ['基线', 'A'], branches: ['B · 查询'] } },
+    { title: '固定真正要发布的组合', action: 'main 候选提交 → tag → CI 构建 → gray', explanation: '版本标签（tag）v2 固定基线 + A，构建出程序包 build-2。gray 验证这个产物，不是测试环境里的 A + B。', patch: { candidate: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'A'], verified: false } } },
+    { title: 'gray 通过，产物不变', action: 'gray 验证通过', explanation: '确认 build-2 的功能、依赖和环境配置。此时允许发布，但生产还没有变化。', patch: { candidate: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'A'], verified: true } } },
+    { title: '同一产物进入生产', action: 'build-2 → 生产 → 运行检查', explanation: '生产部署已经验证的 build-2，检查运行正常后完成。B 没有随 A 上线。AI 并行开发也按这个验收顺序放行。', patch: { production: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'A'], verified: true } } },
+  ] },
+  { id: 'test-failure', label: '测试失败', question: '组合出错，修复应该留在哪条分支？', steps: [
+    { title: 'A + B 的组合失败', action: 'develop → 测试环境', explanation: 'A 与 B 单独正常，组合 T1 却失败。当前组合不能放行，生产仍是 v1。', patch: { branches: ['A · 导出', 'B · 查询'], develop: ['基线', 'A', 'B'], test: 'T1 · A + B · 失败' } },
+    { title: '回原分支修复', action: '失败结果 → A 原分支修改', explanation: '本例定位为 A 未适配查询接口，在 A 原分支提交 A′。其他情形可能需要两条分支分别修改；不要把整个 develop 合回 A。', patch: { branches: ['A′ · 修复后的导出', 'B · 查询'] } },
+    { title: '重新组合，旧结果失效', action: '原分支 → develop → 重新部署', explanation: '把修复后的原分支重新合入 develop 并部署；必要时由维护者协调移除失败组合或重建。新版本 T2 要重新测试，不能沿用 T1 的结论。', patch: { develop: ['基线', 'A′', 'B'], test: 'T2 · A′ + B · 待测试' } },
+    { title: '通过也不等于已上线', action: 'T2 通过 → 依赖检查与 Code Review', explanation: '若 A′ 依赖 B，就不能只发布 A′。先确认依赖与最终提交，再由原分支 MR；后续仍须 tag、gray 和同一产物发布。', patch: { test: 'T2 · A′ + B · 组合测试通过' } },
+  ] },
+  { id: 'urgent', label: '紧急修复', question: 'A、B 没验收完，历史 bug H 能先上线吗？', steps: [
+    { title: '从生产候选基线拆出 H', action: 'main → fix/H', explanation: '本例 main 与生产基线一致，A、B 只在 develop。历史 bug 的修复 H 从 main 创建，不继承未发布功能。', patch: { branches: ['A · 导出', 'B · 查询', 'H · 历史 bug 修复'], develop: ['基线', 'A', 'B'], test: 'T1 · A + B · 调试中' } },
+    { title: 'H 仍进入共享测试', action: 'fix/H → develop → 测试环境', explanation: '组合 T2 包含 A、B、H。H 通过相关测试后，还要确认它在实际生产基线上成立；紧急不等于跳过验证。', patch: { develop: ['基线', 'A', 'B', 'H'], test: 'T2 · A + B + H · H 相关测试通过，A/B 未放行' } },
+    { title: '只合 H，候选中没有 A、B', action: 'fix/H → MR → main → v2 → gray', explanation: 'H 的最终提交、独立性与审查通过后回主干。构建 build-2，只含基线 + H，再交给 gray 验证。', patch: { main: ['基线', 'H'], branches: ['A · 导出', 'B · 查询'], candidate: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'H'], verified: false } } },
+    { title: '验证真正上线的 H', action: 'gray 验证 build-2', explanation: '如果缺少可靠验证环境，就不具备这套 Flow 的放行前提，需要团队另定应急流程。这里假设 build-2 验证通过。', patch: { candidate: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'H'], verified: true } } },
+    { title: 'H 先上线，A、B 继续', action: 'build-2 → 生产 → 运行检查', explanation: '生产只运行基线 + H。A、B 的分支和共享测试组合仍保留，各自准备好后再走同样的流程。', patch: { production: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'H'], verified: true } } },
+  ] },
+  { id: 'gray-failure', label: 'gray 失败', question: '候选 v2 没通过，可以移动旧 tag 重试吗？', steps: [
+    { title: '候选产物验证失败', action: 'build-2 → gray → 不通过', explanation: 'A 已回 main，但 build-2 在 gray 失败。生产还在 build-1；创建 tag 不代表已经上线。', patch: { main: ['基线', 'A'], candidate: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'A'], verified: false } } },
+    { title: '从主干创建修复 F', action: 'main → fix/F → develop → 测试', explanation: '在原修复分支保留 F，纳入共享测试并验证最终提交。旧 tag v2 保持不变，失败产物不能晋级。', patch: { branches: ['F · gray 缺陷修复'], develop: ['基线', 'A', 'F'], test: 'T3 · A + F · 修复测试通过' } },
+    { title: '新提交、新 tag、新产物', action: 'fix/F → MR → main → v3 → gray', explanation: '审查与依赖检查通过后合入 F。v3 指向新候选，生成 build-3，重新验证基线 + A + F。', patch: { main: ['基线', 'A', 'F'], branches: [], candidate: { tag: 'v3', artifact: 'build-3', contents: ['基线', 'A', 'F'], verified: false } } },
+    { title: '新产物验证通过', action: 'gray 验证 build-3', explanation: 'gray 通过的是 build-3。不要重新构建最新 main 来替换它，即使主干又有了新提交。', patch: { candidate: { tag: 'v3', artifact: 'build-3', contents: ['基线', 'A', 'F'], verified: true } } },
+    { title: '发布后仍要检查', action: 'build-3 → 生产 → 运行检查', explanation: '先部署同一产物。如果运行异常，需评估数据、消息格式和副作用兼容性，才能恢复已知正常产物。', patch: { production: { tag: 'v3', artifact: 'build-3', contents: ['基线', 'A', 'F'], verified: true } } },
+    { title: '假设生产异常，恢复已知正常版本', action: '兼容性检查通过 → 恢复 build-1', explanation: '本例已确认恢复兼容，生产回到 build-1。main 仍含 A + F，之后须通过修复或 revert MR 收口；恢复环境不会自动改代码历史。', patch: { production: BASE } },
+  ] },
+  { id: 'sprint', label: 'Sprint 重建', question: '重建 develop，未完成的 B 会被丢掉吗？', steps: [
+    { title: 'A 已上线，B 延期', action: '盘点本轮代码与运行版本', explanation: 'main 与生产已有 A，develop 还带着 B。B 未回主干，不应被默认带进下一轮测试。', patch: { main: ['基线', 'A'], develop: ['基线', 'A', 'B'], branches: ['B · 未完成的查询'], test: 'T1 · A + B · 上轮记录', production: { tag: 'v2', artifact: 'build-2', contents: ['基线', 'A'], verified: true } } },
+    { title: '先保存，再协调重建', action: '维护者通知 → 盘点 → 保存必要修复', explanation: '确认 B 分支和未提交工作已保存，仅在 develop 的必要修复已回原分支或可追踪位置；约定重建窗口。', patch: {} },
+    { title: '从最新 main 重建 develop', action: 'main → 新 develop → 部署测试环境', explanation: '新 develop 自带已发布的 A，不带 B。B 原分支仍然存在；旧测试记录不能给新组合放行，本地旧 develop 也不能推回远端。', patch: { develop: ['基线', 'A'], test: 'T2 · A · 新组合待验证' } },
+    { title: '按本轮需要重新纳入 B', action: 'B 原分支 → develop → 重新部署、重测', explanation: '确认 B 与新基线兼容后重新合入。新测试版本是 T3；分支保留不意味着它已经通过本轮测试，更不意味着已上线。', patch: { develop: ['基线', 'A', 'B'], test: 'T3 · A + B · 待测试' } },
+  ] },
+];

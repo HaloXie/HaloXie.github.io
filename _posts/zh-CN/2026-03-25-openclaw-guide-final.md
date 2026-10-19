@@ -10,7 +10,8 @@ redirect_from:
 categories: [OpenClaw]
 tags: [ai-agent, openclaw, mcp, open-source]
 image:
-  path: /assets/img/openclaw-guide/cover.webp
+  path: /assets/img/openclaw-guide/cover-image2.webp
+  alt: "控制器连接对话、模型和工具，并在明确的安全边界内运行"
 toc: true
 ---
 

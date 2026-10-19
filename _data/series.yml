@@ -58,9 +58,10 @@ series:
             status: planned
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/agent-zero-to-one/agent-architecture-map/
+              en: /learn/agent-zero-to-one/agent-architecture-map/
             locales:
               zh-CN:
                 title: Agent 架构全景图
@@ -84,9 +85,10 @@ series:
             status: planned
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/agent-zero-to-one/llm-call-anatomy/
+              en: /learn/agent-zero-to-one/llm-call-anatomy/
             locales:
               zh-CN:
                 title: 一次 LLM 调用究竟发生了什么
@@ -465,9 +467,10 @@ series:
             status: published
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/promptweave/promptweave-prompt-lifecycle/
+              en: /learn/promptweave/promptweave-prompt-lifecycle/
             locales:
               zh-CN:
                 title: Prompt 不只是文本：先划清配置系统的边界
@@ -480,9 +483,10 @@ series:
             status: published
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/promptweave/promptweave-routing-boundaries/
+              en: /learn/promptweave/promptweave-routing-boundaries/
             locales:
               zh-CN:
                 title: PromptCode、ModelConfig 与路由：一次请求谁决定什么
@@ -505,9 +509,10 @@ series:
             status: published
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/promptweave/promptweave-fallback-observability/
+              en: /learn/promptweave/promptweave-fallback-observability/
             locales:
               zh-CN:
                 title: 主调用失败后，怎样进入一条可信的备用路径
@@ -530,9 +535,10 @@ series:
             status: published
             statuses:
               zh-CN: published
-              en: planned
+              en: published
             paths:
               zh-CN: /learn/promptweave/promptweave-release-snapshots/
+              en: /learn/promptweave/promptweave-release-snapshots/
             locales:
               zh-CN:
                 title: 为什么发布和回滚必须以完整快照为单位

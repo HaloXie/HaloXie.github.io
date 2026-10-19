@@ -10,7 +10,8 @@ redirect_from:
 categories: [Tools]
 tags: [chezmoi, dotfiles, macos, github, age, gitleaks, security]
 image:
-  path: /assets/img/chezmoi-secure-dotfiles/cover-en.webp
+  path: /assets/img/chezmoi-secure-dotfiles/cover-image2.webp
+  alt: "Two computers synchronize configuration while sensitive keys remain outside the synchronization path"
 toc: true
 ---
 

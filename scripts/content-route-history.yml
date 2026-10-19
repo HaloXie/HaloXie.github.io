@@ -11,7 +11,7 @@ redirects:
   - page_id: agent-architecture-map
     from: /posts/agent-architecture-map/
     to: /learn/agent-zero-to-one/agent-architecture-map/
-    languages: [zh-CN]
+    languages: [zh-CN, en]
   - page_id: language-choose
     from: /posts/language-choose/
     to: /posts/general/language-choose/

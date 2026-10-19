@@ -1,0 +1,2 @@
+/* The original buttons are renderer command endpoints, never a second visible UI. */
+[data-renderer-command] { display: none !important; }

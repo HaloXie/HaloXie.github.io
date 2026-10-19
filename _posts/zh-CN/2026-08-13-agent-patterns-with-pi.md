@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, pi, tool-calling, routing, agent-loop]
 image:
-  path: /assets/img/agent-patterns-with-pi/cover.webp
+  path: /assets/img/agent-patterns-with-pi/cover-image2.webp
+  alt: "指令、路由、工具与受控循环展示逐步交出的运行时决策权"
 toc: true
 ---
 

@@ -3,14 +3,12 @@ title: "为什么发布和回滚必须以完整快照为单位"
 description: "从 A/B 实验切换到 B 全量，推导不可变版本、环境发布指针、审批 hash 和完整回滚。"
 date: 2026-10-04 16:00:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: promptweave-release-snapshots
 permalink: /learn/promptweave/promptweave-release-snapshots/
 categories: [AI]
 tags: [prompt-engineering, ai-infrastructure, release-engineering, experimentation]
 image:
-  path: /assets/img/promptweave-release-snapshots/cover.webp
+  path: /assets/img/promptweave-release-snapshots/cover-image2.webp
   alt: "A/B 实验从旧快照切换到新快照，发布与回滚都移动完整环境版本"
 toc: true
 mermaid: true
@@ -65,7 +63,7 @@ Test 执行实例       Production 执行实例
 
 ## 发布时要验证哪几个状态
 
-1. **测试验证。** 缺少变量、主调用失败或 fallback 不符合预期时，退回草稿修改。
+1. **测试验证。** 缺少变量、非预期的主调用失败或 fallback 不符合预期时，退回草稿修改。主动注入主调用故障时，备用路径符合约定才算通过对应的恢复测试。
 2. **审批快照。** 发布申请附上完整差异、发布原因、操作者和 hash；审批后任何内容变化都必须重新审批。
 3. **核对加载。** 生产实例加载快照后报告实际 hash。加载失败时继续使用上一份成功加载的快照，不能把“发布命令执行成功”当成上线成功。
 4. **观察或恢复。** 指标正常就继续观察；出现异常时切换回上一份完整快照，再核对新请求实际使用的版本。
@@ -82,9 +80,10 @@ flowchart LR
   A -->|批准| P[生产发布快照]
   A -->|拒绝| D
   P --> L[实例加载并核对 hash]
-  L --> O[观察]
+  L -->|成功且 hash 一致| O[观察]
   L -->|失败| H[继续使用上一份成功快照]
   O -->|异常| R[回滚上一份完整快照]
+  R --> L
 ```
 
 快照的价值不是把配置对象打包得更大，而是给发布、运行、审计和回滚提供同一个参照物。一次请求可以通过 `runId` 找回它使用的快照、场景、Prompt、模型、路由决定和每次 fallback 尝试。

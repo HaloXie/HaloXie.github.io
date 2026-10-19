@@ -54,6 +54,31 @@ assert.equal(attributes.get('aria-label'), 'Turn on reading highlights');
 assert.equal(attributes.get('data-reading-highlights-ready'), '');
 assert.equal(fakeButton.hidden, false, 'toggle is revealed only after runtime synchronization');
 
+const handlers = new Map();
+const storageValues = new Map();
+const controlledButton = {
+  ...fakeButton,
+  addEventListener(type, handler) { handlers.set(type, handler); },
+  removeEventListener(type, handler) { if (handlers.get(type) === handler) handlers.delete(type); }
+};
+const controlledDoc = {
+  documentElement: { dataset: { readingHighlights: 'on' } },
+  querySelector(selector) { return selector === '[data-reading-highlights-toggle]' ? controlledButton : { children: [] }; }
+};
+highlights.init(controlledDoc, {
+  getItem(key) { return storageValues.get(key); },
+  setItem(key, value) { storageValues.set(key, value); }
+});
+assert.equal(handlers.size, 1, 'static fallback owns one listener before React takes control');
+handlers.get('click')();
+assert.equal(controlledDoc.documentElement.dataset.readingHighlights, 'off');
+const controller = highlights.takeControl();
+assert.equal(controller.enabled, false, 'handoff preserves the current preference');
+assert.equal(handlers.size, 0, 'handoff removes the old click listener');
+controller.setEnabled(true);
+assert.equal(controlledDoc.documentElement.dataset.readingHighlights, 'on');
+assert.equal(storageValues.get(highlights.STORAGE_KEY), 'enabled', 'React updates preserve persistence');
+
 const root = path.join(__dirname, '..');
 const headSource = fs.readFileSync(path.join(root, '_includes/head.html'), 'utf8');
 const bootstrapIndex = headSource.indexOf('data-reading-highlights-bootstrap');

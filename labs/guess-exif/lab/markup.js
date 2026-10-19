@@ -9,9 +9,10 @@ export const MARKUP = `
 
   <section class="ex-panel">
     <h2>上传照片</h2>
-    <div id="dropzone" role="button" tabindex="0">
+    <div id="dropzone">
       <div class="big">拖入一张或多张 JPEG 照片，或点击选择</div>
       <div class="small">HEIC 暂不支持解析，请先导出为 JPEG 再上传</div>
+      <button type="button" id="choose-files">选择 JPEG 照片</button>
       <input type="file" id="file-input" accept="image/jpeg" multiple hidden>
     </div>
     <div class="ex-note">首次打开会自动载入一张本地示例照片；也可以换成自己的 JPEG。示例素材：<a href="https://commons.wikimedia.org/wiki/File:Merops_apiaster_04.jpg" target="_blank" rel="noreferrer">Wikimedia Commons</a>。</div>
@@ -59,5 +60,5 @@ export const MARKUP = `
     </div>
   </section>
 
-  <footer class="ex-foot">解析全部在本机完成，不引入任何第三方库；EXIF 解析器代码见 exif-parser.mjs。</footer>
+  <footer class="ex-foot">照片解析全部在本机完成，EXIF 解析器不依赖第三方库；代码见 exif-parser.mjs。</footer>
 `;

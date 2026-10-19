@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, ability, skill, cognitive-architecture, acp, harness-engineering]
 image:
-  path: /assets/img/from-skills-to-abilities/ability-hero-en.webp
+  path: /assets/img/from-skills-to-abilities/cover-image2.webp
+  alt: "Instructions and tools feed a decision compass guided by evidence and verification"
 toc: true
 ---
 

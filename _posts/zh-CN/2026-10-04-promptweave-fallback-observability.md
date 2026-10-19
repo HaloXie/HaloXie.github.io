@@ -3,16 +3,15 @@ title: "主调用失败后，怎样进入一条可信的备用路径"
 description: "用一个模型失败场景说明为什么 fallback 必须显式绑定版本，以及 runId 如何让一次执行可以被还原。"
 date: 2026-10-04 14:00:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: promptweave-fallback-observability
 permalink: /learn/promptweave/promptweave-fallback-observability/
 categories: [AI]
 tags: [prompt-engineering, reliability, observability, ai-infrastructure]
 image:
-  path: /assets/img/promptweave-fallback-observability/cover.webp
+  path: /assets/img/promptweave-fallback-observability/cover-image2.webp
   alt: "主模型失败后，系统沿着已绑定的备用版本继续执行，并在同一个运行 ID 下记录尝试"
 toc: true
+mermaid: true
 ---
 
 这是 PromptWeave 系列第 3 篇。上一篇说明了一次请求如何选中 Prompt 和模型。本篇处理最容易被临时补丁破坏的部分：**主调用失败后，系统应该怎样恢复？**

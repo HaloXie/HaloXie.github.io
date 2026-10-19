@@ -3,8 +3,6 @@ title: "Agent 为什么有这么多种：从大白话看懂 BDI、ReAct 和 Mult
 description: "从同一个技术研究 Agent 出发，用四个简单问题看懂经典 Agent、LLM Agent、BDI、ReAct 和 Multi-Agent"
 date: 2026-08-14 18:50:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: agent-architecture-map
 permalink: /learn/agent-zero-to-one/agent-architecture-map/
 redirect_from:
@@ -67,7 +65,6 @@ Reactive → BDI → LLM Agent → Multi-Agent
 - **行动（Act）**：搜索、读取文件、调用 API 或输出答案。
 
 ```mermaid
-%%{init: {"theme": "dark"}}%%
 flowchart LR
   E["环境 Environment"] --> P["感知 Perceive"]
   P --> D["状态与判断 Decide"]

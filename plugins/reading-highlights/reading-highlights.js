@@ -14,6 +14,7 @@
   const HIGHLIGHT_CLASS = 'reading-highlight';
   const MAX_HIGHLIGHTS = 8;
   const DENSITY = 0.15;
+  let releaseControl;
 
   function normalizeText(value) {
     return String(value || '').replace(/\s+/g, ' ').trim();
@@ -150,11 +151,23 @@
       syncToggle(button, enabled);
     };
 
-    button.addEventListener('click', () => {
+    const toggle = () => {
       enabled = !enabled;
       if (storage) writePreference(storage, enabled);
       applyState();
-    });
+    };
+    button.addEventListener('click', toggle);
+    releaseControl = () => {
+      button.removeEventListener('click', toggle);
+      return {
+        enabled,
+        setEnabled(value) {
+          enabled = value;
+          if (storage) writePreference(storage, enabled);
+          doc.documentElement.dataset.readingHighlights = enabled ? 'on' : 'off';
+        }
+      };
+    };
 
     applyState();
   }
@@ -163,6 +176,7 @@
     STORAGE_KEY,
     collectCandidates,
     init,
+    takeControl: () => releaseControl?.(),
     isEnabledPreference,
     scoreCandidate,
     selectCandidates,

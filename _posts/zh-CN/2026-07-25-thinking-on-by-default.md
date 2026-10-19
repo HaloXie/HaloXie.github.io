@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [harness-engineering, prompt-engineering, thinking, reasoning, ai-agent]
 image:
-  path: /assets/img/thinking-on-by-default/cover.webp
+  path: /assets/img/thinking-on-by-default/cover-image2.webp
+  alt: "冗长的思考提示被移开，模型在检查与安全边界内自行推理"
 toc: true
 ---
 

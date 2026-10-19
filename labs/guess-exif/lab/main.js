@@ -1,6 +1,7 @@
 // EXIF 猜谜入口：写入页面骨架，读本地 JPEG 的 EXIF 出题、打分、记最近 10 轮。
 import { MARKUP } from './markup.js';
 import { parseExif, hasEnoughExifForQuiz } from '../exif-parser.mjs';
+import { mountButton, mountSelect } from '../../shared/antd-controls.mjs';
 
 document.getElementById('app').innerHTML = MARKUP;
 
@@ -38,10 +39,10 @@ function populateSelect(select, options, formatFn, defaultIndex) {
   select.value = String(defaultIndex);
 }
 
-const apSelect = document.getElementById('ap-select');
-const shSelect = document.getElementById('sh-select');
-const isoSelect = document.getElementById('iso-select');
-const flSelect = document.getElementById('fl-select');
+let apSelect = document.getElementById('ap-select');
+let shSelect = document.getElementById('sh-select');
+let isoSelect = document.getElementById('iso-select');
+let flSelect = document.getElementById('fl-select');
 const apVal = document.getElementById('ap-val');
 const shVal = document.getElementById('sh-val');
 const isoVal = document.getElementById('iso-val');
@@ -58,7 +59,10 @@ function syncLabels() {
   isoVal.textContent = String(ISO_STOPS[+isoSelect.value]);
   flVal.textContent = String(FOCAL_STOPS[+flSelect.value]) + ' mm';
 }
-[apSelect, shSelect, isoSelect, flSelect].forEach((s) => s.addEventListener('change', syncLabels));
+apSelect = mountSelect(apSelect, syncLabels);
+shSelect = mountSelect(shSelect, syncLabels);
+isoSelect = mountSelect(isoSelect, syncLabels);
+flSelect = mountSelect(flSelect, syncLabels);
 syncLabels();
 
 /* ---------------------------------------------------------------
@@ -83,10 +87,7 @@ let currentObjectUrl = null;
 let currentExif = null;
 let revealed = false;
 
-dropzone.addEventListener('click', () => fileInput.click());
-dropzone.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
-});
+mountButton(document.getElementById('choose-files'), () => fileInput.click());
 ['dragenter', 'dragover'].forEach((evt) =>
   dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('drag'); })
 );
@@ -177,8 +178,7 @@ function loadCurrent() {
   photoCol.hidden = false;
   quizCol.hidden = false;
   resultPanel.hidden = true;
-  btnReveal.disabled = false;
-  btnReveal.textContent = '揭晓答案';
+  revealControl.update({ disabled: false, label: '揭晓答案' });
 }
 
 /* ---------------------------------------------------------------
@@ -254,10 +254,10 @@ const scoreRow = document.getElementById('score-row');
 const explainBlock = document.getElementById('explain-block');
 const overallBig = document.getElementById('overall-big');
 
-btnReveal.addEventListener('click', () => {
+const revealControl = mountButton(btnReveal, () => {
   if (revealed || !currentExif) return;
   revealed = true;
-  btnReveal.disabled = true;
+  revealControl.update({ disabled: true });
 
   const guessF = APERTURE_STOPS[+apSelect.value];
   const guessSh = SHUTTER_STOPS[+shSelect.value];
@@ -320,7 +320,7 @@ function formatShutter(t) {
   return `1/${denom}`;
 }
 
-btnNext.addEventListener('click', () => {
+mountButton(btnNext, () => {
   queueIndex++;
   loadCurrent();
 });

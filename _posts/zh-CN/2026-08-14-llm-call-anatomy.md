@@ -3,8 +3,6 @@ title: "一次 LLM 调用究竟发生了什么：从请求、采样到结构化�
 description: "用 Pi 拆开一次模型调用，看清请求如何进入模型、token 如何被采样，以及为什么响应不只是一段文字"
 date: 2026-08-14 21:10:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: llm-call-anatomy
 permalink: /learn/agent-zero-to-one/llm-call-anatomy/
 categories: [AI]
@@ -168,7 +166,7 @@ console.log({
 ```bash
 OPENAI_API_KEY="..." \
 PI_MODEL="gpt-4o-mini" \
-npx tsx llm-call.ts
+pnpm exec tsx llm-call.ts
 ```
 
 不要把真实 Key 写进代码或提交进 Git。换 Provider 时，改用对应的 Provider factory、凭据环境变量和模型 ID；不要只修改一个字符串，就假设所有厂商协议完全相同。

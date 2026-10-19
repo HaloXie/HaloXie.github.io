@@ -10,7 +10,8 @@ redirect_from:
 categories: [Tools]
 tags: [chezmoi, dotfiles, macos, github, age, gitleaks, security]
 image:
-  path: /assets/img/chezmoi-secure-dotfiles/cover.webp
+  path: /assets/img/chezmoi-secure-dotfiles/cover-image2.webp
+  alt: "两台电脑同步配置文件，敏感密钥保存在同步路径之外"
 toc: true
 ---
 

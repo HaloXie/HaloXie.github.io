@@ -3,14 +3,12 @@ title: "PromptCode、ModelConfig 与路由：一次请求谁决定什么"
 description: "从调用方契约出发，区分 Prompt 版本、模型配置和受限路由，建立 PromptWeave 第一阶段的最小执行边界。"
 date: 2026-10-04 12:00:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: promptweave-routing-boundaries
 permalink: /learn/promptweave/promptweave-routing-boundaries/
 categories: [AI]
 tags: [prompt-engineering, ai-infrastructure, routing, software-architecture]
 image:
-  path: /assets/img/promptweave-routing-boundaries/cover.webp
+  path: /assets/img/promptweave-routing-boundaries/cover-image2.webp
   alt: "调用方提交路由事实，PromptCode、ModelConfig 和受限规则共同选择执行方案"
 toc: true
 ---

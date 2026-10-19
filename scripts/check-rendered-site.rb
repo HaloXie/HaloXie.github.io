@@ -415,7 +415,7 @@ SITE.glob("**/*.html").each do |path|
   is_post = CURRENT_POST_PATHS.include?(rendered_url)
   bootstraps = doc.css("script[data-reading-highlights-bootstrap]")
   styles = doc.css('link[rel="stylesheet"][href$="/plugins/reading-highlights/reading-highlights.css"]')
-  scripts = doc.css('script[src$="/plugins/reading-highlights/reading-highlights.js"][defer]')
+  scripts = doc.css('script[defer]').select { |script| script['src']&.split('?')&.first == '/plugins/reading-highlights/reading-highlights.js' }
   toggles = doc.css("#reading-highlights-toggle[data-reading-highlights-toggle]")
 
   unless is_post
@@ -568,31 +568,41 @@ SITE.glob("**/*.html").each do |path|
   errors << "#{relative}: missing Pagefind search input" unless doc.at_css("#command-search-dialog #search-input[aria-controls='search-results']")
   errors << "#{relative}: search close lacks localized aria-label" unless doc.at_css("#command-search-dialog #search-cancel[aria-label='#{relative.start_with?("en/") ? "Cancel" : "取消"}']")
   errors << "#{relative}: missing accessible search results" unless doc.at_css("#command-search-dialog #search-results[aria-live='polite']")
-  errors << "#{relative}: search result template must use div listitems" unless doc.at_css("template#command-search-result-template > div.command-search-result[role='listitem']")
-  errors << "#{relative}: search result template must not use direct article results" if doc.at_css("template#command-search-result-template > article.command-search-result")
+  errors << "#{relative}: Pagefind entry missing from static search handoff" unless dialogs.first&.[]("data-pagefind-url") == "/pagefind/pagefind.js"
+  errors << "#{relative}: React site runtime missing" unless doc.css('script[defer]').any? { |script| script['src']&.split('?')&.first == '/assets/js/ui/site.js' }
+  errors << "#{relative}: obsolete search result template remains" if doc.at_css("template#command-search-result-template")
 
   search_contract = [
-    "const pagefindUrl = \"/pagefind/pagefind.js\"",
-    "await import(pagefindUrl)",
-    "await pagefind.init()",
-    "const SEARCH_DEBOUNCE_MS = 300",
-    "window.clearTimeout(searchTimer)",
-    "scheduleSearch()",
-    "}, SEARCH_DEBOUNCE_MS)",
-    "event.metaKey || event.ctrlKey",
-    "event.key.toLowerCase() === 'k'",
+    "dataset.searchUi === 'antd'",
+    "input.disabled = true",
     "dialog.showModal()",
-    "if (event.key === 'Escape')",
     "event.stopImmediatePropagation()",
-    "closeSearch()",
     "dialog.addEventListener('close'",
-    "activeElement?.focus()",
-    "currentLanguage === 'en' ? pathname.startsWith('/en/') : !pathname.startsWith('/en/')"
+    "trigger.focus()"
   ]
   missing_search_contract = search_contract.reject { |fragment| source.include?(fragment) }
   errors << "#{relative}: incomplete command search contract #{missing_search_contract.inspect}" unless missing_search_contract.empty?
   errors << "#{relative}: legacy SimpleJekyllSearch found" if source.match?(/SimpleJekyllSearch|simple-jekyll-search/i)
 end
+
+# Search is now owned by React; verify its behavior contract at the authored source,
+# while the page checks above retain accessible CDN-failure markup and runtime loading.
+search_ui = ROOT.join("docs/design/antd-demo/search.tsx").read
+search_controller = ROOT.join("docs/design/antd-demo/search-controller.ts").read
+search_ui_contract = [
+  "SEARCH_DEBOUNCE_MS = 300", "window.clearTimeout(timer)", "controller.current.cancel()",
+  "event.metaKey || event.ctrlKey", "event.key.toLowerCase() === 'k'",
+  "event.key === 'Escape'", "event.key === 'ArrowDown'", "event.key === 'Enter'",
+  "['ArrowDown','ArrowUp']", "opener.current?.focus()", "setRetry(value => value + 1)",
+  'role="listitem"', 'aria-live="polite"', "status === 'loading'", "status === 'done' && !results.length",
+  "import(/* @vite-ignore */ moduleUrl)", "pagefindModuleUrl(pagefindUrl, retry, location.origin)", "<Modal", "<Input"
+]
+search_controller_contract = [
+  "await api.init()", "generation !== this.generation", "this.api = undefined",
+  "this.language === 'en' ? pathname.startsWith('/en/') : !pathname.startsWith('/en/')"
+]
+errors << "React search behavior contract incomplete" unless search_ui_contract.all? { |fragment| search_ui.include?(fragment) }
+errors << "Pagefind async and language contract incomplete" unless search_controller_contract.all? { |fragment| search_controller.include?(fragment) }
 
 search_styles = ROOT.join("assets/css/jekyll-theme-chirpy.scss").read
 search_style_contract = [

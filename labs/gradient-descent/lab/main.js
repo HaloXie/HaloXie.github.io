@@ -4,7 +4,8 @@ import * as THREE from 'three';
 import { createStage } from '../../exploded/kit/stage.js';
 import { createPicker, knob, pushButton, gauge } from '../../exploded/kit/controls3d.js';
 import { createLabels } from '../../exploded/kit/labels.js';
-import { seg, statCards } from '../../exploded/kit/hud.js';
+import { statCards } from '../../exploded/kit/hud.js';
+import { seg, mountButton } from '../../shared/antd-controls.mjs';
 import { $, paint, at, merge, glow, canvasTexture } from '../../exploded/kit/util.js';
 import { color } from '../../exploded/kit/theme.js';
 import { ORANGE, CYAN, GREEN, RED } from '../../exploded/kit/palette.js';
@@ -156,11 +157,11 @@ const segLr = seg($('seg-lr'), M.LRS.map((v) => ({ label: String(v).replace(/^0/
 const segM = seg($('seg-m'), [{ label: '关' }, { label: '开 · β=0.85', title: '速度 = 0.85 × 上一步速度 − 学习率 × 梯度' }], (i) => { st.momentum = i === 1; reset(); });
 const segS = seg($('seg-start'), STARTS.map((p) => ({ label: p.name, title: `(${p.x}, ${p.y})` })), (i) => { st.x0 = STARTS[i].x; st.y0 = STARTS[i].y; reset(); });
 const segV = seg($('seg-view'), [{ label: '总览' }, { label: '俯视' }, { label: '侧视' }], (i) => { st.view = VIEWS[i]; stage.views.go(st.view); refresh(); });
-$('btn-step').addEventListener('click', () => doStep(true));
-$('btn-play').addEventListener('click', () => togglePlay());
-$('btn-reset').addEventListener('click', () => reset());
+mountButton($('btn-step'), () => doStep(true));
+const playControl = mountButton($('btn-play'), () => togglePlay());
+mountButton($('btn-reset'), () => reset());
 const opts = [...document.querySelectorAll('#predict .opt')];
-opts.forEach((b) => b.addEventListener('click', () => {
+const predictionControls = opts.map((b) => mountButton(b, () => {
   if (st.s.step > 0) return; // 开跑后锁定预测
   st.predicted = b.dataset.choice;
   refresh();
@@ -248,7 +249,7 @@ function refresh() {
   segV.set(VIEWS.indexOf(st.view));
   $('lr-read').textContent = lr().toFixed(2);
   $('start-read').textContent = `(${st.x0.toFixed(2)}, ${st.y0.toFixed(2)})`;
-  $('btn-play').textContent = st.running ? '暂停' : s.outcome ? '再来一次' : '播放';
+  playControl.update({ label: st.running ? '暂停' : s.outcome ? '再来一次' : '播放', pressed: st.running });
   const nx = M.step(s, lr(), st.momentum);
   setStat('loss', Number.isFinite(l) ? l.toFixed(2) : '∞', s.outcome ? SHORT[s.outcome] : '');
   setStat('step', String(s.step), st.momentum ? '带动量' : '');
@@ -262,10 +263,9 @@ function refresh() {
   // 预测
   const res = s.outcome === 'oscillate' ? 'diverge' : s.outcome;
   $('predict').classList.toggle('locked', s.step > 0);
-  opts.forEach((b) => {
-    b.classList.toggle('selected', b.dataset.choice === st.predicted);
-    b.classList.toggle('correct', !!s.outcome && b.dataset.choice === res);
-    b.classList.toggle('wrong', !!s.outcome && b.dataset.choice === st.predicted && st.predicted !== res);
+  opts.forEach((b, i) => {
+    predictionControls[i].update({ pressed: b.dataset.choice === st.predicted, disabled: s.step > 0,
+      className: ['opt', b.dataset.choice === st.predicted ? 'selected' : '', s.outcome && b.dataset.choice === res ? 'correct' : '', s.outcome && b.dataset.choice === st.predicted && st.predicted !== res ? 'wrong' : ''].join(' ') });
   });
   $('predict-result').innerHTML = !s.outcome || !st.predicted ? ''
     : st.predicted === res ? `<b class="ok">预测正确。</b>结果确实是「${LABEL[res]}」。`

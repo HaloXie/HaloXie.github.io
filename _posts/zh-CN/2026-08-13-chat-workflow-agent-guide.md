@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [ai-agent, workflow, chat, router, automation]
 image:
-  path: /assets/img/chat-workflow-agent-guide/cover.webp
+  path: /assets/img/chat-workflow-agent-guide/cover-image2.webp
+  alt: "同一目标通过对话、固定流程或动态选择路径三种方式推进"
 toc: true
 ---
 

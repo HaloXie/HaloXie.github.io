@@ -10,7 +10,8 @@ redirect_from:
 categories: [AI]
 tags: [harness-engineering, prompt-engineering, thinking, reasoning, ai-agent]
 image:
-  path: /assets/img/thinking-on-by-default/cover-en.webp
+  path: /assets/img/thinking-on-by-default/cover-image2.webp
+  alt: "Verbose thinking instructions give way to model reasoning within verification and safety boundaries"
 toc: true
 ---
 

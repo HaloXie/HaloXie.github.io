@@ -3,14 +3,12 @@ title: "Prompt 不只是文本：先划清配置系统的边界"
 description: "从一个配置表逐渐失控的设计场景出发，判断 Prompt 系统应该管理什么，以及为什么不能接管业务上下文。"
 date: 2026-10-04 10:00:00 +0800
 lang: zh-CN
-translation_status: pending
-lang-exclusive: [zh-CN]
 page_id: promptweave-prompt-lifecycle
 permalink: /learn/promptweave/promptweave-prompt-lifecycle/
 categories: [AI]
 tags: [prompt-engineering, ai-infrastructure, software-architecture]
 image:
-  path: /assets/img/promptweave-prompt-lifecycle/cover.webp
+  path: /assets/img/promptweave-prompt-lifecycle/cover-image2.webp
   alt: "Prompt 从作者配置经过版本和验证，进入可观察的模型执行链"
 toc: true
 ---
