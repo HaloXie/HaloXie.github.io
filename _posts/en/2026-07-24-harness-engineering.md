@@ -10,7 +10,7 @@ redirect_from:
 categories: [AI]
 tags: [harness-engineering, ai-agent, openai, codex, context-engineering]
 image:
-  path: /assets/img/harness-engineering/cover-en.webp
+  path: /assets/img/harness-engineering/cover-en-bright.webp
 toc: true
 ---
 
@@ -47,7 +47,7 @@ The key to understanding this concept is not to conflate the following terms:
 
 ## 1.3 Bare LLM Calls vs Harness Engineering
 
-![Comparison between bare LLM calls and Harness Engineering](/assets/img/harness-engineering/compare-en.webp)
+![Comparison between bare LLM calls and Harness Engineering](/assets/img/harness-engineering/compare-en-bright.webp)
 
 **Bare LLM calls** mean connecting a large-model API directly to the business. Every "non-reasoning" concern—tool invocation, memory management, context control, error recovery, and security auditing—must be assembled ad hoc in the calling layer. The usual result: an impressive demo and a disastrous production deployment.
 
@@ -68,7 +68,7 @@ The key to understanding this concept is not to conflate the following terms:
 
 From a capability perspective, a production-ready Harness needs at least six core components working together. These are not a pile of features; they form the Agent's **runtime shell**. If any one is missing, the Agent cannot run reliably in an enterprise environment.
 
-![The six core components of a production-ready Harness](/assets/img/harness-engineering/six-components-v2-en.webp)
+![The six core components of a production-ready Harness](/assets/img/harness-engineering/six-components-v2-en-bright.webp)
 
 ## 2.1 Tools
 
@@ -158,7 +158,7 @@ From a capability perspective, a production-ready Harness needs at least six cor
 
 # 3. OpenAI's Landmark Case: Engineering One Million Lines of Code
 
-![OpenAI's Codex case study of one million lines of code](/assets/img/harness-engineering/codex-case-en.webp)
+![Illustrative workflow: humans define intent and acceptance criteria, agents implement code, and checks gate merging](/assets/img/harness-engineering/codex-case-en-bright.webp)
 
 If Anthropic laid the theoretical foundation for Harness Engineering in 2025, the extreme experiment OpenAI published in February 2026 brought it to broad industry attention.
 
@@ -233,7 +233,7 @@ The experiment's artifact, **Symphony**—an issue-tracker-driven Agent orchestr
 
 # 4. Strategic Implications: Models Are Commodities; the Harness Is the Moat
 
-![The strategic shift of competitive advantage from the model layer to the Harness layer](/assets/img/harness-engineering/strategy-en.webp)
+![The strategic shift of competitive advantage from the model layer to the Harness layer](/assets/img/harness-engineering/strategy-en-bright.webp)
 
 The deepest implication of OpenAI's experiment is not "AI can write one million lines of code," but that **the moat is moving from the model layer to the Harness layer**.
 

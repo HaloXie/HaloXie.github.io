@@ -149,11 +149,11 @@
 
 ### 视觉风格
 
-默认参考 `assets/img/harness-engineering/strategy.webp`：
+默认参考已确认的 `assets/img/promptweave-release-snapshots/cover-bright-preview.webp` 与 `assets/img/harness-engineering/cover.webp`；实际生成 Prompt 以 `docs/design/blog-image-style-prompt.md` 为准：
 
-- 温暖米白纸张背景，主色接近 `#f6f0df`。
-- 黑色或深灰色手绘墨线，允许轻微不规则边缘，但保持结构清楚。
-- 只用少量低饱和强调色：天蓝、橙色、黄色、浅绿色；每张图不超过 4 个主强调色。
+- 浅奶油背景，主色接近 `#fff9e9`，纸纹极轻；不泛黄做旧，不给全图罩灰。
+- 清晰黑色手绘墨线，允许轻微不规则边缘；不用炭笔、密集排线或大面积灰暗阴影。
+- 明快、干净的天蓝、橙色、黄色、薄荷绿实色色块，每张图不超过 4 个主强调色；主体与背景清楚分离，少量白色高光与浅接触阴影即可。
 - 信息图优先使用卡片、箭头、阶梯、泳道、护栏、闭环等简单视觉隐喻。
 - 标题清晰，正文标签简短；图内文字只保留理解关系所必需的内容。
 - 图中文字语言跟随文章主语言；代码标识符、API、CLI、产品名保持原文。

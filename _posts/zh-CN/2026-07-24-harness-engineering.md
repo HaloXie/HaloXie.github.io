@@ -10,7 +10,7 @@ redirect_from:
 categories: [AI]
 tags: [harness-engineering, ai-agent, openai, codex, context-engineering]
 image:
-  path: /assets/img/harness-engineering/cover.webp
+  path: /assets/img/harness-engineering/cover-bright.webp
 toc: true
 ---
 
@@ -47,7 +47,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 ## 1.3 裸调 LLM vs Harness Engineering
 
-![裸调 LLM 与 Harness Engineering 的能力对比](/assets/img/harness-engineering/compare.webp)
+![裸调 LLM 与 Harness Engineering 的能力对比](/assets/img/harness-engineering/compare-bright.webp)
 
 **裸调 LLM**意味着直接把大模型 API 接进业务，所有"非推理"的事务（工具调用、记忆管理、上下文控制、错误恢复、安全审计）都需要业务方在调用层临时拼凑。结果往往是：演示很惊艳，落地一塌糊涂。
 
@@ -68,7 +68,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 从能力维度看，一个生产可用的 Harness 至少需要六大核心组件协同工作。它们不是堆叠的功能，而是围绕 Agent 的**运行外壳**——任何一项缺失，Agent 都无法在企业环境稳定运行。
 
-![生产级 Harness 协同工作的六大核心组件](/assets/img/harness-engineering/six-components-v2.webp)
+![生产级 Harness 协同工作的六大核心组件](/assets/img/harness-engineering/six-components-v2-bright.webp)
 
 ## 2.1 工具层（Tools）
 
@@ -158,7 +158,7 @@ OpenAI 工程团队在 2026 年 2 月发布的《*Harness engineering: leveragin
 
 # 三、OpenAI 标志性案例：百万行代码的工程实践
 
-![OpenAI 使用 Codex 交付百万行代码的案例](/assets/img/harness-engineering/codex-case.webp)
+![示意流程：人类定义意图与验收标准，Agent 编写代码，检查通过后合入仓库](/assets/img/harness-engineering/codex-case-bright.webp)
 
 如果说 Harness Engineering 的理论体系在 2025 年由 Anthropic 奠基，那么让它真正进入行业视野的，是 OpenAI 2026 年 2 月发布的一项极限实验。
 
@@ -233,7 +233,7 @@ OpenAI 团队的核心洞察是：**"从 Agent 的视角看，如果运行时无
 
 # 四、战略启示：模型是商品，Harness 是护城河
 
-![竞争优势从模型层向 Harness 层迁移](/assets/img/harness-engineering/strategy.webp)
+![竞争优势从模型层向 Harness 层迁移](/assets/img/harness-engineering/strategy-bright.webp)
 
 OpenAI 这场实验最深层的启示，不是"AI 能写 100 万行代码"，而是**护城河正在从模型层迁移到 Harness 层**。
 

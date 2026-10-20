@@ -7,21 +7,6 @@ english_cjk_allowlist: []
 # Frozen historical set. Entries may be removed after an image is replaced,
 # but the gate rejects paths outside the original 15-image inventory.
 legacy_image_dimensions:
-  - path: /assets/img/harness-engineering/chart_codex.webp
-    width: 1200
-    height: 750
-  - path: /assets/img/harness-engineering/chart_harness.webp
-    width: 1200
-    height: 750
-  - path: /assets/img/harness-engineering/cover.webp
-    width: 1200
-    height: 640
-  - path: /assets/img/harness-engineering/six-components-v2.webp
-    width: 1200
-    height: 671
-  - path: /assets/img/harness-engineering/strategy.webp
-    width: 1200
-    height: 671
   - path: /assets/img/language-choose/1_K5zaMYb0AdjThQxhjmOMqQ.webp
     width: 1200
     height: 2538
