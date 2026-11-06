@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <rect width="1200" height="675" fill="#fff9e9"/>
+  <g font-family="PingFang SC, Microsoft YaHei, sans-serif" fill="#20252a">
+    <text x="54" y="78" font-size="34" font-weight="600">同一份历史，两种读取路径</text>
+    <text x="54" y="119" font-size="21">原始记录不变；只缩短发给模型的副本</text>
+    <g stroke="#20252a" stroke-width="3" stroke-linejoin="round">
+      <rect x="54" y="188" width="220" height="350" rx="8" fill="#b7e7f5"/>
+      <rect x="350" y="188" width="240" height="100" rx="8" fill="#a9e5b9"/>
+      <rect x="350" y="410" width="240" height="128" rx="8" fill="#ffd967"/>
+      <rect x="622" y="410" width="240" height="128" rx="8" fill="#ffb880"/>
+      <rect x="894" y="410" width="252" height="128" rx="8" fill="#a9e5b9"/>
+    </g>
+    <g fill="none" stroke="#20252a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M274 238H332m-10-7 10 7-10 7"/>
+      <path d="M274 474H332m-10-7 10 7-10 7"/>
+      <path d="M590 474H610m-10-7 10 7-10 7"/>
+      <path d="M862 474H882m-10-7 10 7-10 7"/>
+    </g>
+    <text x="164" y="237" text-anchor="middle" font-size="25" font-weight="600">完整消息记录</text>
+    <g fill="#fff" stroke="#20252a" stroke-width="1.5">
+      <rect x="74" y="266" width="180" height="48" rx="4"/>
+      <rect x="74" y="329" width="180" height="48" rx="4"/>
+      <rect x="74" y="392" width="180" height="48" rx="4"/>
+      <rect x="74" y="455" width="180" height="48" rx="4"/>
+    </g>
+    <g text-anchor="middle" font-size="20">
+      <text x="164" y="297">旧报表与查询</text>
+      <text x="164" y="360">工具调用与结果</text>
+      <text x="164" y="423">近期对话</text>
+      <text x="164" y="486">当前问题</text>
+    </g>
+    <g text-anchor="middle" font-size="25" font-weight="600">
+      <text x="470" y="248">页面与回放</text>
+      <text x="470" y="461">裁剪旧内容</text>
+      <text x="742" y="461">超预算检查</text>
+      <text x="1020" y="461">模型请求</text>
+    </g>
+    <g text-anchor="middle" font-size="19">
+      <text x="470" y="498">近期对话保持原样</text>
+      <text x="742" y="498">必要时移出完整旧回合</text>
+      <text x="1020" y="498">当前轮保留</text>
+    </g>
+    <text x="350" y="347" font-size="21">发给模型的副本</text>
+    <text x="350" y="584" font-size="19">超限兜底可能继续移出近期旧回合；当前轮过大需另行处理。</text>
+  </g>
+</svg>

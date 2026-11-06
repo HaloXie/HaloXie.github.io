@@ -23,6 +23,8 @@ node_modules
 # Misc
 _sass/vendors
 assets/js/dist
+# Private working drafts; Jekyll exclusion alone does not keep them out of Git.
+/docs/drafts/
 
 # Hidden system files
 *~
