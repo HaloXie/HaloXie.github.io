@@ -161,8 +161,15 @@ page_geometry.each do |token, expected|
 end
 errors << "shared page canvas must consume Base width" unless style_entry.match?(/#main-wrapper > \.container\s*\{[^}]*max-width:\s*var\(--page-width\)/m)
 errors << "article prose must fill its shared content column" unless base_style.match?(/article\[data-toc\] > \.content > :where\(p, ul, ol\)\s*\{\s*max-width: 100%;/)
-errors << "article canvas must be bounded by the shared copy measure" unless style_entry.include?("max-width: calc(var(--measure-copy) + 2 * var(--page-gutter));")
+article_canvas_overrides = style_entry.scan(/body:has\(main article\[data-toc\]\)(?::has\(#toc-wrapper\))?\s+#main-wrapper > \.container\s*\{([^}]+)\}/m)
+errors << "article canvas must inherit the shared page width" if article_canvas_overrides.any? { |rules| rules.first.match?(/max-width:/) }
+errors << "demo article must fill the remaining canvas beside its TOC" unless demo_style.include?(".article-layout { grid-template-columns: minmax(0, 1fr) 15rem;") && demo_style.match?(/\.article-demo\s*\{[^}]*max-width:\s*100%;/m)
 errors << "demo prose must fill its content column" unless demo_style.include?(".article-demo p { max-width: 100%; }")
+%w[a.img-link img].each do |selector|
+  rules = style_entry[/article\[data-toc\] #{Regexp.escape(selector)}\s*\{([^}]+)\}/m, 1].to_s
+  errors << "article #{selector} must cap image width, preserve ratio and center" unless rules.include?("max-width: min(100%, var(--measure-copy));") && rules.include?("height: auto;") && rules.include?("aspect-ratio: auto;") && rules.include?("margin-inline: auto;")
+end
+errors << "demo images must use the shared image width cap" unless demo_style.match?(/\.article-demo img\s*\{[^}]*max-width: min\(100%, var\(--measure-copy\)\);/m)
 errors << "page titles must consume Base type scale" unless style_entry.match?(/main \.dynamic-title\s*\{[^}]*font-size:\s*var\(--text-h1\)/m)
 override_styles = {
   "page override Sass" => style_entry,

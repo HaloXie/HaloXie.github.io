@@ -395,9 +395,14 @@
       .language-type--en p { font-family: var(--font-body-en); font-optical-sizing: auto; line-height: 1.72; }
       .language-type-note { margin: var(--space-3) 0 0; color: var(--ink-muted); font-size: var(--text-sm); line-height: 1.6; }
 
+      .article-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+      .article-layout > * { min-width: 0; }
+      @media (min-width: 1200px) {
+        .article-layout { grid-template-columns: minmax(0, 1fr) 15rem; align-items: start; }
+      }
       .article-demo {
         /* One content column for headings, media, prose, tables and code. */
-        max-width: var(--measure-copy);
+        max-width: 100%;
         padding: clamp(1.25rem, 4vw, 3rem);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
@@ -442,7 +447,7 @@
       .article-demo strong { font-weight: 600; }
       .article-demo .content-note { color: var(--ink-muted); font-size: var(--text-sm); font-weight: 400; line-height: 1.65; }
       .article-demo p { max-width: 100%; }
-      .article-demo > img { display: block; width: 100%; height: auto; border-radius: var(--radius-md); }
+      .article-demo img { display: block; max-width: min(100%, var(--measure-copy)); height: auto; margin-inline: auto; border-radius: var(--radius-md); }
       .article-demo li + li { margin-top: var(--space-2); }
       blockquote {
         margin: var(--space-6) 0;
@@ -1006,9 +1011,11 @@
             <p class="evidence-note">基础排版参考：中文统一苹方。原版与 Ant Design 版均保留，后续控件采用 Ant Design 方向；生产迁移尚未完成。</p>
             <div class="section-head">
               <h2>03 · Article prose</h2>
-              <p>文章内容列最大 55rem，窄屏随可用空间收缩。标题、摘要、封面、正文、表格和代码共用这一列，不再给中英文段落另设行宽。摘要与正文统一字体、16px / 400，中文行高 1.8、英文 1.72；表格 16px / 400 / 1.65，表头 600 / 1.5；日期、作者和图片说明 14px / 400。</p>
+              <p>文章与学习路线共用最大 100rem 的外层容器；正文与右侧目录的总宽度保持一致，正文填满扣除目录及间距后的空间。标题、摘要、正文、表格和代码共用正文列；封面和正文图片最大 55rem、居中、保留完整比例，窄屏随容器缩小。摘要与正文统一字体、16px / 400，中文行高 1.8、英文 1.72；表格 16px / 400 / 1.65，表头 600 / 1.5；日期、作者和图片说明 14px / 400。</p>
             </div>
-            <p class="evidence-note">宽度契约（2026-10-19）：文章内部只有一个内容宽度，中英文一致；目录位于内容列外。上方是组件库说明区，下方是文章样例。文章样例中的图片和段落必须左右对齐；卡片边框与内边距不计入内容宽度。此规则替代此前的 48em / 68ch 段落限宽与 55–72rem 宽内容规则。</p>
+            <p class="evidence-note">宽度契约（2026-11-06）：正文＋目录与学习路线的外层左右边界一致。目录在 1200px 以下移到内容下方，无目录时正文占满容器。中英文正文不再单独限宽，图片独立限制最大展示宽度；保留原图与点击放大入口，不裁切。此规则替代此前文章单独限制 55rem、图片必须与段落同宽的规则。</p>
+            <div class="article-layout">
+            <div>
             <article class="article-demo" lang="zh-CN">
               <span class="eyebrow">学习路线 · 第 3 课</span>
               <h2>从一个最小循环开始</h2>
@@ -1017,7 +1024,6 @@
               <p>一个可运行的 Agent 最少需要三件事：接收目标、选择动作、读取反馈。复杂系统只是在这个闭环上增加状态、边界和验收。</p>
               <p class="content-note">补充说明：这里用最小闭环解释概念，具体工具和运行环境可以不同。灰色用于非关键的背景、声明和阅读提示，不承载必要步骤或风险条件。</p>
               <blockquote><p><strong>核心判断：</strong>先让反馈链可验证，再增加自治程度。没有稳定反馈的自治，只会把错误放大。</p></blockquote>
-              <nav class="article-toc" aria-label="文章目录示例"><h2 class="article-toc-title">文章内容</h2><a href="#loop-structure">基础结构</a><a href="#role-table">角色与反馈</a></nav>
               <h3 id="loop-structure">基础结构</h3>
               <ul>
                 <li><strong>Goal：</strong>当前闭环究竟要达成什么状态。</li>
@@ -1044,6 +1050,9 @@
               <h3>Why the distinction matters</h3>
               <p>A workflow encodes a known route. An agent chooses among routes. A harness constrains and evaluates those choices. Treating these as interchangeable produces systems that look autonomous but cannot explain or repair their own failures.</p>
             </article>
+            </div>
+            <nav class="article-toc" aria-label="文章目录示例"><h2 class="article-toc-title">文章内容</h2><a href="#loop-structure">基础结构</a><a href="#role-table">角色与反馈</a></nav>
+            </div>
           </section>
 
           <section id="media">

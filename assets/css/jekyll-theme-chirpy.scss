@@ -62,11 +62,6 @@ body:has(main article[data-toc]) {
   --post-layout-gap: 2.5rem;
 }
 
-/* Bound the whole article column, rather than shortening only its paragraphs. */
-body:has(main article[data-toc]) #main-wrapper > .container {
-  max-width: calc(var(--measure-copy) + 2 * var(--page-gutter));
-}
-
 /* Identity medals
  *
  * Compact enamel-like badges keep the sidebar personal while giving the
@@ -2065,8 +2060,7 @@ article[data-toc] > .content > p:has(> .img-link) {
   max-width: 100%;
 }
 
-/* Prose media follows the same measure as the text. Wide tables and code
-   scroll inside their own wrapper instead of widening the page. */
+/* Tables and code use the full content column, with local overflow. */
 body:has(main article[data-toc])
   article[data-toc]
   > .content
@@ -2077,10 +2071,26 @@ body:has(main article[data-toc])
   margin-left: 0 !important;
 }
 
-body:has(main article[data-toc]) article[data-toc] > .content > p > a.img-link {
-  max-width: 100%;
-  margin-right: 0;
-  margin-left: 0;
+/* Keep the previous reading measure for images while the article canvas expands. */
+article[data-toc] a.img-link {
+  display: block;
+  width: fit-content;
+  max-width: min(100%, var(--measure-copy));
+  height: auto;
+  aspect-ratio: auto;
+  margin-inline: auto;
+  /* !important overrides Chirpy's main p > a.popup:not(...) centering. */
+  left: auto !important;
+  transform: none !important;
+}
+
+article[data-toc] img {
+  display: block;
+  max-width: min(100%, var(--measure-copy));
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: contain;
+  margin-inline: auto;
 }
 
 body:has(main article[data-toc]) article[data-toc] > .content .table-wrapper {
@@ -2249,13 +2259,8 @@ body:has(main article[data-toc])
   }
 }
 
-/* Centring the prose + TOC group inside the space beside the fixed sidebar
-   keeps the prose close to the physical viewport centre. */
+/* Articles share the page canvas; the TOC occupies a column inside it. */
 @media (min-width: 1200px) {
-  body:has(main article[data-toc]):has(#toc-wrapper) #main-wrapper > .container {
-    max-width: calc(var(--measure-copy) + var(--post-layout-gap) + var(--post-panel-width) + 2 * var(--page-gutter));
-  }
-
   body:has(main article[data-toc]) #topbar {
     display: grid !important;
     grid-template-columns:
