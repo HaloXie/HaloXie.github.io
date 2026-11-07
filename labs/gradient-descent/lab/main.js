@@ -211,7 +211,7 @@ function narrate() {
   const g = Math.hypot(...M.grad(s.x, s.y));
   const r = lr().toFixed(2);
   const pos = `(${s.x.toFixed(2)}, ${s.y.toFixed(2)})`;
-  if (s.step === 0) return { tag: ['未开始', 'w'], html: `学习率 ${n(r, 'y')}${st.momentum ? '，带动量' : ''}，起点 ${pos}，loss = ${n(l.toFixed(3), 'c')}。先在左下选一个预测，再按播放或单步。橙色箭头是下一步要跳的位置。` };
+  if (s.step === 0) return { tag: ['未开始', 'w'], html: `学习率 ${n(r, 'y')}${st.momentum ? '，带动量' : ''}，起点 ${pos}，loss = ${n(l.toFixed(3), 'c')}。先在界面左下选择预测选项，再按播放或单步。橙色箭头是下一步要跳的位置。` };
   if (s.outcome === 'diverge') return { tag: ['超出范围', 'r'], html: `第 ${s.step} 步坐标超出演示范围（约 ${pos}），停止演示。请减小学习率后重置。` };
   if (s.outcome === 'oscillate') return { tag: ['震荡未收敛', 'r'], html: `第 ${s.step} 步仍未收敛：最近几步 loss ${Math.max(...s.history.slice(-8)) - Math.min(...s.history.slice(-8)) < 0.0008 ? '几乎相同，但等高不等于同一点' : '仍在变化'}。本步参数移动 ${n(Math.hypot(s.vx, s.vy).toFixed(3), 'y')}，梯度仍有 ${n(g.toFixed(4), 'o')}。离散更新会跨过坑底；这不是重力滚球。` };
   if (s.outcome === 'slow') return { tag: ['太慢', 'y'], html: `学习率 ${n(r, 'y')} 太小，走了 ${s.step} 步 loss 还在一点点降（${n(l.toFixed(4), 'c')}），梯度 ${n(g.toFixed(4), 'o')}。方向是对的，只是每步挪得太少，演示到上限也没走到坑底。` };

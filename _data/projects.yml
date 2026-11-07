@@ -18,7 +18,7 @@
   status: active
   locales:
     zh-CN:
-      summary: 给 TypeScript 项目的一套严格、可复用的 AI coding guardrails。
+      summary: 为 TypeScript 项目提供严格、可复用的 AI 代码质量检查规则。
       note: 把类型安全、复杂度、现代 JavaScript 约束和 Prettier 收敛成零样板配置。
     en:
       summary: Strict, reusable AI coding guardrails for TypeScript projects.
@@ -57,7 +57,7 @@
   status: archive
   locales:
     zh-CN:
-      summary: 一枚保留下来的 Go 学习坐标。
+      summary: 记录早期 Go 学习经历的练习项目。
       note: 它不代表现在的工程成熟度，但诚实记录了能力版图向后端与系统语言扩展的起点。
     en:
       summary: A preserved waypoint from learning Go.

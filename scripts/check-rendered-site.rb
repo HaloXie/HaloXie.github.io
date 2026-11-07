@@ -103,7 +103,7 @@ PAGE_DESCRIPTIONS = {
     "en" => "Build the right agent engineering mental model in 28 short lessons, then ship an evidence-first research agent with Pi."
   },
   "/learn/promptweave/" => {
-    "zh-CN" => "从 Prompt、模型和实验逐渐耦合的设计场景出发，理解版本、路由、fallback 与发布快照为什么必须分开又要一起验证。",
+    "zh-CN" => "从 Prompt、模型和实验逐渐耦合的场景出发，理解版本、路由、fallback 与发布快照各自负责什么，以及为什么要一起验证。",
     "en" => "Start with design scenarios where prompts, models, and experiments become coupled, then derive versioning, routing, fallback, and release snapshots."
   }
 }.freeze

@@ -236,6 +236,6 @@ stage.onFrame((dt) => {
 });
 
 apply('init');
-showNarration(['开始', 'w'], narrate(d));
+showNarration(['初始状态', 'w'], narrate(d));
 stage.start();
 $('loading').classList.add('hide');

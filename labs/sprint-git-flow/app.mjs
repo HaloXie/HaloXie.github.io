@@ -99,7 +99,7 @@ function render() {
   for (const id of ['next', 'next-bottom']) controls.get(id)?.update({ disabled: atEnd });
   controls.get('play')?.update({ disabled: reduced.matches || atEnd });
   element('branches', HTMLElement).replaceChildren(
-    card('main', 'main · 生产候选基线', state.main, '只接收已放行的原开发分支', '合并只改变代码基线，不会自动改变生产。tag 固定选定的提交，不会排除已合入的其他功能。'),
+    card('main', 'main · 生产候选基线', state.main, '只接收已放行的功能或修复分支', '合并只改变代码基线，不会自动改变生产。tag 固定选定的提交，不会排除已合入的其他功能。'),
     card('work', '原开发分支 · 保留各自改动', state.branches.length ? state.branches : ['本场景无在开发分支'], 'A / B 是功能；H / F 是修复', '这是多条独立分支的清单。测试失败回对应分支修复，最终由原分支发起 MR。'),
     card('develop', 'develop · 共享测试组合', state.develop, '随 Sprint 协调重建', '这里只组织测试组合；不能把它整体合回 main。重建前保存必要修复和未完成工作。'),
   );

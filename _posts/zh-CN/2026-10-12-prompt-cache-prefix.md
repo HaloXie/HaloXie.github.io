@@ -49,6 +49,22 @@ toc: true
 1. **只修改 Anthropic 顶层系统提示的末尾，前面的工具定义还能命中吗？** 假设工具定义相同、工具末尾已有有效缓存，长度合格，本次也会查询该边界。
 2. **只改参考资料中的一个 token，资料后面完全相同的当前问题，能单独复用旧缓存吗？** 假设没有另一条匹配新前缀的缓存。
 
+<iframe src="/labs/prompt-cache-prefix/?embed=1" loading="lazy" title="前缀校验机：修改不同段，观察缓存命中与重算" style="display:block;width:100%;max-width:100%;height:1px;border:0;"></iframe>
+
+[全屏打开交互版](/labs/prompt-cache-prefix/)
+
+<noscript markdown="1">
+
+![前缀校验机在第一处差异前停止复用，后续未改文字也进入重算区](/assets/img/prompt-cache-prefix/prefix-machine.webp)
+
+</noscript>
+
+这台机器把输入排成连续的分段带。选择一段，相当于改动那一段的首个 token；边界前是可复用的前缀，边界后都需要重新处理。先改参考资料，再把改动移到系统指令或工具定义，观察“没有修改的后半段”为什么也跟着失去复用。
+
+图使用确定性 SVG（anatomy skill）绘制。每段等长只是为了看清关系，不代表厂商按这样的长度切块；演示图假设各段末尾都已有有效缓存，且本次查询能找到它们。它隔离的是“改动位置”的影响，不是在模拟某个 API 的完整缓存调度。
+
+图旁的成本只算本次缓存读取与普通输入处理，不含预热、新写入和输出费用。
+
 <details markdown="1">
 <summary>看完图再展开：第一题</summary>
 
@@ -64,22 +80,6 @@ toc: true
 **不能。** 当前问题的文字相同，但它前面的资料变了，所以不再是同一条完整前缀。缓存不能把旧资料之后的状态当成独立片段接回来。需要从可命中的旧边界之后处理输入，再生成新回答。
 
 </details>
-
-<iframe src="/labs/prompt-cache-prefix/?embed=1" loading="lazy" title="前缀校验机：修改不同段，观察缓存命中与重算" style="display:block;width:100%;max-width:100%;height:1px;border:0;"></iframe>
-
-[全屏打开交互版](/labs/prompt-cache-prefix/)
-
-<noscript markdown="1">
-
-![前缀校验机在第一处差异前停止复用，后续未改文字也进入重算区](/assets/img/prompt-cache-prefix/prefix-machine.webp)
-
-</noscript>
-
-这台机器把输入排成连续的分段带。选择一段，相当于改动那一段的首个 token；边界前是可复用的前缀，边界后都需要重新处理。先改参考资料，再把改动移到系统指令或工具定义，观察“没有修改的后半段”为什么也跟着失去复用。
-
-图使用确定性 SVG（anatomy skill）绘制。每段等长只是为了看清关系，不代表厂商按这样的长度切块；模型假设各段末尾都已有有效缓存，且本次查询能找到它们。它隔离的是“改动位置”的影响，不是在模拟某个 API 的完整缓存调度。
-
-图旁的成本只算本次缓存读取与普通输入处理，不含预热、新写入和输出费用。
 
 <details markdown="1">
 <summary>交互图的成本口径与真实账单</summary>

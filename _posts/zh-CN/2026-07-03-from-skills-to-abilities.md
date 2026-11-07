@@ -309,7 +309,7 @@ abilities/<ability-name>/
     openai.yaml
 ```
 
-这个 repo 目前保留完整最小闭环；完整内部包可以继续增加 framework conventions、project rules、validated lessons、review checklists 和更多 cross-platform adapters。
+这个 repo 目前保留完整最小闭环；完整内部包可以继续加入框架约定、项目规则、经过验证的经验、审查清单和更多跨平台适配器。
 
 `ABILITY.md` 不负责塞满所有知识。
 它负责声明：
@@ -423,7 +423,7 @@ MCP 解决的是工具互操作：
 | judgments | core invariants / redlines / quality criteria |
 | validation | done_when / evidence_required / failure_action |
 | projection | claude / codex / openai / gemini 等平台投射 |
-| degradation | L3 不可用时回退到 L1 skill 或 L0 rules |
+| degradation | Ability 不可用时回退到 skill 或 rules |
 
 我现在最在意的不是 schema 漂亮，而是 runtime contract：
 
@@ -449,7 +449,7 @@ ruflo 则更像 harness/governance 对标物：有 MCP、hooks、memory、plugin
 
 恰恰相反。
 
-我的结论是：
+Justin 是我正在搭建的个人 AI 工具体系。对这几个项目，我的定位是：
 
 ```text
 NomiFun = 产品形态灵感
@@ -480,7 +480,7 @@ Ability 给模型判断框架。
 现在还没解决的问题很多：
 
 - Ability 的 validator 还只是计划。
-- L2 dynamic scheduler 还只是过渡 hook + contract 设计。
+- 动态调度器仍只是过渡 hook 与契约设计。
 - 7 维 scorer 还没有最小可执行原型。
 - `code-style-core` 还只是 draft。
 - ACP 还不是标准，只是方向。

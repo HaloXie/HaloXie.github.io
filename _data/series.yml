@@ -65,7 +65,7 @@ series:
             locales:
               zh-CN:
                 title: Agent 架构全景图
-                description: 把经典 Agent、LLM Agent 和 Multi-Agent 放回各自的坐标系。
+                description: 区分经典 Agent、LLM Agent 和 Multi-Agent 所描述的不同维度。
               en:
                 title: The Agent Architecture Map
                 description: Put classical agents, LLM agents, and multi-agent systems into the right coordinate systems.
@@ -224,7 +224,7 @@ series:
         locales:
           zh-CN:
             title: 掌握 Agent Patterns
-            description: 模式不是升级等级，而是针对不同不确定性选择的控制结构。
+            description: 这些模式不构成一条升级路线，应按任务的不确定性选择。
           en:
             title: Learn agent patterns
             description: Patterns are control structures for different uncertainty, not levels in an upgrade tree.
@@ -442,7 +442,7 @@ series:
       zh-CN:
         title: Prompt 系统设计：从文本管理到可回滚运行版本
         eyebrow: PromptWeave 架构设计系列
-        description: 从 Prompt、模型和实验逐渐耦合的设计场景出发，理解版本、路由、fallback 与发布快照为什么必须分开又要一起验证。
+        description: 从 Prompt、模型和实验逐渐耦合的场景出发，理解版本、路由、fallback 与发布快照各自负责什么，以及为什么要一起验证。
         audience: 适合需要管理多 Prompt、多模型或实验分流的 AI 应用开发者。
         outcome: 最终能为一次模型调用划定配置边界，设计可审计、可验证、可恢复的发布链路。
       en:
@@ -542,7 +542,7 @@ series:
             locales:
               zh-CN:
                 title: 为什么发布和回滚必须以完整快照为单位
-                description: 从 A/B 实验切换到 B 全量，推导不可变版本、环境指针、审批 hash 和完整回滚。
+                description: 以 A/B 实验切换到 B 全量为例，解释为什么需要不可变版本、环境指针、审批 hash 和完整回滚。
               en:
                 title: Why Releases and Rollbacks Use Full Snapshots
                 description: Derive immutable versions, environment pointers, approval hashes, and full rollback from an A/B winner promotion.

@@ -18,7 +18,7 @@ export const EN: Record<string, string> = {
   '确定性 HTML · 版本编号仅作示例': 'Deterministic HTML · illustrative version IDs', '全屏打开': 'Open full screen',
   '尚未选择候选': 'No candidate selected', 'gray 已通过': 'Gray passed', 'gray 未通过放行': 'Not cleared by gray',
   'main · 生产候选基线': 'main · production-candidate baseline',
-  '只接收已放行的原开发分支': 'Receives only accepted original branches',
+  '只接收已放行的功能或修复分支': 'Receives only accepted feature or fix branches',
   '合并只改变代码基线，不会自动改变生产。tag 固定选定的提交，不会排除已合入的其他功能。': 'Merging changes the code baseline, not production. A tag fixes the selected commit; it does not exclude other merged features.',
   '原开发分支 · 保留各自改动': 'Original branches · separate changes',
   '本场景无在开发分支': 'No active development branches', 'A / B 是功能；H / F 是修复': 'A / B are features; H / F are fixes',

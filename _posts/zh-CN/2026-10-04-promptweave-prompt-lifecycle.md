@@ -29,7 +29,7 @@ toc: true
 - 出问题时，只恢复 Prompt 能不能恢复原来的行为？
 - 一次请求结束后，能不能还原它实际用了什么？
 
-贯穿整个系列的具体错误是：测试环境验证了“B Prompt + Model B + B backup + 实验规则”，生产发布时却只把 Prompt 切成 B。结果生产仍可能使用旧的 Model A 和旧 fallback；页面看起来已经切换，实际运行的却不是测试通过的组合。
+例如，测试环境验证了“Prompt B + Model B + backup B + 实验规则”，生产发布时却只把 Prompt 切成 B。结果生产仍可能使用旧的 Model A 和旧 fallback；页面看起来已经切换，实际运行的却不是测试通过的组合。
 
 如果只能靠发布人的记忆回答，系统就还没有真正的版本边界。
 
@@ -77,10 +77,8 @@ PromptAsset
   → release snapshot
 ```
 
-这里的 `PromptAsset` 是作者编辑的 Prompt 和输入声明；`ModelConfig` 描述通过哪个服务和模型发送请求；`ExecutionPlan` 把主调用和备用调用绑定起来；`release snapshot` 保存一次可以被测试、审批、加载和回滚的完整版本。
+这里的 `PromptAsset` 是作者编辑的 Prompt 和输入声明；`ModelConfig` 描述通过哪个服务和模型发送请求。`typed route` 是前面说的受限路由，只按约定的字段和规则选择方案。`ExecutionPlan` 把主调用和备用调用绑定起来；`release snapshot` 保存一次可以被测试、审批、加载和回滚的完整版本。
 
 第一阶段不做自动健康路由、任意规则表达式或自动晋级。先把“同一个版本能被解释、执行和恢复”证明清楚。
 
-下一篇会继续回答：**如果 Prompt、模型和路由分别由不同配置负责，一次请求到底由谁决定使用哪一套？**
-
-下一篇：[PromptCode、ModelConfig 与路由：一次请求谁决定什么](/learn/promptweave/promptweave-routing-boundaries/)
+下一篇讨论：[Prompt、模型和路由分别由不同配置负责时，一次请求由谁选择方案？](/learn/promptweave/promptweave-routing-boundaries/)

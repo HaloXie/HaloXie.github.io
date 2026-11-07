@@ -3,7 +3,7 @@ groups:
     locales:
       zh-CN:
         title: 技术领域
-        description: 按长期知识领域浏览，适合不知道具体文章名称时使用。
+        description: 按长期知识领域浏览。
       en:
         title: Fields
         description: Browse durable knowledge areas when you do not have a specific article in mind.
@@ -31,7 +31,7 @@ groups:
     locales:
       zh-CN:
         title: 专题与实践
-        description: 围绕具体产品或工程实践组织的文章集合，不代表学习顺序。
+        description: 围绕具体产品或工程实践组织的文章集合。
       en:
         title: Topics and Practice
         description: Articles grouped around a product or engineering practice, without a required reading order.

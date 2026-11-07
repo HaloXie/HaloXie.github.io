@@ -15,7 +15,7 @@ export const MARKUP = `
       <button type="button" id="choose-files">选择 JPEG 照片</button>
       <input type="file" id="file-input" accept="image/jpeg" multiple hidden>
     </div>
-    <div class="ex-note">首次打开会自动载入一张本地示例照片；也可以换成自己的 JPEG。示例素材：<a href="https://commons.wikimedia.org/wiki/File:Merops_apiaster_04.jpg" target="_blank" rel="noreferrer">Wikimedia Commons</a>。</div>
+    <div class="ex-note">首次打开会自动载入一张站点自带的示例照片；也可以换成自己的 JPEG。示例素材：<a href="https://commons.wikimedia.org/wiki/File:Merops_apiaster_04.jpg" target="_blank" rel="noreferrer">Wikimedia Commons</a>。</div>
     <div id="queue-status" aria-live="polite"></div>
   </section>
 
