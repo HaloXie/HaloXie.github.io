@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>一起判断发布与恢复</title><script src="../shared/theme-bridge.js"></script><link rel="stylesheet" href="../shared/theme-bridge.css"><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<header><p class="eyebrow">交互推演 · 发布与恢复</p><h1 id="title">一起判断发布与恢复</h1></header>
+
+<p id="opening" class="scenario"></p><p id="premise"></p>
+<p class="footnote">教学模拟，不会操作真实环境。候选均假定已验证、获批且适用；这里只演示一个实例。</p>
+<details><summary>查看候选快照记录与本题条件</summary><p>r0：A 全量；r1：A、B 各一半；r2：B 全量。每份都固定 Prompt、模型、路由和备用链。</p><p>本题假设这三份完整快照均已验证、获批且适用于当前环境。真实恢复必须重新确认这些条件。本图只演示一个实例，集群还要核对各实例加载情况；分流比例是配置权重，不是小样本计数。</p></details>
+<form id="choice" hidden><fieldset id="inputs"><legend>先选方案，再预测结果</legend>
+<div class="controls"><label>准备加载的快照<select id="desired"><option value="r0">r0 · A 全量</option><option value="r1">r1 · A / B 各半</option><option value="r2">r2 · B 全量</option></select></label><label>本次实例加载条件<select id="load"><option value="yes">成功：内容与获批 hash 一致</option><option value="no">失败：新快照未接管</option></select></label></div>
+<fieldset><legend>预测加载尝试后，新请求按哪套比例分流？</legend><label><input type="radio" name="prediction" value="0" required> A 全量</label><label><input type="radio" name="prediction" value="50"> A、B 各一半</label><label><input type="radio" name="prediction" value="100"> B 全量</label></fieldset>
+<label>你的主要依据<select id="reason" required><option value="">请选择一个理由</option><option value="content">我对照了快照内容和加载条件</option><option value="recent">我优先选择最近的版本</option><option value="pointer">我认为指针改了就生效</option><option value="unsure">我还不确定，想看变化过程</option></select></label>
+<button type="submit">锁定预测，更新指针</button></fieldset></form>
+<section id="experiment" hidden aria-labelledby="experiment-title"><h2 id="experiment-title" tabindex="-1">观察配置怎样接管</h2><p id="phase" role="status"></p>
+<svg viewBox="0 0 600 310" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">期望指针与实际加载</title><desc id="diagram-desc">尚未执行</desc>
+<g class="diagram"><rect x="20" y="20" width="220" height="100" rx="12"/><text x="130" y="52">期望发布指针</text><text id="pointer" x="130" y="93" class="version"></text><path id="load-path" d="M240 70 H350"/><text x="295" y="53" id="load-label">待加载</text><rect x="350" y="20" width="230" height="100" rx="12"/><text x="465" y="52">实例实际加载</text><text id="runtime" x="465" y="93" class="version"></text><path d="M465 120 V155 H300 V180"/><text x="280" y="150">新请求按实际版本分流</text><rect x="20" y="190" width="560" height="65" rx="8"/><rect id="flow-a" x="20" y="190" width="280" height="65" class="a"/><rect id="flow-b" x="300" y="190" width="280" height="65" class="b"/><text id="traffic" x="300" y="290"></text></g></svg>
+<p class="footnote">色条从左到右表示 A、B 的配置权重，不表示少量请求恰好按此比例分配。</p>
+<button id="reveal" type="button">执行加载，查看结果</button><div id="feedback" hidden aria-live="polite"></div><button id="reset" type="button">换个选择，再试一次</button>
+</section>
+<noscript><p>互动需要 JavaScript。你仍可阅读文章中的完整解释：加载失败时继续使用上一份成功加载的配置；恢复 r1 是 A/B 各半，停用 B 要选择适用的 A 全量快照。</p></noscript>
+<p class="footnote">无需提交个人信息；选择只保留在当前页面。<a href="/learn/promptweave/promptweave-release-snapshots/" target="_top">阅读完整文章</a></p>
+</main><script type="module" src="app.mjs"></script></body></html>

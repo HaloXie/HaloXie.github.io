@@ -33,3 +33,7 @@ Subject: releasing and rolling back a complete configuration snapshot. Show two 
 模型：gpt-image-2；经已授权网关使用 imagegen CLI；请求1536×864、high、WebP，关闭自动Prompt增补。试图不自动替换文章引用。
 
 生成结果：1次请求成功（310.8秒），原图1536×864，Pillow等比缩至1200×675，WebP quality 88。最终文件：`assets/img/promptweave-release-snapshots/cover-bright-preview.webp`。已实际打开检查：浅奶油底、蓝橙色包体、清晰墨线、绿色选择杆；无图内文字、无水印，文档/齿轮/分支关系完整。保留旧封面引用，仅供风格确认。
+
+## 角色讨论图的当前入口
+
+2026-11-13：已确认角色讨论图以自然交流梳理问题、降低理解成本。其叙事、同场连续性、非机械对称构图及当前成品参考统一维护在 [角色与教学互动](../skills/blog-imagegen/references/characters.md)，不另存第二套规则。本文上面的水平路径和节点基线要求只适用于流程图，不用于约束人物对话布局。颜色、线条与交付规格仍共用本站基线。
