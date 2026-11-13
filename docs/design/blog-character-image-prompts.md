@@ -1,0 +1,24 @@
+# 博客角色参考图生成记录
+
+本记录保留历史创作输入，不作为未来角色指令。当前人物身份与教学职责以 `docs/skills/blog-imagegen/references/characters.md` 为准：第一版 Prompt 中的 equal collaborators 是早期探索文字，已被后续确认的导师/学员关系取代；三角色 Prompt 中的安静旁听只限定该画面，不固定白猫性格。
+
+| 参考 | 方式与请求模型 | 请求尺寸/质量 | 最终文件 | 字节数 |
+| --- | --- | --- | --- | --- |
+| 第一版双角色 | generate，gpt-image-2 | 1536×864 / high / PNG | `docs/skills/blog-imagegen/assets/mentor-otter-cover.webp` | 88286 |
+| 三角色 | edit，gpt-image-2，以第一版原图为输入 | 1536×864 / high / PNG | `docs/skills/blog-imagegen/assets/mentor-otter-cat.webp` | 82218 |
+
+最终均等比缩放为 1200×675 WebP，quality 85。原图与最终文件已实际打开；第一版另查过 360px 缩图。仅为形象参考，未接入文章，未做页面 Light/Dark 验收。角色方向由明昊在 2026 年 11 月 12 日确认。
+
+第一版成功路由生成 1 次；此前调用程序三轮失败（每轮还含正文任务），另一次网络依赖失败未提交生图，一次备用路由因 WebP 参数被拒；SDK 的内部重试次数未单独计数，不能把程序轮数当 HTTP 请求总数。改用同模型可用路由、PNG 格式后成功。三角色编辑请求 1 次成功。未记录端点、凭据、上游身份或原始响应。
+
+## 第一版完整 Prompt
+
+```text
+Use case: illustration-story. Create an original technical blog COVER illustration, landscape 16:9. Bright friendly hand-drawn editorial art matching a learning notebook: very light cream background #FFF9E9, barely visible paper texture, crisp confident black ink outlines with slight natural irregularity, luminous flat sky blue, warm orange, sunny yellow and mint green accents (maximum four accent colors), cream and warm light brown animal bodies, white highlights, minimal contact shadows. No grey or yellow wash, no hatching, no realistic fur, no glossy 3D, no neon. Two original approachable animal characters: a slim warm brown OTTER with cream muzzle and belly, small rounded ears, visible long tapered tail and a sky-blue scarf; a larger squat tan CAPYBARA with a broad blunt rectangular muzzle, small high ears, no visible tail and a small orange crossbody bag. Small expressive eyes, natural recognizable animal silhouettes, no huge kawaii eyes, no human hair or robot parts. Both characters are equal curious collaborators. Scene: at a simple little workbench, the otter holds a hand tool and pauses mid-action, looking toward the capybara. The capybara holds up a single large returned result card with a simple incomplete-circle pictogram and points at it thoughtfully. Their gazes meet. A chunky mint selector lever on the bench is still undecided. Use a close, charming scene with a single focal interaction, strong silhouettes, generous clean cream negative space. This is a conceptual cover about deciding the next action from observed results, not a workflow chart. One large clean speech balloon from the otter contains EXACT Chinese text: “下一步呢？” No other text, letters, numbers, headings or labels anywhere. No boxes-and-arrows diagram, no decorative scenery, no logos, signatures or watermarks. Keep all elements inside generous safe margins. Make the relationship and speech balloon readable at 360px wide.
+```
+
+## 三角色版完整 Prompt
+
+```text
+Edit the supplied ORIGINAL FIRST-VERSION cover illustration. Preserve its exact charming hand-drawn blog art direction, cream background, ink contours, warm flat colors, facial expressions and friendly workshop atmosphere. Keep the otter SMALLER, wearing the same sky-blue scarf, curious and looking up to the capybara. Keep the capybara clearly LARGER and a gentle confident MENTOR, with the same kind thoughtful face, pointing at and explaining the incomplete blue circle on the result card. Preserve its orange crossbody bag as a closed decorative accessory, not an open tool container. Preserve the otter holding its screwdriver, the mint lever and modest tabletop tools. Add ONE original small WHITE CAT learner on the far left beside the otter, at approximately the otter height, with triangular ears, a curved slender tail, warm white fur outlined in crisp dark ink, a tiny mint-green collar, small natural expressive eyes, no large baby eyes. The cat leans slightly forward with one paw resting on the table, attentively looking at the mentor result card with an interested gentle expression. The cat is an equal learning companion to the otter, NOT a teacher, NOT pointing or lecturing. Place cat left, otter middle, mentor capybara right, all three visually connected by gaze toward the card, one continuous scene. Recompose and zoom out just enough for three full upper-body silhouettes and their faces to fit comfortably within safe margins, without changing the original personalities or making the two learners as big as the mentor. Keep the speech balloon from the OTTER with the exact original Chinese text 下一步呢？ and no other text. No magnifying glass anywhere. No extra characters, no new props, no additional speech balloons, no panel divisions. Keep restrained texture matching the supplied original; do not increase hair detail or shading. Maintain landscape 16:9, warm approachable illustration suitable for the existing technical blog. This is a third character exploration, not a redesign of the first two characters.
+```
