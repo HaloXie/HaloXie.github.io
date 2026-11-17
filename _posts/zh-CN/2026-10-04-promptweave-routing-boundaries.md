@@ -13,7 +13,10 @@ image:
 toc: true
 ---
 
-这是 PromptWeave 系列第 2 篇。上一篇先划定了责任边界：调用方提供事实，PromptWeave 管理配置和执行，网关负责传输。本篇继续追问：**一次请求到底由谁决定使用哪套 Prompt 和模型？**
+> **系列导读 · PromptWeave 第 2 篇**
+>
+> 上一篇划定调用方、配置系统与网关的责任边界。本篇继续讨论：一次请求由谁决定使用哪套 Prompt 和模型？
+{: .prompt-info }
 
 当前实现边界先说清楚：Phase 1 只实现 `promptCode` 直调；`scenarioCode` 属于 Phase 2。本篇提前介绍它，是为了说明未来如何增加场景选择，不代表它已经上线。
 
@@ -21,7 +24,16 @@ toc: true
 
 例如，一次网页端数学题请求提交 `subject=mathematics`、`platform=web` 和 `assignmentKey=stable-user-key`。把选择逻辑交给已发布规则，系统就能记录“是哪条规则选中了哪个 ModelConfig”。
 
-如果把这些判断都写进业务代码，业务入口会逐渐变成一串 if-else；如果让配置系统读取完整业务对象，又会把业务上下文和 Prompt 管理绑在一起。更小的边界是：调用方提交归一化后的事实，配置系统只根据已发布规则选择方案。
+选择模型需要理解业务，但这是否意味着配置系统必须接管业务上下文？先区分两件事：谁知道请求的事实，谁维护可发布的选择规则。
+
+![讨论仅凭题目无法知道平台等路由事实，再区分提供事实与选择方案](/assets/img/promptweave-routing-boundaries/dialogue-question.webp)
+
+![通过数学题和网页端的例子说明事实驱动规则选择，并追问缺失字段为何不能猜测](/assets/img/promptweave-routing-boundaries/dialogue-understanding.webp)
+_配图：gpt-image-2。两图连续阅读，沿气泡顺序跟随讨论。_
+
+**调用方提供归一化后的事实，配置系统根据已发布规则选择方案；选择能力不意味着它可以自行补全业务上下文。**
+
+把所有选择都写进业务代码，会让入口逐渐堆满 if-else；把完整业务对象交给配置系统，又会让它依赖业务数据。两者之间的边界，是双方约定哪些事实可以参与选择，以及事实缺失时怎样处理。
 
 ## 两种入口，解决两种需求
 
