@@ -62,7 +62,7 @@ The prompt describes what to tell the model. ModelConfig describes which service
 1. Switching models does not require copying a prompt.
 2. The same prompt can use different model settings in different scenarios.
 
-The Provider determines the underlying protocol. ModelConfig records the model, channel, and upstream mapping. A `channel` must not also mean an account group. Phase 1 keeps only the `default` and `endless` channels; account grouping, if needed later, requires its own field.
+The Provider determines the underlying protocol. ModelConfig records the model, channel, and upstream mapping. A `channel` must not also mean an account group. Phase 1 keeps only the `default` and `gateway` channels; account grouping, if needed later, requires its own field.
 
 The smallest selection chain is:
 

@@ -48,7 +48,7 @@ assert.equal(context.document.body.dataset.navigationFallback,'true','only the C
 assert.equal(cached.classes.size,0,'already-cached images must not retain their shimmer');
 assert.equal(pending.classes.size,2,'unloaded lazy images keep their placeholder');
 pending.events.get('load')();assert.equal(pending.classes.size,0);
-broken.events.get('error')();assert.equal(broken.classes.size,0,'failed images reveal alt/failure instead of an endless loading mask');
+broken.events.get('error')();assert.equal(broken.classes.size,0,'failed images reveal alt/failure instead of an infinite loading mask');
 assert.equal(lqip.getAttribute('src'),'full%20image.webp');
 assert.equal(lqip.getAttribute('data-src'),undefined);
 assert.equal(lqip.classes.size,2,'cached preview must not remove blur before the full image loads');

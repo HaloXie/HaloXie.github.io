@@ -74,7 +74,7 @@ Prompt 描述“告诉模型什么”，ModelConfig 描述“通过哪个服务�
 1. 换模型不需要复制一份 Prompt；
 2. 同一份 Prompt 可以在不同场景里使用不同模型配置。
 
-Provider 决定底层协议，ModelConfig 再记录模型、通道和上游映射。`channel` 不能同时承担账号分组的含义；第一阶段只保留 `default` 和 `endless` 两个通道，后续如果需要账号分组，再增加独立字段。
+Provider 决定底层协议，ModelConfig 再记录模型、通道和上游映射。`channel` 不能同时承担账号分组的含义；第一阶段只保留 `default` 和 `gateway` 两个通道，后续如果需要账号分组，再增加独立字段。
 
 最终，一次请求的最小选择链是：
 
